@@ -61,7 +61,7 @@
 
       <section class="card">
         <p class="label">USER PROFILE</p>
-        <h3 id="username" style="color: #00f0ff; font-size: 1.2rem; margin-top: 8px;">Authenticating...</h3>
+        <h3 id="username" style="color: #00f0ff; font-size: 1.2rem; margin-top: 8px;">@utoy0913</h3>
         <p style="font-size:0.85rem; color: #8e9bb0; margin-top:6px;">UID: <span id="piUid">...</span></p>
       </section>
     </div>
@@ -83,7 +83,7 @@
         <p style="font-size:0.85rem; color: #8e9bb0; margin-bottom: 10px;">I-share ang iyong natatanging link gamit ang iyong Pi Username para kumita ng dagdag na TT Tokens!</p>
         
         <div class="invite" id="invite" style="user-select: all; cursor: pointer;" onclick="copyReferral()">
-          Connecting to Pi...
+          https://bonene28.github.io?ref=utoy0913
         </div>
         
         <button onclick="copyReferral()" class="secondary" style="margin-top: 10px; width: 100%;">📋 COPY REFERRAL LINK</button>
@@ -91,7 +91,7 @@
       </section>
     </div>
 
-    <!-- TAB 5: MARKETPLACE (Dito lang ang Pet #001) -->
+    <!-- TAB 5: MARKETPLACE -->
     <div id="tab-market" class="tab-content">
       <section class="card">
         <p class="label">MARKETPLACE</p>
@@ -133,14 +133,12 @@
 
   <!-- JavaScript Logic -->
   <script>
-    // Palitan ng iyong totoong Render Backend URL
     const RENDER_BACKEND_URL = "https://your-app-name.onrender.com"; 
     const RATE_PER_SECOND = 0.24 / 3600;
 
     let piUser = null;
     let miningInterval = null;
 
-    // FUNCTION PARA SA BOTTOM NAVIGATION SWITCHING
     function switchTab(tabId, element) {
       document.querySelectorAll('.tab-content').forEach(tab => {
         tab.classList.remove('active');
@@ -153,13 +151,10 @@
       element.classList.add('active');
     }
 
-    // FUNCTION PARA KOPYAHIN ANG REFERRAL
     function copyReferral() {
       const inviteText = document.getElementById('invite').innerText;
-      if (inviteText.includes("http")) {
-        navigator.clipboard.writeText(inviteText);
-        alert("✅ Referral link copied to clipboard!");
-      }
+      navigator.clipboard.writeText(inviteText);
+      alert("✅ Referral link copied to clipboard!");
     }
 
     window.addEventListener('DOMContentLoaded', async () => {
@@ -191,7 +186,7 @@
         const auth = await Pi.authenticate(['username', 'payments'], onIncompletePaymentFound);
         piUser = auth.user;
 
-        // PAG-SET NG MGA USER DETAILS AT REFERRAL GAMIT ANG PI USERNAME
+        // DITO ILALAGAY ANG MISMONG PI USERNAME NG NAKALOG-IN NA PIONEER
         document.getElementById('username').innerText = "@" + piUser.username;
         document.getElementById('piUid').innerText = piUser.uid.substring(0, 8) + "...";
         document.getElementById('invite').innerText = "https://bonene28.github.io?ref=" + piUser.username;
@@ -199,8 +194,9 @@
 
         loadUserData();
       } catch (err) {
-        document.getElementById('username').innerText = "Auth Failed";
-        document.getElementById('invite').innerText = "Please log in via Pi Browser";
+        // DEFAULT FALLBACK KUNG WALA PA SA PI BROWSER (GAMIT ANG PI USERNAME MO)
+        document.getElementById('username').innerText = "@utoy0913";
+        document.getElementById('invite').innerText = "https://bonene28.github.io?ref=utoy0913";
         document.getElementById('status').innerText = "Please open inside Pi Browser app.";
       }
     }
