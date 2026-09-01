@@ -273,7 +273,6 @@
       setupEventListeners();
       checkMiningLoop();
       
-      // Auto Start Login on page open
       setTimeout(() => {
         triggerPiLogin();
       }, 500);
@@ -283,7 +282,8 @@
       if (!window.Pi) return false;
       if (!isPiInitialized) {
         try {
-          window.Pi.init({ version: "2.0", sandbox: true });
+          // Tinanggal ang sandbox:true para makapag-login kahit sinong Pioneer sa Pi Browser
+          window.Pi.init({ version: "2.0" });
           isPiInitialized = true;
         } catch (e) {
           console.error("Pi SDK Init Error:", e);
@@ -298,7 +298,7 @@
       const badgeEl = document.getElementById('liveBadge');
 
       if (!window.Pi) {
-        statusEl.innerText = "⚠️ Open inside Pi Browser app.";
+        statusEl.innerText = "⚠️ Please open inside Pi Browser app.";
         alert("⚠️ Kailangang buksan ang link na ito sa loob ng Pi Browser App!");
         return;
       }
@@ -341,8 +341,6 @@
         authBtn.disabled = false;
         authBtn.style.display = "block";
         badgeEl.innerText = "• OFFLINE";
-
-        alert("⚠️ Authentication Error!\n\n1. Siguraduhing naka-enable ang 'Sandbox Mode' sa Pi Browser Settings.\n2. Siguraduhing nakabukas ang dApp sa loob ng Pi Browser.");
       });
     }
 
