@@ -1,21 +1,66 @@
 const express = require("express");
 
 const app = express();
-app.use(express.json());
 
 const PORT = process.env.PORT || 3000;
 
+/* =========================================================
+   CONFIG
+========================================================= */
+
+const PI_API_BASE = "https://api.minepi.com/v2";
+const PI_API_KEY = process.env.PI_API_KEY;
+
 const MAX_SUPPLY = 1_000_000_000;
 const MINING_POOL = 500_000_000;
-const MINING_RATE = 1; // TT per hour
+const MINING_RATE = 1;
 const SESSION_MS = 24 * 60 * 60 * 1000;
 
-// Testnet database for now.
-// Replace with PostgreSQL/MongoDB for production.
+
+/* =========================================================
+   MIDDLEWARE
+========================================================= */
+
+app.use(express.json());
+
+/*
+   Allow GitHub Pages / Pi Browser to communicate
+   with the Render backend.
+*/
+app.use((req, res, next) => {
+  res.header(
+    "Access-Control-Allow-Origin",
+    "*"
+  );
+
+  res.header(
+    "Access-Control-Allow-Headers",
+    "Origin, X-Requested-With, Content-Type, Accept, Authorization"
+  );
+
+  res.header(
+    "Access-Control-Allow-Methods",
+    "GET, POST, PUT, DELETE, OPTIONS"
+  );
+
+  if (req.method === "OPTIONS") {
+    return res.sendStatus(204);
+  }
+
+  next();
+});
+
+
+/* =========================================================
+   TESTNET DATABASE
+========================================================= */
+
 const users = new Map();
 
 function getUser(wallet) {
+
   if (!users.has(wallet)) {
+
     users.set(wallet, {
       wallet,
       balance: 0,
@@ -23,153 +68,723 @@ function getUser(wallet) {
       mining: null,
       claims: 0
     });
+
   }
 
   return users.get(wallet);
 }
 
-// Start a 24-hour mining session
-app.post("/api/mining/start", (req, res) => {
-  const { wallet } = req.body;
 
-  if (!wallet) {
-    return res.status(400).json({
-      error: "Wallet address is required"
-    });
+/* =========================================================
+   PI API HELPER
+========================================================= */
+
+async function piRequest(
+  endpoint,
+  options = {}
+) {
+
+  if (!PI_API_KEY) {
+
+    throw new Error(
+      "PI_API_KEY is not configured on the server."
+    );
   }
 
-  const user = getUser(wallet);
+  const url =
+    `${PI_API_BASE}${endpoint}`;
 
-  if (user.mining && Date.now() < user.mining.endTime) {
-    return res.status(400).json({
-      error: "Mining session is already active"
-    });
-  }
-
-  const startTime = Date.now();
-  const endTime = startTime + SESSION_MS;
-
-  user.mining = {
-    startTime,
-    endTime,
-    claimed: false
+  const headers = {
+    "Authorization": `Key ${PI_API_KEY}`,
+    "Content-Type": "application/json",
+    ...(options.headers || {})
   };
 
-  res.json({
-    success: true,
-    wallet,
-    startTime,
-    endTime,
-    rate: MINING_RATE,
-    message: "TT mining started"
-  });
-});
-
-// Check mining status
-app.get("/api/mining/status/:wallet", (req, res) => {
-  const user = getUser(req.params.wallet);
-
-  if (!user.mining) {
-    return res.json({
-      mining: false,
-      balance: user.balance,
-      mined: user.mined
-    });
-  }
-
-  const now = Date.now();
-  const elapsed = Math.max(
-    0,
-    Math.min(now, user.mining.endTime) - user.mining.startTime
+  const response = await fetch(
+    url,
+    {
+      ...options,
+      headers
+    }
   );
 
-  const hours = elapsed / (60 * 60 * 1000);
-  const earned = Math.min(hours * MINING_RATE, 24);
+  const text =
+    await response.text();
 
-  res.json({
-    mining: now < user.mining.endTime,
-    startTime: user.mining.startTime,
-    endTime: user.mining.endTime,
-    earned: Number(earned.toFixed(6)),
-    balance: user.balance,
-    mined: user.mined
-  });
-});
+  let data;
 
-// Claim completed mining reward
-app.post("/api/mining/claim", (req, res) => {
-  const { wallet } = req.body;
+  try {
 
-  if (!wallet) {
-    return res.status(400).json({
-      error: "Wallet address is required"
-    });
+    data =
+      text ? JSON.parse(text) : {};
+
+  } catch {
+
+    data = {
+      raw: text
+    };
+
   }
 
-  const user = getUser(wallet);
+  if (!response.ok) {
 
-  if (!user.mining) {
-    return res.status(400).json({
-      error: "No mining session found"
-    });
+    const error =
+      new Error(
+        data.error ||
+        data.message ||
+        `Pi API error ${response.status}`
+      );
+
+    error.status =
+      response.status;
+
+    error.data =
+      data;
+
+    throw error;
   }
 
-  if (user.mining.claimed) {
-    return res.status(400).json({
-      error: "Mining reward already claimed"
+  return data;
+}
+
+
+/* =========================================================
+   HEALTH CHECK
+========================================================= */
+
+app.get(
+  "/api/health",
+  (req, res) => {
+
+    res.json({
+      success: true,
+      service: "TT Token Backend",
+      network: "Pi Testnet",
+      piApiConfigured: Boolean(PI_API_KEY),
+      status: "ONLINE"
     });
-  }
 
-  if (Date.now() < user.mining.endTime) {
-    return res.status(400).json({
-      error: "Mining session is not finished"
+  }
+);
+
+
+/* =========================================================
+   ROOT
+========================================================= */
+
+app.get(
+  "/",
+  (req, res) => {
+
+    res.json({
+      name: "TT Token Mining",
+      symbol: "TT",
+      network: "Pi Testnet",
+      maxSupply: MAX_SUPPLY,
+      miningPool: MINING_POOL,
+      status: "Development",
+      paymentSystem: "Pi User-to-App"
     });
+
   }
+);
 
-  const reward = 24 * MINING_RATE;
 
-  if (user.mined + reward > MINING_POOL) {
-    return res.status(400).json({
-      error: "Mining pool limit reached"
+/* =========================================================
+   PI USER VERIFICATION
+========================================================= */
+
+app.post(
+  "/api/pi/verify",
+  async (req, res) => {
+
+    try {
+
+      const {
+        accessToken
+      } = req.body;
+
+      if (!accessToken) {
+
+        return res.status(400).json({
+          success: false,
+          error: "Pi access token is required."
+        });
+
+      }
+
+      const user =
+        await fetch(
+          `${PI_API_BASE}/me`,
+          {
+            method: "GET",
+            headers: {
+              "Authorization":
+                `Bearer ${accessToken}`
+            }
+          }
+        );
+
+      const data =
+        await user.json();
+
+      if (!user.ok) {
+
+        return res.status(
+          user.status
+        ).json({
+          success: false,
+          error:
+            data.error ||
+            "Pi user verification failed."
+        });
+
+      }
+
+      res.json({
+        success: true,
+        user: data
+      });
+
+    } catch (error) {
+
+      console.error(
+        "Pi verification error:",
+        error
+      );
+
+      res.status(500).json({
+        success: false,
+        error: "Pi verification failed."
+      });
+
+    }
+
+  }
+);
+
+
+/* =========================================================
+   START MINING
+========================================================= */
+
+app.post(
+  "/api/mining/start",
+  (req, res) => {
+
+    const {
+      wallet
+    } = req.body;
+
+    if (!wallet) {
+
+      return res.status(400).json({
+        error:
+          "Wallet address is required"
+      });
+
+    }
+
+    const user =
+      getUser(wallet);
+
+    if (
+      user.mining &&
+      Date.now() < user.mining.endTime
+    ) {
+
+      return res.status(400).json({
+        error:
+          "Mining session is already active"
+      });
+
+    }
+
+    const startTime =
+      Date.now();
+
+    const endTime =
+      startTime + SESSION_MS;
+
+    user.mining = {
+      startTime,
+      endTime,
+      claimed: false
+    };
+
+    res.json({
+      success: true,
+      wallet,
+      startTime,
+      endTime,
+      rate: MINING_RATE,
+      message:
+        "TT mining started"
     });
+
   }
+);
 
-  user.balance += reward;
-  user.mined += reward;
-  user.claims += 1;
-  user.mining.claimed = true;
 
-  res.json({
-    success: true,
-    wallet,
-    reward,
-    balance: user.balance,
-    totalMined: user.mined
-  });
-});
+/* =========================================================
+   MINING STATUS
+========================================================= */
 
-// User balance
-app.get("/api/balance/:wallet", (req, res) => {
-  const user = getUser(req.params.wallet);
+app.get(
+  "/api/mining/status/:wallet",
+  (req, res) => {
 
-  res.json({
-    wallet: user.wallet,
-    balance: user.balance,
-    totalMined: user.mined
-  });
-});
+    const user =
+      getUser(req.params.wallet);
 
-app.get("/", (req, res) => {
-  res.json({
-    name: "TT Token Mining",
-    symbol: "TT",
-    network: "Pi Testnet",
-    maxSupply: MAX_SUPPLY,
-    miningPool: MINING_POOL,
-    status: "Development"
-  });
-});
+    if (!user.mining) {
 
-app.listen(PORT, () => {
-  console.log(`TT Mining server running on port ${PORT}`);
-});
+      return res.json({
+        mining: false,
+        balance: user.balance,
+        mined: user.mined
+      });
+
+    }
+
+    const now =
+      Date.now();
+
+    const elapsed =
+      Math.max(
+        0,
+        Math.min(
+          now,
+          user.mining.endTime
+        ) -
+        user.mining.startTime
+      );
+
+    const hours =
+      elapsed /
+      (60 * 60 * 1000);
+
+    const earned =
+      Math.min(
+        hours * MINING_RATE,
+        24
+      );
+
+    res.json({
+      mining:
+        now < user.mining.endTime,
+      startTime:
+        user.mining.startTime,
+      endTime:
+        user.mining.endTime,
+      earned:
+        Number(
+          earned.toFixed(6)
+        ),
+      balance:
+        user.balance,
+      mined:
+        user.mined
+    });
+
+  }
+);
+
+
+/* =========================================================
+   MINING CLAIM
+========================================================= */
+
+app.post(
+  "/api/mining/claim",
+  (req, res) => {
+
+    const {
+      wallet
+    } = req.body;
+
+    if (!wallet) {
+
+      return res.status(400).json({
+        error:
+          "Wallet address is required"
+      });
+
+    }
+
+    const user =
+      getUser(wallet);
+
+    if (!user.mining) {
+
+      return res.status(400).json({
+        error:
+          "No mining session found"
+      });
+
+    }
+
+    if (user.mining.claimed) {
+
+      return res.status(400).json({
+        error:
+          "Mining reward already claimed"
+      });
+
+    }
+
+    if (
+      Date.now() <
+      user.mining.endTime
+    ) {
+
+      return res.status(400).json({
+        error:
+          "Mining session is not finished"
+      });
+
+    }
+
+    const reward =
+      24 * MINING_RATE;
+
+    if (
+      user.mined + reward >
+      MINING_POOL
+    ) {
+
+      return res.status(400).json({
+        error:
+          "Mining pool limit reached"
+      });
+
+    }
+
+    user.balance +=
+      reward;
+
+    user.mined +=
+      reward;
+
+    user.claims +=
+      1;
+
+    user.mining.claimed =
+      true;
+
+    res.json({
+      success: true,
+      wallet,
+      reward,
+      balance:
+        user.balance,
+      totalMined:
+        user.mined
+    });
+
+  }
+);
+
+
+/* =========================================================
+   USER BALANCE
+========================================================= */
+
+app.get(
+  "/api/balance/:wallet",
+  (req, res) => {
+
+    const user =
+      getUser(req.params.wallet);
+
+    res.json({
+      wallet:
+        user.wallet,
+      balance:
+        user.balance,
+      totalMined:
+        user.mined
+    });
+
+  }
+);
+
+
+/* =========================================================
+   PI PAYMENT:
+   APPROVE
+========================================================= */
+
+app.post(
+  "/api/payments/approve",
+  async (req, res) => {
+
+    try {
+
+      const {
+        paymentId
+      } = req.body;
+
+      if (!paymentId) {
+
+        return res.status(400).json({
+          success: false,
+          error:
+            "paymentId is required."
+        });
+
+      }
+
+      console.log(
+        `💳 Approving Pi payment: ${paymentId}`
+      );
+
+      const payment =
+        await piRequest(
+          `/payments/${encodeURIComponent(paymentId)}/approve`,
+          {
+            method: "POST"
+          }
+        );
+
+      console.log(
+        "✅ Pi payment approved:",
+        payment.identifier ||
+        paymentId
+      );
+
+      res.json({
+        success: true,
+        payment
+      });
+
+    } catch (error) {
+
+      console.error(
+        "❌ Pi payment approval error:",
+        error
+      );
+
+      res.status(
+        error.status || 500
+      ).json({
+        success: false,
+        error:
+          error.message ||
+          "Payment approval failed.",
+        details:
+          error.data || null
+      });
+
+    }
+
+  }
+);
+
+
+/* =========================================================
+   PI PAYMENT:
+   COMPLETE
+========================================================= */
+
+app.post(
+  "/api/payments/complete",
+  async (req, res) => {
+
+    try {
+
+      const {
+        paymentId,
+        txid
+      } = req.body;
+
+      if (!paymentId) {
+
+        return res.status(400).json({
+          success: false,
+          error:
+            "paymentId is required."
+        });
+
+      }
+
+      if (!txid) {
+
+        return res.status(400).json({
+          success: false,
+          error:
+            "txid is required."
+        });
+
+      }
+
+      console.log(
+        `💰 Completing Pi payment: ${paymentId}`
+      );
+
+      console.log(
+        `🔗 Transaction ID: ${txid}`
+      );
+
+      const payment =
+        await piRequest(
+          `/payments/${encodeURIComponent(paymentId)}/complete`,
+          {
+            method: "POST",
+
+            body:
+              JSON.stringify({
+                txid
+              })
+          }
+        );
+
+      console.log(
+        "✅ Pi payment completed:",
+        payment.identifier ||
+        paymentId
+      );
+
+      res.json({
+        success: true,
+        payment
+      });
+
+    } catch (error) {
+
+      console.error(
+        "❌ Pi payment completion error:",
+        error
+      );
+
+      res.status(
+        error.status || 500
+      ).json({
+        success: false,
+        error:
+          error.message ||
+          "Payment completion failed.",
+        details:
+          error.data || null
+      });
+
+    }
+
+  }
+);
+
+
+/* =========================================================
+   PI PAYMENT STATUS
+========================================================= */
+
+app.get(
+  "/api/payments/:paymentId",
+  async (req, res) => {
+
+    try {
+
+      const payment =
+        await piRequest(
+          `/payments/${encodeURIComponent(req.params.paymentId)}`,
+          {
+            method: "GET"
+          }
+        );
+
+      res.json({
+        success: true,
+        payment
+      });
+
+    } catch (error) {
+
+      console.error(
+        "❌ Payment status error:",
+        error
+      );
+
+      res.status(
+        error.status || 500
+      ).json({
+        success: false,
+        error:
+          error.message ||
+          "Unable to retrieve payment."
+      });
+
+    }
+
+  }
+);
+
+
+/* =========================================================
+   INCOMPLETE PI PAYMENTS
+========================================================= */
+
+app.get(
+  "/api/payments/incomplete",
+  async (req, res) => {
+
+    try {
+
+      const payments =
+        await piRequest(
+          "/payments/incomplete_server_payments",
+          {
+            method: "GET"
+          }
+        );
+
+      res.json({
+        success: true,
+        payments
+      });
+
+    } catch (error) {
+
+      console.error(
+        "❌ Incomplete payment lookup error:",
+        error
+      );
+
+      res.status(
+        error.status || 500
+      ).json({
+        success: false,
+        error:
+          error.message ||
+          "Unable to retrieve incomplete payments."
+      });
+
+    }
+
+  }
+);
+
+
+/* =========================================================
+   START SERVER
+========================================================= */
+
+app.listen(
+  PORT,
+  () => {
+
+    console.log(
+      `🚀 TT Token server running on port ${PORT}`
+    );
+
+    console.log(
+      `🌐 Pi API: ${PI_API_BASE}`
+    );
+
+    console.log(
+      `🔐 Pi API Key configured: ${
+        PI_API_KEY ? "YES" : "NO"
+      }`
+    );
+
+  }
+);
