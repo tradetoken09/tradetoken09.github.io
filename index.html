@@ -3,81 +3,112 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>TT Token • Trade Token Ecosystem</title>
+  <title>TT Token • Holographic Mining dApp</title>
+  
+  <!-- Link sa CSS File para sa Cyberpunk Design -->
   <link rel="stylesheet" href="css/style.css">
   
-  <!-- Official Pi Network SDK (Required for Pi Browser & Payment) -->
+  <!-- Official Pi Network SDK -->
   <script src="https://sdk.minepi.com/pi-sdk.js"></script>
 </head>
 <body>
   <main class="app">
+    <!-- Header -->
     <header>
       <div>
-        <h1>TT Token</h1>
-        <p>Trade Token • Pi Testnet Ecosystem</p>
+        <h1>TT TOKEN</h1>
+        <p>Holographic Mining Machine</p>
       </div>
-      <span class="badge">TESTNET</span>
+      <span class="badge">• LIVE</span>
     </header>
 
-    <section class="card balance">
-      <p class="label">UNCLAIMED TT BALANCE</p>
-      <h2 id="balance">0.000000 TT</h2>
-      <p>Mining rate: <strong>0.24 TT/hour</strong></p>
-      <div class="actions">
-        <button id="mineBtn">⛏ Start Mining Session</button>
-        <button id="claimBtn" class="secondary">🎁 Claim to Wallet</button>
+    <!-- Main Holographic Mining Core Section -->
+    <section class="card">
+      <p class="label">MINING MACHINE CORE</p>
+      
+      <!-- Holographic Orbital Animation -->
+      <div class="core-container">
+        <div class="outer-ring"></div>
+        <div class="inner-core">
+          <span class="core-text">TT</span>
+        </div>
       </div>
-      <p id="status" class="status">Connecting to Pi Browser...</p>
+
+      <div id="balance" class="counter-text">0.000000 TT</div>
+      <p class="rate-text">Mining Rate: <strong>0.24 TT / hour</strong></p>
+
+      <div class="actions">
+        <button id="mineBtn">⚡ START MINING</button>
+        <button id="claimBtn" class="secondary">🎁 CLAIM TT</button>
+      </div>
+      <p id="status" class="status">Connecting to Pi Network...</p>
     </section>
 
+    <!-- Miner & Wallet Info -->
     <section class="grid">
       <div class="card">
         <p class="label">ACTIVE MINER</p>
-        <h3 id="username">Authenticating...</h3>
-        <p>Pi Wallet UID: <span id="piUid">Connecting...</span></p>
+        <h3 id="username" style="color: var(--primary-neon, #00f0ff); font-size: 1.1rem;">Authenticating...</h3>
+        <p style="font-size:0.75rem; color: #8e9bb0; margin-top:4px;">UID: <span id="piUid">...</span></p>
       </div>
       <div class="card">
         <p class="label">WALLET LEDGER</p>
-        <h3>Claimed: <span id="claimedBalance">0.0000</span> TT</h3>
-        <p>Reputation Score: <strong>500 / 1000</strong></p>
+        <h3 style="color: var(--pink-neon, #ff007f); font-size: 1.1rem;"><span id="claimedBalance">0.0000</span> TT</h3>
+        <p style="font-size:0.75rem; color: #8e9bb0; margin-top:4px;">Score: 500 / 1000</p>
       </div>
     </section>
 
-    <section class="card">
-      <p class="label">REFERRAL SYSTEM</p>
-      <h3>Your Unique Referral Link</h3>
-      <div class="invite" id="invite">Loading referral code...</div>
-      <p>Earn +0.05 TT/hr per active referred miner.</p>
-    </section>
-
+    <!-- Marketplace Section -->
     <section class="card">
       <p class="label">MARKETPLACE</p>
-      <h2>Pimon #001</h2>
-      <p>Genesis Pet • First TT Marketplace test item</p>
-      <div class="pet">🐾</div>
-      <button id="buyBtn">🛒 Test Buy with 1 Test-Pi</button>
-      <p class="status">Opens Pi Testnet Wallet Modal for transaction verification.</p>
+      <h3 style="margin-bottom: 4px;">Pimon Genesis Pet #001</h3>
+      <p style="font-size:0.8rem; color: #8e9bb0; margin-bottom: 12px;">Boost your mining rate by +10%</p>
+      <button id="buyBtn">🛒 BUY WITH 1 TEST-PI</button>
     </section>
 
+    <!-- Referral System -->
     <section class="card">
-      <p class="label">TRANSACTION HISTORY</p>
-      <ul id="txHistory" style="list-style: none; padding: 0; font-size: 0.85rem; color: #888;">
-        <li>No claims processed yet.</li>
-      </ul>
+      <p class="label">REFERRAL SYSTEM</p>
+      <div class="invite" id="invite">Loading referral code...</div>
+      <p style="font-size:0.75rem; color: #8e9bb0;">Earn +0.05 TT/hr per active miner</p>
     </section>
 
-    <footer>
-      <p>TT Token • Total Max Supply: 30,000,000 TT</p>
-      <!-- Mandatory Privacy Policy Link for Developer Portal Review -->
-      <p><a href="privacy.html" style="color: #aaa; text-decoration: underline;">Privacy Policy</a></p>
+    <footer style="text-align: center; margin-top: 10px; margin-bottom: 20px;">
+      <p style="font-size: 0.8rem; color: #8e9bb0;"><a href="privacy.html" style="color: #00f0ff; text-decoration: underline;">Privacy Policy</a></p>
     </footer>
   </main>
 
+  <!-- Bottom Navigation Menu -->
+  <nav class="bottom-nav">
+    <a href="#" class="nav-item active">
+      <span class="nav-icon">🤖</span>
+      <span>Mining</span>
+    </a>
+    <a href="#" class="nav-item">
+      <span class="nav-icon">👛</span>
+      <span>Wallet</span>
+    </a>
+    <a href="#" class="nav-item">
+      <span class="nav-icon">👤</span>
+      <span>Profile</span>
+    </a>
+    <a href="#" class="nav-item">
+      <span class="nav-icon">👥</span>
+      <span>Referral</span>
+    </a>
+    <a href="#" class="nav-item">
+      <span class="nav-icon">🛒</span>
+      <span>Market</span>
+    </a>
+  </nav>
+
+  <!-- Complete Backend & Pi SDK Script -->
   <script>
     // -------------------------------------------------------------
-    // CONFIGURATION (Siguraduhing palitan ng iyong totoong Render URL)
+    // CONFIGURATION
+    // Palitan ang URL na ito ng iyong totoong Render Backend Link
     // -------------------------------------------------------------
-    const RENDER_BACKEND_URL = "https://your-app-name.onrender.com";
+    const RENDER_BACKEND_URL = "https://your-app-name.onrender.com"; 
     const RATE_PER_SECOND = 0.24 / 3600; // 0.00006667 TT/sec
 
     let piUser = null;
@@ -92,13 +123,13 @@
       checkMiningLoop();
     });
 
-    // 1. PRODUCTION-READY PI AUTHENTICATION & INCOMPLETE PAYMENTS RESOLVER
+    // 1. PI AUTH & INCOMPLETE PAYMENTS AUTO-CLEAR
     async function initPiAuth() {
       try {
         const Pi = window.Pi;
         Pi.init({ version: "2.0", sandbox: true });
 
-        // KUSANG LILINISIN ANG ANUMANG NAKATAMBAK/EXPIRED NA PAYMENT PARA HINDI MAG-"TRANSACTION FAILED"
+        // Auto-clear ng anumang nakatambak o expired payment para maiwasan ang "Cancelled/Failed" error
         async function onIncompletePaymentFound(payment) {
           console.log("Incomplete payment detected:", payment);
           if (payment && payment.identifier) {
@@ -111,7 +142,7 @@
                   txid: payment.transaction ? payment.transaction.txid : "CANCELLED"
                 })
               });
-              console.log("Incomplete payment successfully cleared.");
+              console.log("Stuck payment cleared.");
             } catch (err) {
               console.error("Error clearing incomplete payment:", err);
             }
@@ -124,7 +155,7 @@
         document.getElementById('username').innerText = "@" + piUser.username;
         document.getElementById('piUid').innerText = piUser.uid.substring(0, 8) + "...";
         document.getElementById('invite').innerText = "https://tradetoken09.github.io?ref=" + piUser.username;
-        document.getElementById('status').innerText = "Connected to Pi Ecosystem.";
+        document.getElementById('status').innerText = "SYSTEM ONLINE • READY";
 
         loadUserData();
       } catch (err) {
@@ -138,27 +169,21 @@
       if (!piUser) return;
       const savedClaimed = localStorage.getItem(`tt_claimed_${piUser.uid}`) || "0.0000";
       document.getElementById('claimedBalance').innerText = parseFloat(savedClaimed).toFixed(4);
-      
-      const savedHistory = JSON.parse(localStorage.getItem(`tt_history_${piUser.uid}`) || "[]");
-      if (savedHistory.length > 0) {
-        const historyEl = document.getElementById('txHistory');
-        historyEl.innerHTML = savedHistory.map(item => `<li>✅ ${item}</li>`).join('');
-      }
     }
 
-    // 2. REAL-TIME MINING LOGIC
+    // 2. MINING TIMER LOOP
     function checkMiningLoop() {
       const startTime = localStorage.getItem('tt_mining_start');
       if (startTime) {
         startMiningUI(parseInt(startTime));
       } else {
-        document.getElementById('status').innerText = "Mining status: Inactive. Click button to start.";
+        document.getElementById('status').innerText = "MINING INACTIVE";
       }
     }
 
     function startMiningUI(startTime) {
-      document.getElementById('status').innerText = "⚡ Mining is currently ACTIVE (+0.24 TT/hr)";
-      document.getElementById('mineBtn').innerText = "⛏ Session Active";
+      document.getElementById('status').innerText = "⚡ MINING CORE ACTIVE (+0.24 TT/hr)";
+      document.getElementById('mineBtn').innerText = "⚡ MINING ACTIVE";
       document.getElementById('mineBtn').disabled = true;
 
       if (miningInterval) clearInterval(miningInterval);
@@ -171,43 +196,30 @@
       }, 1000);
     }
 
-    // 3. EVENT LISTENERS FOR ALL BUTTONS
+    // 3. BUTTON EVENT LISTENERS
     function setupEventListeners() {
-      // START MINING SESSION BUTTON
+      // START MINING
       document.getElementById('mineBtn').addEventListener('click', () => {
-        if (!piUser) {
-          alert("Please wait for Pi Browser authentication.");
-          return;
-        }
+        if (!piUser) return alert("Please authenticate inside Pi Browser first.");
         const now = Date.now();
         localStorage.setItem('tt_mining_start', now.toString());
         startMiningUI(now);
       });
 
-      // CLAIM TO RENDER BACKEND BUTTON
+      // CLAIM TO RENDER BACKEND
       document.getElementById('claimBtn').addEventListener('click', async () => {
-        if (!piUser) {
-          alert("Please authenticate inside Pi Browser first.");
-          return;
-        }
-
+        if (!piUser) return alert("Please authenticate inside Pi Browser first.");
         const startTime = localStorage.getItem('tt_mining_start');
-        if (!startTime) {
-          alert("No active mining session. Click 'Start Mining Session' first.");
-          return;
-        }
+        if (!startTime) return alert("No active mining session.");
 
         const now = Date.now();
         const elapsedSeconds = (now - parseInt(startTime)) / 1000;
         const earnedTT = elapsedSeconds * RATE_PER_SECOND;
 
-        if (earnedTT <= 0.0001) {
-          alert("Mined amount is too small to claim yet. Let it mine longer!");
-          return;
-        }
+        if (earnedTT <= 0.0001) return alert("Mined amount is too small to claim yet.");
 
         const claimBtn = document.getElementById('claimBtn');
-        claimBtn.innerText = "⏳ Processing...";
+        claimBtn.innerText = "PROCESSING...";
         claimBtn.disabled = true;
 
         try {
@@ -233,41 +245,31 @@
 
             document.getElementById('balance').innerText = "0.000000 TT";
             document.getElementById('claimedBalance').innerText = parseFloat(newTotal).toFixed(4);
-            document.getElementById('status').innerText = "Claim saved successfully to Render backend!";
-            document.getElementById('mineBtn').innerText = "⛏ Start Mining Session";
+            document.getElementById('status').innerText = "CLAIM SUCCESSFUL";
+            document.getElementById('mineBtn').innerText = "⚡ START MINING";
             document.getElementById('mineBtn').disabled = false;
 
-            const savedHistory = JSON.parse(localStorage.getItem(`tt_history_${piUser.uid}`) || "[]");
-            const txLog = `Claimed ${earnedTT.toFixed(4)} TT at ${new Date().toLocaleTimeString()}`;
-            savedHistory.unshift(txLog);
-            localStorage.setItem(`tt_history_${piUser.uid}`, JSON.stringify(savedHistory.slice(0, 5)));
-
-            document.getElementById('txHistory').innerHTML = savedHistory.slice(0, 5).map(item => `<li>✅ ${item}</li>`).join('');
-
-            alert(`✅ Success! ${earnedTT.toFixed(4)} TT saved to your backend database.`);
+            alert(`✅ Claimed ${earnedTT.toFixed(4)} TT successfully to your backend database!`);
           } else {
             alert("❌ Server Error: " + (result.message || "Failed to process claim."));
           }
         } catch (error) {
           console.error("Fetch Error:", error);
-          alert("❌ Network Error: Could not connect to Render backend.");
+          alert("❌ Connection error to Render backend.");
         } finally {
-          claimBtn.innerText = "🎁 Claim to Wallet";
+          claimBtn.innerText = "🎁 CLAIM TT";
           claimBtn.disabled = false;
         }
       });
 
-      // MARKETPLACE PI PAYMENT BUTTON (BUBUKSAN ANG PI TESTNET WALLET MODAL)
+      // TEST BUY WITH PI PAYMENT SDK
       document.getElementById('buyBtn').addEventListener('click', () => {
-        if (!piUser) {
-          alert("Please authenticate inside Pi Browser first.");
-          return;
-        }
+        if (!piUser) return alert("Please authenticate inside Pi Browser first.");
 
         const paymentData = {
           amount: 1, // 1 Test-Pi
           memo: "Purchase Genesis Pet (Pimon #001)",
-          metadata: { productId: "pimon_001", type: "digital_pet" }
+          metadata: { productId: "pimon_001" }
         };
 
         const paymentCallbacks = {
@@ -280,7 +282,7 @@
                 body: JSON.stringify({ paymentId })
               });
             } catch (e) {
-              console.error("Approval error:", e);
+              console.error("Approval fetch error:", e);
             }
           },
 
@@ -297,7 +299,7 @@
                 alert("🎉 Success! Pimon #001 bought using 1 Test-Pi!");
               }
             } catch (e) {
-              console.error("Completion error:", e);
+              console.error("Completion fetch error:", e);
             }
           },
 
@@ -307,7 +309,7 @@
 
           onError: function(error, payment) {
             console.error("Payment error:", error);
-            alert("An error occurred during Pi Payment. Please try again.");
+            alert("An error occurred during Pi Payment.");
           }
         };
 
