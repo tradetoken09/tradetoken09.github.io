@@ -16,7 +16,7 @@
         <h1>TT TOKEN</h1>
         <p>Holographic Mining Machine</p>
       </div>
-      <span class="badge" id="liveBadge">• CONNECTING...</span>
+      <span class="badge" id="liveBadge">• OFFLINE</span>
     </header>
 
     <!-- TAB 1: MINING SECTION ONLY -->
@@ -42,7 +42,7 @@
         <!-- AUTH / STATUS BOX -->
         <div style="margin-top: 15px; text-align: center;">
           <p id="status" class="status">Connecting to Pi Network...</p>
-          <button id="authBtn" onclick="initPiAuth()" style="display: none; margin-top: 8px; width: 100%; background: #00f0ff; color: #000; font-weight: bold;">🔑 CONNECT PI ACCOUNT</button>
+          <button id="authBtn" style="display: none; margin-top: 8px; width: 100%; background: #00f0ff; color: #000; font-weight: bold;">🔑 CONNECT PI ACCOUNT</button>
         </div>
       </section>
     </div>
@@ -268,28 +268,38 @@
       document.getElementById('petModal').classList.remove('show');
     }
 
-    window.addEventListener('DOMContentLoaded', async () => {
-      await initPiAuth();
+    window.addEventListener('DOMContentLoaded', () => {
       setupEventListeners();
       checkMiningLoop();
+      initPiAuth();
     });
 
-    async function initPiAuth() {
+    function initPiAuth() {
       const statusEl = document.getElementById('status');
       const authBtn = document.getElementById('authBtn');
       const badgeEl = document.getElementById('liveBadge');
 
+      statusEl.innerText = "Authenticating with Pi Network...";
+
+      if (!window.Pi) {
+        statusEl.innerText = "⚠️ Please open inside Pi Browser app.";
+        authBtn.style.display = "block";
+        return;
+      }
+
       try {
-        if (!window.Pi) {
-          statusEl.innerText = "⚠️ Please open inside Pi Browser app.";
-          authBtn.style.display = "block";
-          return false;
-        }
+        window.Pi.init({ version: "2.0", sandbox: true });
 
-        const Pi = window.Pi;
-        Pi.init({ version: "2.0", sandbox: true });
+        // Timeout handler para maging responsive agad ang UI sa loob ng 3 seconds
+        let authCompleted = false;
+        setTimeout(() => {
+          if (!authCompleted && !piUser) {
+            statusEl.innerText = "Ready to connect. Click button below:";
+            authBtn.style.display = "block";
+          }
+        }, 3000);
 
-        async function onIncompletePaymentFound(payment) {
+        window.Pi.authenticate(['username', 'payments'], async function onIncompletePaymentFound(payment) {
           if (payment && payment.identifier) {
             try {
               await fetch(`${RENDER_BACKEND_URL}/api/payments/complete`, {
@@ -302,27 +312,29 @@
               });
             } catch (err) {}
           }
-        }
+        }).then((auth) => {
+          authCompleted = true;
+          piUser = auth.user;
+          document.getElementById('username').innerText = "@" + piUser.username;
+          document.getElementById('piUid').innerText = piUser.uid.substring(0, 8) + "...";
+          document.getElementById('invite').innerText = "https://tradetoken09.github.io?ref=" + piUser.username;
+          
+          statusEl.innerText = "SYSTEM ONLINE • READY";
+          badgeEl.innerText = "• LIVE";
+          authBtn.style.display = "none";
 
-        statusEl.innerText = "Authenticating with Pi Network...";
-        const auth = await Pi.authenticate(['username', 'payments'], onIncompletePaymentFound);
-        piUser = auth.user;
+          loadUserData();
+        }).catch((err) => {
+          authCompleted = true;
+          statusEl.innerText = "Click button below to Connect Account:";
+          authBtn.style.display = "block";
+          badgeEl.innerText = "• OFFLINE";
+        });
 
-        document.getElementById('username').innerText = "@" + piUser.username;
-        document.getElementById('piUid').innerText = piUser.uid.substring(0, 8) + "...";
-        document.getElementById('invite').innerText = "https://tradetoken09.github.io?ref=" + piUser.username;
-        
-        statusEl.innerText = "SYSTEM ONLINE • READY";
-        badgeEl.innerText = "• LIVE";
-        authBtn.style.display = "none";
-
-        loadUserData();
-        return true;
       } catch (err) {
-        statusEl.innerText = "❌ Authentication failed. Click button below:";
+        statusEl.innerText = "Click button below to Connect Account:";
         authBtn.style.display = "block";
         badgeEl.innerText = "• OFFLINE";
-        return false;
       }
     }
 
@@ -354,12 +366,10 @@
       }, 1000);
     }
 
-    async function buyPet(petName, amount) {
+    function buyPet(petName, amount) {
       if (!piUser) {
-        const success = await initPiAuth();
-        if (!success || !piUser) {
-          return alert("Pakipindot muna ang 'CONNECT PI ACCOUNT' button sa Mining tab.");
-        }
+        alert("Pakipindot muna ang 'CONNECT PI ACCOUNT' button sa Mining Tab.");
+        return;
       }
 
       const paymentData = {
@@ -404,17 +414,25 @@
     }
 
     function setupEventListeners() {
-      document.getElementById('mineBtn').addEventListener('click', async () => {
-        if (!piUser) await initPiAuth();
-        if (!piUser) return alert("Please connect your Pi account first.");
+      document.getElementById('authBtn').addEventListener('click', () => {
+        initPiAuth();
+      });
+
+      document.getElementById('mineBtn').addEventListener('click', () => {
+        if (!piUser) {
+          alert("Please connect your Pi account first.");
+          return;
+        }
         const now = Date.now();
         localStorage.setItem('tt_mining_start', now.toString());
         startMiningUI(now);
       });
 
       document.getElementById('claimBtn').addEventListener('click', async () => {
-        if (!piUser) await initPiAuth();
-        if (!piUser) return alert("Please connect your Pi account first.");
+        if (!piUser) {
+          alert("Please connect your Pi account first.");
+          return;
+        }
         const startTime = localStorage.getItem('tt_mining_start');
         if (!startTime) return alert("No active mining session.");
 
