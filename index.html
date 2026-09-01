@@ -41,8 +41,8 @@
 
         <!-- AUTH / STATUS BOX -->
         <div style="margin-top: 15px; text-align: center;">
-          <p id="status" class="status">Connecting to Pi Network...</p>
-          <button id="authBtn" style="display: none; margin-top: 8px; width: 100%; background: #00f0ff; color: #000; font-weight: bold;">🔑 CONNECT PI ACCOUNT</button>
+          <p id="status" class="status">Click button below to Connect Account</p>
+          <button id="authBtn" style="margin-top: 8px; width: 100%; background: #00f0ff; color: #000; font-weight: bold; padding: 12px; border-radius: 8px; border: none; cursor: pointer;">🔑 CONNECT PI ACCOUNT</button>
         </div>
       </section>
     </div>
@@ -230,6 +230,7 @@
     let miningInterval = null;
     let selectedPetName = "";
     let selectedPetPrice = 1;
+    let isPiInitialized = false;
 
     function switchTab(tabId, element) {
       document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
@@ -271,71 +272,78 @@
     window.addEventListener('DOMContentLoaded', () => {
       setupEventListeners();
       checkMiningLoop();
-      initPiAuth();
+      
+      // Auto Start Login on page open
+      setTimeout(() => {
+        triggerPiLogin();
+      }, 500);
     });
 
-    function initPiAuth() {
+    function initPiSDK() {
+      if (!window.Pi) return false;
+      if (!isPiInitialized) {
+        try {
+          window.Pi.init({ version: "2.0", sandbox: true });
+          isPiInitialized = true;
+        } catch (e) {
+          console.error("Pi SDK Init Error:", e);
+        }
+      }
+      return true;
+    }
+
+    function triggerPiLogin() {
       const statusEl = document.getElementById('status');
       const authBtn = document.getElementById('authBtn');
       const badgeEl = document.getElementById('liveBadge');
 
-      statusEl.innerText = "Authenticating with Pi Network...";
-
       if (!window.Pi) {
-        statusEl.innerText = "⚠️ Please open inside Pi Browser app.";
-        authBtn.style.display = "block";
+        statusEl.innerText = "⚠️ Open inside Pi Browser app.";
+        alert("⚠️ Kailangang buksan ang link na ito sa loob ng Pi Browser App!");
         return;
       }
 
-      try {
-        window.Pi.init({ version: "2.0", sandbox: true });
+      initPiSDK();
+      statusEl.innerText = "Connecting to Pi Network...";
+      authBtn.innerText = "⏳ CONNECTING...";
+      authBtn.disabled = true;
 
-        // Timeout handler para maging responsive agad ang UI sa loob ng 3 seconds
-        let authCompleted = false;
-        setTimeout(() => {
-          if (!authCompleted && !piUser) {
-            statusEl.innerText = "Ready to connect. Click button below:";
-            authBtn.style.display = "block";
-          }
-        }, 3000);
+      window.Pi.authenticate(['username', 'payments'], async function onIncompletePaymentFound(payment) {
+        if (payment && payment.identifier) {
+          try {
+            await fetch(`${RENDER_BACKEND_URL}/api/payments/complete`, {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({
+                paymentId: payment.identifier,
+                txid: payment.transaction ? payment.transaction.txid : "CANCELLED"
+              })
+            });
+          } catch (err) {}
+        }
+      })
+      .then((auth) => {
+        piUser = auth.user;
+        document.getElementById('username').innerText = "@" + piUser.username;
+        document.getElementById('piUid').innerText = piUser.uid.substring(0, 8) + "...";
+        document.getElementById('invite').innerText = "https://tradetoken09.github.io?ref=" + piUser.username;
+        
+        statusEl.innerText = "SYSTEM ONLINE • CONNECTED";
+        badgeEl.innerText = "• LIVE";
+        authBtn.style.display = "none";
 
-        window.Pi.authenticate(['username', 'payments'], async function onIncompletePaymentFound(payment) {
-          if (payment && payment.identifier) {
-            try {
-              await fetch(`${RENDER_BACKEND_URL}/api/payments/complete`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                  paymentId: payment.identifier,
-                  txid: payment.transaction ? payment.transaction.txid : "CANCELLED"
-                })
-              });
-            } catch (err) {}
-          }
-        }).then((auth) => {
-          authCompleted = true;
-          piUser = auth.user;
-          document.getElementById('username').innerText = "@" + piUser.username;
-          document.getElementById('piUid').innerText = piUser.uid.substring(0, 8) + "...";
-          document.getElementById('invite').innerText = "https://tradetoken09.github.io?ref=" + piUser.username;
-          
-          statusEl.innerText = "SYSTEM ONLINE • READY";
-          badgeEl.innerText = "• LIVE";
-          authBtn.style.display = "none";
-
-          loadUserData();
-        }).catch((err) => {
-          authCompleted = true;
-          statusEl.innerText = "Click button below to Connect Account:";
-          authBtn.style.display = "block";
-          badgeEl.innerText = "• OFFLINE";
-        });
-
-      } catch (err) {
-        statusEl.innerText = "Click button below to Connect Account:";
+        loadUserData();
+      })
+      .catch((err) => {
+        console.error("Auth Error:", err);
+        statusEl.innerText = "❌ Authentication failed.";
+        authBtn.innerText = "🔑 RETRY CONNECT PI ACCOUNT";
+        authBtn.disabled = false;
         authBtn.style.display = "block";
         badgeEl.innerText = "• OFFLINE";
-      }
+
+        alert("⚠️ Authentication Error!\n\n1. Siguraduhing naka-enable ang 'Sandbox Mode' sa Pi Browser Settings.\n2. Siguraduhing nakabukas ang dApp sa loob ng Pi Browser.");
+      });
     }
 
     function loadUserData() {
@@ -415,7 +423,7 @@
 
     function setupEventListeners() {
       document.getElementById('authBtn').addEventListener('click', () => {
-        initPiAuth();
+        triggerPiLogin();
       });
 
       document.getElementById('mineBtn').addEventListener('click', () => {
