@@ -27,13 +27,13 @@
         <button id="mineBtn">⛏ Start Mining Session</button>
         <button id="claimBtn" class="secondary">🎁 Claim to Wallet</button>
       </div>
-      <p id="status" class="status">Checking Pi Browser authentication...</p>
+      <p id="status" class="status">Connecting to Pi Browser...</p>
     </section>
 
     <section class="grid">
       <div class="card">
         <p class="label">ACTIVE MINER</p>
-        <h3 id="username">Connecting...</h3>
+        <h3 id="username">Authenticating...</h3>
         <p>Pi Wallet UID: <span id="piUid">Connecting...</span></p>
       </div>
       <div class="card">
@@ -75,9 +75,8 @@
 
   <script>
     // -------------------------------------------------------------
-    // CONFIGURATION
+    // CONFIGURATION (Siguraduhing palitan ng iyong totoong Render URL)
     // -------------------------------------------------------------
-    // Tiyaking palitan ito ng iyong EKSAKTONG Render Backend URL
     const RENDER_BACKEND_URL = "https://your-app-name.onrender.com";
     const RATE_PER_SECOND = 0.24 / 3600; // 0.00006667 TT/sec
 
@@ -93,14 +92,30 @@
       checkMiningLoop();
     });
 
-    // 1. PRODUCTION-READY PI AUTHENTICATION
+    // 1. PRODUCTION-READY PI AUTHENTICATION & INCOMPLETE PAYMENTS RESOLVER
     async function initPiAuth() {
       try {
         const Pi = window.Pi;
         Pi.init({ version: "2.0", sandbox: true });
 
-        function onIncompletePaymentFound(payment) {
-          console.log("Incomplete payment found on boot:", payment);
+        // KUSANG LILINISIN ANG ANUMANG NAKATAMBAK/EXPIRED NA PAYMENT PARA HINDI MAG-"TRANSACTION FAILED"
+        async function onIncompletePaymentFound(payment) {
+          console.log("Incomplete payment detected:", payment);
+          if (payment && payment.identifier) {
+            try {
+              await fetch(`${RENDER_BACKEND_URL}/api/payments/complete`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                  paymentId: payment.identifier,
+                  txid: payment.transaction ? payment.transaction.txid : "CANCELLED"
+                })
+              });
+              console.log("Incomplete payment successfully cleared.");
+            } catch (err) {
+              console.error("Error clearing incomplete payment:", err);
+            }
+          }
         }
 
         const auth = await Pi.authenticate(['username', 'payments'], onIncompletePaymentFound);
@@ -115,7 +130,7 @@
       } catch (err) {
         console.error("Pi Auth Error:", err);
         document.getElementById('username').innerText = "Auth Failed";
-        document.getElementById('status').innerText = "Please open this app inside Pi Browser.";
+        document.getElementById('status').innerText = "Please open inside Pi Browser app.";
       }
     }
 
@@ -131,7 +146,7 @@
       }
     }
 
-    // 2. REAL-TIME MINING COMPUTATION
+    // 2. REAL-TIME MINING LOGIC
     function checkMiningLoop() {
       const startTime = localStorage.getItem('tt_mining_start');
       if (startTime) {
@@ -158,7 +173,7 @@
 
     // 3. EVENT LISTENERS FOR ALL BUTTONS
     function setupEventListeners() {
-      // START MINING BUTTON
+      // START MINING SESSION BUTTON
       document.getElementById('mineBtn').addEventListener('click', () => {
         if (!piUser) {
           alert("Please wait for Pi Browser authentication.");
@@ -196,7 +211,6 @@
         claimBtn.disabled = true;
 
         try {
-          // Send Claim Request to Render Backend
           const response = await fetch(`${RENDER_BACKEND_URL}/api/claim`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
@@ -211,21 +225,18 @@
           const result = await response.json();
 
           if (response.ok && result.success) {
-            // Update Local State
             localStorage.removeItem('tt_mining_start');
             clearInterval(miningInterval);
 
             let newTotal = result.newTotalBalance || earnedTT;
             localStorage.setItem(`tt_claimed_${piUser.uid}`, newTotal.toString());
 
-            // Reset UI
             document.getElementById('balance').innerText = "0.000000 TT";
             document.getElementById('claimedBalance').innerText = parseFloat(newTotal).toFixed(4);
             document.getElementById('status').innerText = "Claim saved successfully to Render backend!";
             document.getElementById('mineBtn').innerText = "⛏ Start Mining Session";
             document.getElementById('mineBtn').disabled = false;
 
-            // Log Transaction History
             const savedHistory = JSON.parse(localStorage.getItem(`tt_history_${piUser.uid}`) || "[]");
             const txLog = `Claimed ${earnedTT.toFixed(4)} TT at ${new Date().toLocaleTimeString()}`;
             savedHistory.unshift(txLog);
@@ -233,7 +244,7 @@
 
             document.getElementById('txHistory').innerHTML = savedHistory.slice(0, 5).map(item => `<li>✅ ${item}</li>`).join('');
 
-            alert(`✅ Success! ${earnedTT.toFixed(4)} TT saved to your database backend.`);
+            alert(`✅ Success! ${earnedTT.toFixed(4)} TT saved to your backend database.`);
           } else {
             alert("❌ Server Error: " + (result.message || "Failed to process claim."));
           }
@@ -246,7 +257,7 @@
         }
       });
 
-      // MARKETPLACE PI PAYMENT BUTTON (BUBUKSAN ANG PI TESTNET WALLET)
+      // MARKETPLACE PI PAYMENT BUTTON (BUBUKSAN ANG PI TESTNET WALLET MODAL)
       document.getElementById('buyBtn').addEventListener('click', () => {
         if (!piUser) {
           alert("Please authenticate inside Pi Browser first.");
@@ -283,7 +294,7 @@
               });
               const data = await res.json();
               if (data.success) {
-                alert("🎉 Success! Pimon #001 bought using Test-Pi!");
+                alert("🎉 Success! Pimon #001 bought using 1 Test-Pi!");
               }
             } catch (e) {
               console.error("Completion error:", e);
@@ -296,7 +307,7 @@
 
           onError: function(error, payment) {
             console.error("Payment error:", error);
-            alert("An error occurred during Pi Payment.");
+            alert("An error occurred during Pi Payment. Please try again.");
           }
         };
 
