@@ -1,12 +1,7 @@
 {
-  "name": "tt-token-mining",
-  "version": "1.0.0",
-  "description": "TT Token Testnet Mining DApp",
-  "main": "server.js",
-  "scripts": {
-    "start": "node server.js"
-  },
-  "dependencies": {
-    "express": "^4.21.2"
-  }
+  "name": "tt-token",
+  "version": "0.1.0",
+  "private": true,
+  "description": "TT Token - Trade Token Pi Testnet dApp scaffold",
+  "scripts": {"start": "node backend/server.js"}
 }
