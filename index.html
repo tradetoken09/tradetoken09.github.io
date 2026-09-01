@@ -10,7 +10,7 @@
 </head>
 <body>
   <main class="app">
-    <!-- Header -->
+    <!-- Main Header -->
     <header>
       <div>
         <h1>TT TOKEN</h1>
@@ -19,7 +19,7 @@
       <span class="badge">• LIVE</span>
     </header>
 
-    <!-- TAB 1: MINING SECTION -->
+    <!-- TAB 1: MINING SECTION ONLY -->
     <div id="tab-mining" class="tab-content active">
       <section class="card">
         <p class="label">MINING MACHINE CORE</p>
@@ -42,134 +42,123 @@
       </section>
     </div>
 
-    <!-- TAB 2: REPUTA & PROFILE SECTION -->
+    <!-- TAB 2: WALLET LEDGER SECTION ONLY -->
+    <div id="tab-wallet" class="tab-content">
+      <section class="card">
+        <p class="label">WALLET LEDGER</p>
+        <h2 style="color: #ff007f; font-size: 2rem; margin: 15px 0;"><span id="claimedBalance">0.0000</span> TT</h2>
+        <p style="font-size:0.85rem; color: #8e9bb0;">Status: Verified on Pi Testnet Ledger</p>
+        <p style="font-size:0.85rem; color: #00f0ff; margin-top: 10px;">Daily Streak: 7 Days 🔥</p>
+      </section>
+    </div>
+
+    <!-- TAB 3: USER PROFILE & REPUTA SCORE ONLY -->
     <div id="tab-profile" class="tab-content">
-      <section class="card" style="border-color: rgba(138, 43, 226, 0.5); margin-bottom: 12px;">
+      <section class="card" style="margin-bottom: 12px;">
+        <p class="label">USER PROFILE</p>
+        <h3 id="username" style="color: #00f0ff; font-size: 1.3rem; margin-top: 8px;">@utoy0913</h3>
+        <p style="font-size:0.85rem; color: #8e9bb0; margin-top:6px;">UID: <span id="piUid">...</span></p>
+      </section>
+
+      <section class="card" style="border-color: rgba(138, 43, 226, 0.5);">
         <p class="label">PIONEER REPUTA TRUST SCORE</p>
-        <div style="display: flex; justify-content: space-between; align-items: center; width: 100%; margin-top: 5px;">
+        <div style="display: flex; justify-content: space-between; align-items: center; width: 100%; margin-top: 10px;">
           <div style="text-align: left;">
             <h2 id="reputaScoreText" style="font-family: 'Orbitron', sans-serif; color: #00f0ff; font-size: 1.6rem;">850 <span style="font-size:0.8rem; color:#8e9bb0;">/ 1000</span></h2>
-            <p id="reputaRankText" style="font-size: 0.8rem; color: #ff007f; font-weight: bold;">💎 DIAMOND MINER</p>
+            <p id="reputaRankText" style="font-size: 0.8rem; color: #ff007f; font-weight: bold; margin-top: 4px;">💎 DIAMOND MINER</p>
           </div>
           <div style="text-align: right;">
-            <span style="background: rgba(0,240,255,0.1); border: 1px solid #00f0ff; padding: 4px 8px; border-radius: 8px; font-size: 0.75rem; color: #00f0ff;">
+            <span style="background: rgba(0,240,255,0.1); border: 1px solid #00f0ff; padding: 6px 10px; border-radius: 8px; font-size: 0.75rem; color: #00f0ff;">
               Trust Rank: #124
             </span>
           </div>
         </div>
       </section>
-
-      <section class="card">
-        <p class="label">USER PROFILE</p>
-        <h3 id="username" style="color: #00f0ff; font-size: 1.2rem; margin-top: 8px;">@utoy0913</h3>
-        <p style="font-size:0.85rem; color: #8e9bb0; margin-top:6px;">UID: <span id="piUid">...</span></p>
-      </section>
     </div>
 
-    <!-- TAB 3: WALLET LEDGER SECTION -->
-    <div id="tab-wallet" class="tab-content">
-      <section class="card">
-        <p class="label">WALLET LEDGER</p>
-        <h2 style="color: #ff007f; font-size: 1.8rem; margin: 10px 0;"><span id="claimedBalance">0.0000</span> TT</h2>
-        <p style="font-size:0.85rem; color: #8e9bb0;">Status: Verified on Ledger</p>
-        <p style="font-size:0.85rem; color: #00f0ff; margin-top: 8px;">Streak: 7 Days 🔥</p>
-      </section>
-    </div>
-
-    <!-- TAB 4: REFERRAL SYSTEM -->
+    <!-- TAB 4: REFERRAL SYSTEM ONLY -->
     <div id="tab-referral" class="tab-content">
       <section class="card">
         <p class="label">YOUR REFERRAL LINK</p>
-        <p style="font-size:0.85rem; color: #8e9bb0; margin-bottom: 10px;">I-share ang iyong natatanging link gamit ang iyong Pi Username para kumita ng dagdag na TT Tokens!</p>
+        <p style="font-size:0.85rem; color: #8e9bb0; margin-bottom: 15px;">I-share ang iyong natatanging link gamit ang iyong Pi Username para kumita ng dagdag na TT Tokens!</p>
         
-        <div class="invite" id="invite" style="user-select: all; cursor: pointer;" onclick="copyReferral()">
+        <div class="invite" id="invite" style="user-select: all; cursor: pointer; padding: 12px; background: rgba(0,240,255,0.05); border: 1px dashed #00f0ff; border-radius: 8px; word-break: break-all;" onclick="copyReferral()">
           https://bonene28.github.io?ref=utoy0913
         </div>
         
-        <button onclick="copyReferral()" class="secondary" style="margin-top: 10px; width: 100%;">📋 COPY REFERRAL LINK</button>
-        <p style="font-size:0.75rem; color: #00f0ff; margin-top: 10px;">Earn +0.05 TT/hr per active referral</p>
+        <button onclick="copyReferral()" class="secondary" style="margin-top: 15px; width: 100%;">📋 COPY REFERRAL LINK</button>
+        <p style="font-size:0.75rem; color: #00f0ff; margin-top: 12px;">Earn +0.05 TT/hr per active referral</p>
       </section>
     </div>
 
-    <!-- TAB 5: MARKETPLACE (11 SMALL PETS COLLECTION) -->
+    <!-- TAB 5: MARKETPLACE ONLY (11 SMALL PETS) -->
     <div id="tab-market" class="tab-content">
       <section class="card">
         <p class="label">PET MARKETPLACE</p>
         <p style="font-size:0.85rem; color: #8e9bb0; margin-bottom: 15px;">Click any pet to view stats and abilities!</p>
         
-        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 12px; width: 100%;">
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 12px; width: 100%;">
           
-          <!-- PET 1 -->
           <div class="pet-card" onclick="openPetModal('Lunar Owl', 'images/lunar-owl.png', '1', '+5% TT Speed', 'Rare', 'Cosmic Sight', 'Increases nocturnal mining yields by collecting moonlight energy.')">
             <img src="images/lunar-owl.png" alt="Lunar Owl" onerror="this.src='https://via.placeholder.com/100?text=Lunar+Owl'">
             <h4>Lunar Owl</h4>
             <p>1 TEST-PI</p>
           </div>
 
-          <!-- PET 2 -->
           <div class="pet-card" onclick="openPetModal('Crystal Hedgehog', 'images/crystal-hedgehog.png', '1', '+5% TT Speed', 'Rare', 'Prismatic Spikes', 'Reflects network hash pulses to optimize energy efficiency.')">
             <img src="images/crystal-hedgehog.png" alt="Crystal Hedgehog" onerror="this.src='https://via.placeholder.com/100?text=Crystal+Hedgehog'">
             <h4>Crystal Hedgehog</h4>
             <p>1 TEST-PI</p>
           </div>
 
-          <!-- PET 3 -->
           <div class="pet-card" onclick="openPetModal('Sky Fox', 'images/sky-fox.png', '1.5', '+7% TT Speed', 'Epic', 'Wind Dash', 'Accelerates block verification intervals using atmospheric currents.')">
             <img src="images/sky-fox.png" alt="Sky Fox" onerror="this.src='https://via.placeholder.com/100?text=Sky+Fox'">
             <h4>Sky Fox</h4>
             <p>1.5 TEST-PI</p>
           </div>
 
-          <!-- PET 4 -->
           <div class="pet-card" onclick="openPetModal('Rock Turtle', 'images/rock-turtle.png', '1', '+5% TT Speed', 'Common', 'Solid Core', 'Provides uninterrupted mining stability during ledger syncing.')">
             <img src="images/rock-turtle.png" alt="Rock Turtle" onerror="this.src='https://via.placeholder.com/100?text=Rock+Turtle'">
             <h4>Rock Turtle</h4>
             <p>1 TEST-PI</p>
           </div>
 
-          <!-- PET 5 -->
           <div class="pet-card" onclick="openPetModal('Storm Squirrel', 'images/storm-squirrel.png', '1.5', '+7% TT Speed', 'Epic', 'Static Overcharge', 'Stores electric static charges to power up mining cycles.')">
             <img src="images/storm-squirrel.png" alt="Storm Squirrel" onerror="this.src='https://via.placeholder.com/100?text=Storm+Squirrel'">
             <h4>Storm Squirrel</h4>
             <p>1.5 TEST-PI</p>
           </div>
 
-          <!-- PET 6 -->
           <div class="pet-card" onclick="openPetModal('Dragonfly', 'images/dragonfly.png', '2', '+8% TT Speed', 'Epic', 'Cyber Flutter', 'Hovering sensory system that boosts passive reward gain.')">
             <img src="images/dragonfly.png" alt="Dragonfly" onerror="this.src='https://via.placeholder.com/100?text=Dragonfly'">
             <h4>Dragonfly</h4>
             <p>2 TEST-PI</p>
           </div>
 
-          <!-- PET 7 -->
           <div class="pet-card" onclick="openPetModal('Shadow Scorpion', 'images/shadow-scorpion.png', '2', '+8% TT Speed', 'Epic', 'Venom Strike', 'Bypasses algorithm latency to ensure smooth token stream.')">
             <img src="images/shadow-scorpion.png" alt="Shadow Scorpion" onerror="this.src='https://via.placeholder.com/100?text=Shadow+Scorpion'">
             <h4>Shadow Scorpion</h4>
             <p>2 TEST-PI</p>
           </div>
 
-          <!-- PET 8 -->
           <div class="pet-card" onclick="openPetModal('Crystal Mantis', 'images/crsytal-mantis.png', '2', '+8% TT Speed', 'Epic', 'Precision Cut', 'Slices through cryptographic tasks with surgical precision.')">
             <img src="images/crsytal-mantis.png" alt="Crystal Mantis" onerror="this.src='https://via.placeholder.com/100?text=Crystal+Mantis'">
             <h4>Crystal Mantis</h4>
             <p>2 TEST-PI</p>
           </div>
 
-          <!-- PET 9 -->
           <div class="pet-card" onclick="openPetModal('Fire Lizard', 'images/fire-lizard.png', '2.5', '+10% TT Speed', 'Legendary', 'Thermal Aura', 'Generates high computing heat to maximize mining output.')">
             <img src="images/fire-lizard.png" alt="Fire Lizard" onerror="this.src='https://via.placeholder.com/100?text=Fire+Lizard'">
             <h4>Fire Lizard</h4>
             <p>2.5 TEST-PI</p>
           </div>
 
-          <!-- PET 10 -->
           <div class="pet-card" onclick="openPetModal('Leaf Frog', 'images/leaf-frog.png', '1', '+5% TT Speed', 'Common', 'Bio-Regen', 'Sustains steady mining flow through natural ecosystem balance.')">
             <img src="images/leaf-frog.png" alt="Leaf Frog" onerror="this.src='https://via.placeholder.com/100?text=Leaf+Frog'">
             <h4>Leaf Frog</h4>
             <p>1 TEST-PI</p>
           </div>
 
-          <!-- PET 11 -->
           <div class="pet-card" onclick="openPetModal('Pixie Ant', 'images/pixie-ant.png', '1', '+5% TT Speed', 'Common', 'Swarm Effort', 'Works continuously in the background for extra token drops.')">
             <img src="images/pixie-ant.png" alt="Pixie Ant" onerror="this.src='https://via.placeholder.com/100?text=Pixie+Ant'">
             <h4>Pixie Ant</h4>
@@ -195,7 +184,7 @@
       
       <div class="stats-box">
         <p>⚡ <strong>Boost:</strong> <span id="modalPetBoost" style="color: #00f0ff;">+5%</span></p>
-        <p>✨ <strong>Special Ability:</strong> <span id="modalPetAbility" style="color: #ff007f;">Ability Name</span></p>
+        <p>✨ <strong>Ability:</strong> <span id="modalPetAbility" style="color: #ff007f;">Ability Name</span></p>
         <p style="font-size: 0.75rem; color: #8e9bb0; margin-top: 6px;" id="modalPetDesc">Description text goes here.</p>
       </div>
 
@@ -251,7 +240,6 @@
       alert("✅ Referral link copied to clipboard!");
     }
 
-    // MODAL POPUP FUNCTIONS
     function openPetModal(name, imgSrc, price, boost, rarity, ability, desc) {
       selectedPetName = name;
       selectedPetPrice = parseFloat(price);
