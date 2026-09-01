@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TT Token Mining</title>
+
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #0f172a;
+      color: white;
+      text-align: center;
+    }
+
+    .container {
+      max-width: 500px;
+      margin: auto;
+      padding: 30px 20px;
+    }
+
+    h1 {
+      margin-bottom: 5px;
+    }
+
+    .subtitle {
+      color: #94a3b8;
+      margin-bottom: 30px;
+    }
+
+    .card {
+      background: #1e293b;
+      padding: 25px;
+      border-radius: 18px;
+      margin-bottom: 20px;
+    }
+
+    .balance {
+      font-size: 40px;
+      font-weight: bold;
+      margin: 15px 0;
+    }
+
+    button {
+      width: 100%;
+      padding: 15px;
+      border: 0;
+      border-radius: 12px;
+      font-size: 17px;
+      font-weight: bold;
+      cursor: pointer;
+      margin-top: 10px;
+    }
+
+    #start {
+      background: #facc15;
+      color: #111827;
+    }
+
+    #claim {
+      background: #22c55e;
+      color: white;
+    }
+
+    button:disabled {
+      opacity: 0.5;
+    }
+
+    #status {
+      margin-top: 15px;
+      color: #94a3b8;
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="container">
+
+    <h1>🪙 TT Token</h1>
+    <div class="subtitle">
+      Trade Token • Pi Testnet
+    </div>
+
+    <div class="card">
+      <div>TT Balance</div>
+
+      <div class="balance" id="balance">
+        0 TT
+      </div>
+
+      <div id="status">
+        Mining is inactive
+      </div>
+
+      <button id="start" onclick="startMining()">
+        ⛏️ START MINING
+      </button>
+
+      <button id="claim" onclick="claimMining()" disabled>
+        🎁 CLAIM TT
+      </button>
+    </div>
+
+    <div class="card">
+      <h3>TT Trust Score</h3>
+      <div class="balance" style="font-size:30px;">
+        500 / 1000
+      </div>
+    </div>
+
+  </div>
+
+<script>
+
+const API = "https://trade-token-github-io.onrender.com";
+
+const wallet = "testwallet123";
+
+async function startMining() {
+
+  const response = await fetch(
+    API + "/api/mining/start",
+    {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        wallet: wallet
+      })
+    }
+  );
+
+  const data = await response.json();
+
+  if (!response.ok) {
+    alert(data.error);
+    return;
+  }
+
+  document.getElementById("status").innerText =
+    "⛏️ Mining started";
+
+  document.getElementById("start").disabled = true;
+
+  checkStatus();
+}
+
+async function checkStatus() {
+
+  const response = await fetch(
+    API + "/api/mining/status/" + wallet
+  );
+
+  const data = await response.json();
+
+  document.getElementById("balance").innerText =
+    data.balance + " TT";
+
+  if (data.mining) {
+
+    document.getElementById("status").innerText =
+      "⛏️ Mining active • Earned: " +
+      data.earned +
+      " TT";
+
+  } else if (data.endTime) {
+
+    document.getElementById("status").innerText =
+      "Mining completed";
+
+    document.getElementById("claim").disabled = false;
+  }
+}
+
+async function claimMining() {
+
+  const response = await fetch(
+    API + "/api/mining/claim",
+    {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        wallet: wallet
+      })
+    }
+  );
+
+  const data = await response.json();
+
+  if (!response.ok) {
+    alert(data.error);
+    return;
+  }
+
+  document.getElementById("balance").innerText =
+    data.balance + " TT";
+
+  document.getElementById("claim").disabled = true;
+
+  document.getElementById("start").disabled = false;
+
+  document.getElementById("status").innerText =
+    "🎉 +" + data.reward + " TT claimed";
+}
+
+setInterval(checkStatus, 10000);
+
+checkStatus();
+
+</script>
+
+</body>
+</html>
