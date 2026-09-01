@@ -5,7 +5,8 @@
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <title>TT Token • Trade Token</title>
   <link rel="stylesheet" href="css/style.css">
-  <!-- 1. OFFICIAL PI SDK (REQUIRED FOR PI BROWSER) -->
+  
+  <!-- 1. OFFICIAL PI SDK -->
   <script src="https://sdk.minepi.com/pi-sdk.js"></script>
 </head>
 <body>
@@ -20,7 +21,7 @@
 
     <section class="card balance">
       <p class="label">TT BALANCE</p>
-      <h2 id="balance">0.00 TT</h2>
+      <h2 id="balance">0.0000 TT</h2>
       <p>Mining rate: <strong>0.24 TT/hour</strong></p>
       <div class="actions">
         <button id="mineBtn">⛏ Start Mining</button>
@@ -32,7 +33,7 @@
     <section class="grid">
       <div class="card">
         <p class="label">MINER</p>
-        <h3 id="username">Not connected</h3>
+        <h3 id="username">Connecting to Pi...</h3>
         <p>Pi username will be used as TT identity.</p>
       </div>
       <div class="card">
@@ -60,11 +61,74 @@
 
     <footer>
       <p>TT Token • Supply target: 30,000,000 TT</p>
-      <!-- 2. PRIVACY POLICY LINK (REQUIRED FOR REVIEW) -->
       <p><a href="privacy.html" style="color: #aaa; text-decoration: underline;">Privacy Policy</a></p>
     </footer>
   </main>
-  
-  <script src="js/app.js"></script>
+
+  <!-- 2. BUONG SCRIPT LOGIC SA LOOB NG INDEX.HTML -->
+  <script>
+    let currentBalance = 0.00;
+    let isMining = false;
+    let miningInterval = null;
+    let currentUsername = "";
+
+    window.addEventListener('DOMContentLoaded', () => {
+      initPiSDK();
+      setupEventListeners();
+    });
+
+    async function initPiSDK() {
+      try {
+        const Pi = window.Pi;
+        Pi.init({ version: "2.0", sandbox: true });
+
+        const scopes = ['username', 'payments'];
+        function onIncompletePaymentFound(payment) {
+          console.log("Incomplete payment found:", payment);
+        }
+
+        const auth = await Pi.authenticate(scopes, onIncompletePaymentFound);
+        currentUsername = auth.user.username;
+
+        document.getElementById('username').innerText = "@" + currentUsername;
+        document.getElementById('invite').innerText = "TT-" + currentUsername.toUpperCase();
+
+      } catch (error) {
+        console.error("Pi Auth Error:", error);
+        document.getElementById('username').innerText = "Please open inside Pi Browser";
+      }
+    }
+
+    function setupEventListeners() {
+      document.getElementById('mineBtn').addEventListener('click', () => {
+        if (!isMining) {
+          isMining = true;
+          document.getElementById('status').innerText = "Mining active (+0.24 TT/hr)...";
+          document.getElementById('mineBtn').innerText = "⛏ Mining...";
+          
+          miningInterval = setInterval(() => {
+            currentBalance += 0.0000667;
+            document.getElementById('balance').innerText = currentBalance.toFixed(4) + " TT";
+          }, 1000);
+        } else {
+          alert("Mining is already running!");
+        }
+      });
+
+      document.getElementById('claimBtn').addEventListener('click', () => {
+        if (currentBalance > 0) {
+          alert(`Claimed ${currentBalance.toFixed(4)} TT successfully!`);
+          currentBalance = 0.00;
+          document.getElementById('balance').innerText = "0.0000 TT";
+        } else {
+          alert("No TT balance to claim. Click 'Start Mining' first!");
+        }
+      });
+
+      document.getElementById('buyBtn').addEventListener('click', () => {
+        alert("Marketplace Test Buy is ready for sandbox testing!");
+      });
+    }
+  </script>
 </body>
 </html>
