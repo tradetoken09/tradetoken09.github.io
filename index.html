@@ -16,7 +16,7 @@
         <h1>TT TOKEN</h1>
         <p>Holographic Mining Machine</p>
       </div>
-      <span class="badge">• LIVE</span>
+      <span class="badge" id="liveBadge">• CONNECTING...</span>
     </header>
 
     <!-- TAB 1: MINING SECTION ONLY -->
@@ -38,7 +38,12 @@
           <button id="mineBtn">⚡ START MINING</button>
           <button id="claimBtn" class="secondary">🎁 CLAIM TT</button>
         </div>
-        <p id="status" class="status">Connecting to Pi Network...</p>
+
+        <!-- AUTH / STATUS BOX -->
+        <div style="margin-top: 15px; text-align: center;">
+          <p id="status" class="status">Connecting to Pi Network...</p>
+          <button id="authBtn" onclick="initPiAuth()" style="display: none; margin-top: 8px; width: 100%; background: #00f0ff; color: #000; font-weight: bold;">🔑 CONNECT PI ACCOUNT</button>
+        </div>
       </section>
     </div>
 
@@ -56,7 +61,7 @@
     <div id="tab-profile" class="tab-content">
       <section class="card" style="margin-bottom: 12px;">
         <p class="label">USER PROFILE</p>
-        <h3 id="username" style="color: #00f0ff; font-size: 1.3rem; margin-top: 8px;">@utoy0913</h3>
+        <h3 id="username" style="color: #00f0ff; font-size: 1.3rem; margin-top: 8px;">Not Connected</h3>
         <p style="font-size:0.85rem; color: #8e9bb0; margin-top:6px;">UID: <span id="piUid">...</span></p>
       </section>
 
@@ -83,7 +88,7 @@
         <p style="font-size:0.85rem; color: #8e9bb0; margin-bottom: 15px;">I-share ang iyong natatanging link gamit ang iyong Pi Username para kumita ng dagdag na TT Tokens!</p>
         
         <div class="invite" id="invite" style="user-select: all; cursor: pointer; padding: 12px; background: rgba(0,240,255,0.05); border: 1px dashed #00f0ff; border-radius: 8px; word-break: break-all;" onclick="copyReferral()">
-          https://bonene28.github.io?ref=utoy0913
+          https://tradetoken09.github.io?ref=guest
         </div>
         
         <button onclick="copyReferral()" class="secondary" style="margin-top: 15px; width: 100%;">📋 COPY REFERRAL LINK</button>
@@ -218,7 +223,6 @@
 
   <!-- JavaScript Logic -->
   <script>
-    // EXACT RENDER BACKEND URL
     const RENDER_BACKEND_URL = "https://trade-token-github-io.onrender.com"; 
     const RATE_PER_SECOND = 0.24 / 3600;
 
@@ -271,7 +275,17 @@
     });
 
     async function initPiAuth() {
+      const statusEl = document.getElementById('status');
+      const authBtn = document.getElementById('authBtn');
+      const badgeEl = document.getElementById('liveBadge');
+
       try {
+        if (!window.Pi) {
+          statusEl.innerText = "⚠️ Please open inside Pi Browser app.";
+          authBtn.style.display = "block";
+          return false;
+        }
+
         const Pi = window.Pi;
         Pi.init({ version: "2.0", sandbox: true });
 
@@ -290,19 +304,25 @@
           }
         }
 
+        statusEl.innerText = "Authenticating with Pi Network...";
         const auth = await Pi.authenticate(['username', 'payments'], onIncompletePaymentFound);
         piUser = auth.user;
 
         document.getElementById('username').innerText = "@" + piUser.username;
         document.getElementById('piUid').innerText = piUser.uid.substring(0, 8) + "...";
-        document.getElementById('invite').innerText = "https://bonene28.github.io?ref=" + piUser.username;
-        document.getElementById('status').innerText = "SYSTEM ONLINE • READY";
+        document.getElementById('invite').innerText = "https://tradetoken09.github.io?ref=" + piUser.username;
+        
+        statusEl.innerText = "SYSTEM ONLINE • READY";
+        badgeEl.innerText = "• LIVE";
+        authBtn.style.display = "none";
 
         loadUserData();
+        return true;
       } catch (err) {
-        document.getElementById('username').innerText = "@utoy0913";
-        document.getElementById('invite').innerText = "https://bonene28.github.io?ref=utoy0913";
-        document.getElementById('status').innerText = "Please open inside Pi Browser app.";
+        statusEl.innerText = "❌ Authentication failed. Click button below:";
+        authBtn.style.display = "block";
+        badgeEl.innerText = "• OFFLINE";
+        return false;
       }
     }
 
@@ -316,8 +336,6 @@
       const startTime = localStorage.getItem('tt_mining_start');
       if (startTime) {
         startMiningUI(parseInt(startTime));
-      } else {
-        document.getElementById('status').innerText = "MINING INACTIVE";
       }
     }
 
@@ -336,8 +354,13 @@
       }, 1000);
     }
 
-    function buyPet(petName, amount) {
-      if (!piUser) return alert("Please authenticate inside Pi Browser first.");
+    async function buyPet(petName, amount) {
+      if (!piUser) {
+        const success = await initPiAuth();
+        if (!success || !piUser) {
+          return alert("Pakipindot muna ang 'CONNECT PI ACCOUNT' button sa Mining tab.");
+        }
+      }
 
       const paymentData = {
         amount: amount,
@@ -381,15 +404,17 @@
     }
 
     function setupEventListeners() {
-      document.getElementById('mineBtn').addEventListener('click', () => {
-        if (!piUser) return alert("Please authenticate inside Pi Browser first.");
+      document.getElementById('mineBtn').addEventListener('click', async () => {
+        if (!piUser) await initPiAuth();
+        if (!piUser) return alert("Please connect your Pi account first.");
         const now = Date.now();
         localStorage.setItem('tt_mining_start', now.toString());
         startMiningUI(now);
       });
 
       document.getElementById('claimBtn').addEventListener('click', async () => {
-        if (!piUser) return alert("Please authenticate inside Pi Browser first.");
+        if (!piUser) await initPiAuth();
+        if (!piUser) return alert("Please connect your Pi account first.");
         const startTime = localStorage.getItem('tt_mining_start');
         if (!startTime) return alert("No active mining session.");
 
