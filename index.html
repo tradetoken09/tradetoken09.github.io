@@ -19,96 +19,113 @@
       <span class="badge">• LIVE</span>
     </header>
 
-    <!-- REPUTA SCORE / TRUST IDENTITY CARD -->
-    <section class="card" style="border-color: rgba(138, 43, 226, 0.5);">
-      <p class="label">PIONEER REPUTA TRUST SCORE</p>
-      <div style="display: flex; justify-content: space-between; align-items: center; width: 100%; margin-top: 5px;">
-        <div style="text-align: left;">
-          <h2 id="reputaScoreText" style="font-family: 'Orbitron', sans-serif; color: #00f0ff; font-size: 1.6rem;">850 <span style="font-size:0.8rem; color:#8e9bb0;">/ 1000</span></h2>
-          <p id="reputaRankText" style="font-size: 0.8rem; color: #ff007f; font-weight: bold;">💎 DIAMOND MINER</p>
+    <!-- TAB 1: MINING SECTION -->
+    <div id="tab-mining" class="tab-content active">
+      <section class="card">
+        <p class="label">MINING MACHINE CORE</p>
+        
+        <div class="core-container">
+          <div class="outer-ring"></div>
+          <div class="inner-core">
+            <span class="core-text">TT</span>
+          </div>
         </div>
-        <div style="text-align: right;">
-          <span style="background: rgba(0,240,255,0.1); border: 1px solid #00f0ff; padding: 4px 8px; border-radius: 8px; font-size: 0.75rem; color: #00f0ff;">
-            Trust Rank: #124
-          </span>
+
+        <div id="balance" class="counter-text">0.000000 TT</div>
+        <p class="rate-text">Mining Rate: <strong>0.24 TT / hour</strong></p>
+
+        <div class="actions">
+          <button id="mineBtn">⚡ START MINING</button>
+          <button id="claimBtn" class="secondary">🎁 CLAIM TT</button>
         </div>
-      </div>
-    </section>
+        <p id="status" class="status">Connecting to Pi Network...</p>
+      </section>
+    </div>
 
-    <!-- Main Holographic Mining Core Section -->
-    <section class="card">
-      <p class="label">MINING MACHINE CORE</p>
-      
-      <div class="core-container">
-        <div class="outer-ring"></div>
-        <div class="inner-core">
-          <span class="core-text">TT</span>
+    <!-- TAB 2: REPUTA & PROFILE SECTION -->
+    <div id="tab-profile" class="tab-content">
+      <section class="card" style="border-color: rgba(138, 43, 226, 0.5); margin-bottom: 12px;">
+        <p class="label">PIONEER REPUTA TRUST SCORE</p>
+        <div style="display: flex; justify-content: space-between; align-items: center; width: 100%; margin-top: 5px;">
+          <div style="text-align: left;">
+            <h2 id="reputaScoreText" style="font-family: 'Orbitron', sans-serif; color: #00f0ff; font-size: 1.6rem;">850 <span style="font-size:0.8rem; color:#8e9bb0;">/ 1000</span></h2>
+            <p id="reputaRankText" style="font-size: 0.8rem; color: #ff007f; font-weight: bold;">💎 DIAMOND MINER</p>
+          </div>
+          <div style="text-align: right;">
+            <span style="background: rgba(0,240,255,0.1); border: 1px solid #00f0ff; padding: 4px 8px; border-radius: 8px; font-size: 0.75rem; color: #00f0ff;">
+              Trust Rank: #124
+            </span>
+          </div>
         </div>
-      </div>
+      </section>
 
-      <div id="balance" class="counter-text">0.000000 TT</div>
-      <p class="rate-text">Mining Rate: <strong>0.24 TT / hour</strong></p>
+      <section class="card">
+        <p class="label">USER PROFILE</p>
+        <h3 id="username" style="color: #00f0ff; font-size: 1.2rem; margin-top: 8px;">Authenticating...</h3>
+        <p style="font-size:0.85rem; color: #8e9bb0; margin-top:6px;">UID: <span id="piUid">...</span></p>
+      </section>
+    </div>
 
-      <div class="actions">
-        <button id="mineBtn">⚡ START MINING</button>
-        <button id="claimBtn" class="secondary">🎁 CLAIM TT</button>
-      </div>
-      <p id="status" class="status">Connecting to Pi Network...</p>
-    </section>
-
-    <!-- Miner & Wallet Info -->
-    <section class="grid">
-      <div class="card">
-        <p class="label">ACTIVE MINER</p>
-        <h3 id="username" style="color: var(--primary-neon, #00f0ff); font-size: 1.1rem;">Authenticating...</h3>
-        <p style="font-size:0.75rem; color: #8e9bb0; margin-top:4px;">UID: <span id="piUid">...</span></p>
-      </div>
-      <div class="card">
+    <!-- TAB 3: WALLET LEDGER SECTION -->
+    <div id="tab-wallet" class="tab-content">
+      <section class="card">
         <p class="label">WALLET LEDGER</p>
-        <h3 style="color: var(--pink-neon, #ff007f); font-size: 1.1rem;"><span id="claimedBalance">0.0000</span> TT</h3>
-        <p style="font-size:0.75rem; color: #8e9bb0; margin-top:4px;">Streak: 7 Days 🔥</p>
-      </div>
-    </section>
+        <h2 style="color: #ff007f; font-size: 1.8rem; margin: 10px 0;"><span id="claimedBalance">0.0000</span> TT</h2>
+        <p style="font-size:0.85rem; color: #8e9bb0;">Status: Verified on Ledger</p>
+        <p style="font-size:0.85rem; color: #00f0ff; margin-top: 8px;">Streak: 7 Days 🔥</p>
+      </section>
+    </div>
 
-    <!-- Marketplace Section -->
-    <section class="card">
-      <p class="label">MARKETPLACE</p>
-      <h3 style="margin-bottom: 4px;">Pimon Genesis Pet #001</h3>
-      <p style="font-size:0.8rem; color: #8e9bb0; margin-bottom: 12px;">Boost your mining rate by +10%</p>
-      <button id="buyBtn">🛒 BUY WITH 1 TEST-PI</button>
-    </section>
+    <!-- TAB 4: REFERRAL SYSTEM -->
+    <div id="tab-referral" class="tab-content">
+      <section class="card">
+        <p class="label">YOUR REFERRAL LINK</p>
+        <p style="font-size:0.85rem; color: #8e9bb0; margin-bottom: 10px;">I-share ang iyong natatanging link gamit ang iyong Pi Username para kumita ng dagdag na TT Tokens!</p>
+        
+        <div class="invite" id="invite" style="user-select: all; cursor: pointer;" onclick="copyReferral()">
+          Connecting to Pi...
+        </div>
+        
+        <button onclick="copyReferral()" class="secondary" style="margin-top: 10px; width: 100%;">📋 COPY REFERRAL LINK</button>
+        <p style="font-size:0.75rem; color: #00f0ff; margin-top: 10px;">Earn +0.05 TT/hr per active referral</p>
+      </section>
+    </div>
 
-    <!-- Referral System -->
-    <section class="card">
-      <p class="label">REFERRAL SYSTEM</p>
-      <div class="invite" id="invite">Loading referral code...</div>
-      <p style="font-size:0.75rem; color: #8e9bb0;">Earn +0.05 TT/hr per active miner</p>
-    </section>
+    <!-- TAB 5: MARKETPLACE (Dito lang ang Pet #001) -->
+    <div id="tab-market" class="tab-content">
+      <section class="card">
+        <p class="label">MARKETPLACE</p>
+        <div style="font-size: 3rem; margin: 10px 0;">🐱🤖</div>
+        <h3 style="margin-bottom: 4px; color: #00f0ff;">Pimon Genesis Pet #001</h3>
+        <p style="font-size:0.85rem; color: #8e9bb0; margin-bottom: 16px;">Boost your mining speed by +10% permanently.</p>
+        <button id="buyBtn">🛒 BUY WITH 1 TEST-PI</button>
+      </section>
+    </div>
 
-    <footer style="text-align: center; margin-top: 10px; margin-bottom: 20px;">
+    <footer style="text-align: center; margin-top: 15px; margin-bottom: 20px;">
       <p style="font-size: 0.8rem; color: #8e9bb0;"><a href="privacy.html" style="color: #00f0ff; text-decoration: underline;">Privacy Policy</a></p>
     </footer>
   </main>
 
   <!-- Bottom Navigation Menu -->
   <nav class="bottom-nav">
-    <a href="#" class="nav-item active">
+    <a href="javascript:void(0)" class="nav-item active" onclick="switchTab('tab-mining', this)">
       <span class="nav-icon">🤖</span>
       <span>Mining</span>
     </a>
-    <a href="#" class="nav-item">
-      <span class="nav-icon">📊</span>
-      <span>Reputa</span>
-    </a>
-    <a href="#" class="nav-item">
+    <a href="javascript:void(0)" class="nav-item" onclick="switchTab('tab-wallet', this)">
       <span class="nav-icon">👛</span>
       <span>Wallet</span>
     </a>
-    <a href="#" class="nav-item">
+    <a href="javascript:void(0)" class="nav-item" onclick="switchTab('tab-profile', this)">
+      <span class="nav-icon">👤</span>
+      <span>Profile</span>
+    </a>
+    <a href="javascript:void(0)" class="nav-item" onclick="switchTab('tab-referral', this)">
       <span class="nav-icon">👥</span>
       <span>Referral</span>
     </a>
-    <a href="#" class="nav-item">
+    <a href="javascript:void(0)" class="nav-item" onclick="switchTab('tab-market', this)">
       <span class="nav-icon">🛒</span>
       <span>Market</span>
     </a>
@@ -116,11 +133,34 @@
 
   <!-- JavaScript Logic -->
   <script>
-    const RENDER_BACKEND_URL = "https://your-app-name.onrender.com"; // Palitan ng totoong backend URL
+    // Palitan ng iyong totoong Render Backend URL
+    const RENDER_BACKEND_URL = "https://your-app-name.onrender.com"; 
     const RATE_PER_SECOND = 0.24 / 3600;
 
     let piUser = null;
     let miningInterval = null;
+
+    // FUNCTION PARA SA BOTTOM NAVIGATION SWITCHING
+    function switchTab(tabId, element) {
+      document.querySelectorAll('.tab-content').forEach(tab => {
+        tab.classList.remove('active');
+      });
+      document.querySelectorAll('.nav-item').forEach(nav => {
+        nav.classList.remove('active');
+      });
+
+      document.getElementById(tabId).classList.add('active');
+      element.classList.add('active');
+    }
+
+    // FUNCTION PARA KOPYAHIN ANG REFERRAL
+    function copyReferral() {
+      const inviteText = document.getElementById('invite').innerText;
+      if (inviteText.includes("http")) {
+        navigator.clipboard.writeText(inviteText);
+        alert("✅ Referral link copied to clipboard!");
+      }
+    }
 
     window.addEventListener('DOMContentLoaded', async () => {
       await initPiAuth();
@@ -151,14 +191,16 @@
         const auth = await Pi.authenticate(['username', 'payments'], onIncompletePaymentFound);
         piUser = auth.user;
 
+        // PAG-SET NG MGA USER DETAILS AT REFERRAL GAMIT ANG PI USERNAME
         document.getElementById('username').innerText = "@" + piUser.username;
         document.getElementById('piUid').innerText = piUser.uid.substring(0, 8) + "...";
-        document.getElementById('invite').innerText = "https://tradetoken09.github.io?ref=" + piUser.username;
+        document.getElementById('invite').innerText = "https://bonene28.github.io?ref=" + piUser.username;
         document.getElementById('status').innerText = "SYSTEM ONLINE • READY";
 
         loadUserData();
       } catch (err) {
         document.getElementById('username').innerText = "Auth Failed";
+        document.getElementById('invite').innerText = "Please log in via Pi Browser";
         document.getElementById('status').innerText = "Please open inside Pi Browser app.";
       }
     }
@@ -210,7 +252,7 @@
         const elapsedSeconds = (now - parseInt(startTime)) / 1000;
         const earnedTT = elapsedSeconds * RATE_PER_SECOND;
 
-        if (earnedTT <= 0.0001) return alert("Mined amount is too small.");
+        if (earnedTT <= 0.0001) return alert("Mined amount is too small to claim.");
 
         const claimBtn = document.getElementById('claimBtn');
         claimBtn.innerText = "PROCESSING...";
