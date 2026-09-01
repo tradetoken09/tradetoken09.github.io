@@ -91,14 +91,92 @@
       </section>
     </div>
 
-    <!-- TAB 5: MARKETPLACE -->
+    <!-- TAB 5: MARKETPLACE (11 SMALL PETS COLLECTION) -->
     <div id="tab-market" class="tab-content">
       <section class="card">
-        <p class="label">MARKETPLACE</p>
-        <div style="font-size: 3rem; margin: 10px 0;">🐱🤖</div>
-        <h3 style="margin-bottom: 4px; color: #00f0ff;">Pimon Genesis Pet #001</h3>
-        <p style="font-size:0.85rem; color: #8e9bb0; margin-bottom: 16px;">Boost your mining speed by +10% permanently.</p>
-        <button id="buyBtn">🛒 BUY WITH 1 TEST-PI</button>
+        <p class="label">PET MARKETPLACE</p>
+        <p style="font-size:0.85rem; color: #8e9bb0; margin-bottom: 15px;">Click any pet to view stats and abilities!</p>
+        
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 12px; width: 100%;">
+          
+          <!-- PET 1 -->
+          <div class="pet-card" onclick="openPetModal('Lunar Owl', 'images/lunar-owl.png', '1', '+5% TT Speed', 'Rare', 'Cosmic Sight', 'Increases nocturnal mining yields by collecting moonlight energy.')">
+            <img src="images/lunar-owl.png" alt="Lunar Owl" onerror="this.src='https://via.placeholder.com/100?text=Lunar+Owl'">
+            <h4>Lunar Owl</h4>
+            <p>1 TEST-PI</p>
+          </div>
+
+          <!-- PET 2 -->
+          <div class="pet-card" onclick="openPetModal('Crystal Hedgehog', 'images/crystal-hedgehog.png', '1', '+5% TT Speed', 'Rare', 'Prismatic Spikes', 'Reflects network hash pulses to optimize energy efficiency.')">
+            <img src="images/crystal-hedgehog.png" alt="Crystal Hedgehog" onerror="this.src='https://via.placeholder.com/100?text=Crystal+Hedgehog'">
+            <h4>Crystal Hedgehog</h4>
+            <p>1 TEST-PI</p>
+          </div>
+
+          <!-- PET 3 -->
+          <div class="pet-card" onclick="openPetModal('Sky Fox', 'images/sky-fox.png', '1.5', '+7% TT Speed', 'Epic', 'Wind Dash', 'Accelerates block verification intervals using atmospheric currents.')">
+            <img src="images/sky-fox.png" alt="Sky Fox" onerror="this.src='https://via.placeholder.com/100?text=Sky+Fox'">
+            <h4>Sky Fox</h4>
+            <p>1.5 TEST-PI</p>
+          </div>
+
+          <!-- PET 4 -->
+          <div class="pet-card" onclick="openPetModal('Rock Turtle', 'images/rock-turtle.png', '1', '+5% TT Speed', 'Common', 'Solid Core', 'Provides uninterrupted mining stability during ledger syncing.')">
+            <img src="images/rock-turtle.png" alt="Rock Turtle" onerror="this.src='https://via.placeholder.com/100?text=Rock+Turtle'">
+            <h4>Rock Turtle</h4>
+            <p>1 TEST-PI</p>
+          </div>
+
+          <!-- PET 5 -->
+          <div class="pet-card" onclick="openPetModal('Storm Squirrel', 'images/storm-squirrel.png', '1.5', '+7% TT Speed', 'Epic', 'Static Overcharge', 'Stores electric static charges to power up mining cycles.')">
+            <img src="images/storm-squirrel.png" alt="Storm Squirrel" onerror="this.src='https://via.placeholder.com/100?text=Storm+Squirrel'">
+            <h4>Storm Squirrel</h4>
+            <p>1.5 TEST-PI</p>
+          </div>
+
+          <!-- PET 6 -->
+          <div class="pet-card" onclick="openPetModal('Dragonfly', 'images/dragonfly.png', '2', '+8% TT Speed', 'Epic', 'Cyber Flutter', 'Hovering sensory system that boosts passive reward gain.')">
+            <img src="images/dragonfly.png" alt="Dragonfly" onerror="this.src='https://via.placeholder.com/100?text=Dragonfly'">
+            <h4>Dragonfly</h4>
+            <p>2 TEST-PI</p>
+          </div>
+
+          <!-- PET 7 -->
+          <div class="pet-card" onclick="openPetModal('Shadow Scorpion', 'images/shadow-scorpion.png', '2', '+8% TT Speed', 'Epic', 'Venom Strike', 'Bypasses algorithm latency to ensure smooth token stream.')">
+            <img src="images/shadow-scorpion.png" alt="Shadow Scorpion" onerror="this.src='https://via.placeholder.com/100?text=Shadow+Scorpion'">
+            <h4>Shadow Scorpion</h4>
+            <p>2 TEST-PI</p>
+          </div>
+
+          <!-- PET 8 -->
+          <div class="pet-card" onclick="openPetModal('Crystal Mantis', 'images/crsytal-mantis.png', '2', '+8% TT Speed', 'Epic', 'Precision Cut', 'Slices through cryptographic tasks with surgical precision.')">
+            <img src="images/crsytal-mantis.png" alt="Crystal Mantis" onerror="this.src='https://via.placeholder.com/100?text=Crystal+Mantis'">
+            <h4>Crystal Mantis</h4>
+            <p>2 TEST-PI</p>
+          </div>
+
+          <!-- PET 9 -->
+          <div class="pet-card" onclick="openPetModal('Fire Lizard', 'images/fire-lizard.png', '2.5', '+10% TT Speed', 'Legendary', 'Thermal Aura', 'Generates high computing heat to maximize mining output.')">
+            <img src="images/fire-lizard.png" alt="Fire Lizard" onerror="this.src='https://via.placeholder.com/100?text=Fire+Lizard'">
+            <h4>Fire Lizard</h4>
+            <p>2.5 TEST-PI</p>
+          </div>
+
+          <!-- PET 10 -->
+          <div class="pet-card" onclick="openPetModal('Leaf Frog', 'images/leaf-frog.png', '1', '+5% TT Speed', 'Common', 'Bio-Regen', 'Sustains steady mining flow through natural ecosystem balance.')">
+            <img src="images/leaf-frog.png" alt="Leaf Frog" onerror="this.src='https://via.placeholder.com/100?text=Leaf+Frog'">
+            <h4>Leaf Frog</h4>
+            <p>1 TEST-PI</p>
+          </div>
+
+          <!-- PET 11 -->
+          <div class="pet-card" onclick="openPetModal('Pixie Ant', 'images/pixie-ant.png', '1', '+5% TT Speed', 'Common', 'Swarm Effort', 'Works continuously in the background for extra token drops.')">
+            <img src="images/pixie-ant.png" alt="Pixie Ant" onerror="this.src='https://via.placeholder.com/100?text=Pixie+Ant'">
+            <h4>Pixie Ant</h4>
+            <p>1 TEST-PI</p>
+          </div>
+
+        </div>
       </section>
     </div>
 
@@ -106,6 +184,24 @@
       <p style="font-size: 0.8rem; color: #8e9bb0;"><a href="privacy.html" style="color: #00f0ff; text-decoration: underline;">Privacy Policy</a></p>
     </footer>
   </main>
+
+  <!-- PET STATS POPUP MODAL -->
+  <div id="petModal" class="modal-overlay" onclick="closePetModal(event)">
+    <div class="modal-content" onclick="event.stopPropagation()">
+      <span class="close-btn" onclick="closePetModal()">&times;</span>
+      <img id="modalPetImg" src="" alt="Pet Preview" class="modal-img">
+      <h3 id="modalPetName" style="color: #00f0ff; margin-top: 10px;">Pet Name</h3>
+      <div style="margin: 8px 0;"><span id="modalPetRarity" class="rarity-badge">Rare</span></div>
+      
+      <div class="stats-box">
+        <p>⚡ <strong>Boost:</strong> <span id="modalPetBoost" style="color: #00f0ff;">+5%</span></p>
+        <p>✨ <strong>Special Ability:</strong> <span id="modalPetAbility" style="color: #ff007f;">Ability Name</span></p>
+        <p style="font-size: 0.75rem; color: #8e9bb0; margin-top: 6px;" id="modalPetDesc">Description text goes here.</p>
+      </div>
+
+      <button id="modalBuyBtn" style="width: 100%; margin-top: 15px;">🛒 BUY WITH 1 TEST-PI</button>
+    </div>
+  </div>
 
   <!-- Bottom Navigation Menu -->
   <nav class="bottom-nav">
@@ -138,14 +234,12 @@
 
     let piUser = null;
     let miningInterval = null;
+    let selectedPetName = "";
+    let selectedPetPrice = 1;
 
     function switchTab(tabId, element) {
-      document.querySelectorAll('.tab-content').forEach(tab => {
-        tab.classList.remove('active');
-      });
-      document.querySelectorAll('.nav-item').forEach(nav => {
-        nav.classList.remove('active');
-      });
+      document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
+      document.querySelectorAll('.nav-item').forEach(nav => nav.classList.remove('active'));
 
       document.getElementById(tabId).classList.add('active');
       element.classList.add('active');
@@ -155,6 +249,30 @@
       const inviteText = document.getElementById('invite').innerText;
       navigator.clipboard.writeText(inviteText);
       alert("✅ Referral link copied to clipboard!");
+    }
+
+    // MODAL POPUP FUNCTIONS
+    function openPetModal(name, imgSrc, price, boost, rarity, ability, desc) {
+      selectedPetName = name;
+      selectedPetPrice = parseFloat(price);
+
+      document.getElementById('modalPetImg').src = imgSrc;
+      document.getElementById('modalPetName').innerText = name;
+      document.getElementById('modalPetRarity').innerText = rarity;
+      document.getElementById('modalPetBoost').innerText = boost;
+      document.getElementById('modalPetAbility').innerText = ability;
+      document.getElementById('modalPetDesc').innerText = desc;
+      document.getElementById('modalBuyBtn').innerText = `🛒 BUY WITH ${price} TEST-PI`;
+      
+      document.getElementById('modalBuyBtn').onclick = function() {
+        buyPet(selectedPetName, selectedPetPrice);
+      };
+
+      document.getElementById('petModal').classList.add('show');
+    }
+
+    function closePetModal(e) {
+      document.getElementById('petModal').classList.remove('show');
     }
 
     window.addEventListener('DOMContentLoaded', async () => {
@@ -186,7 +304,6 @@
         const auth = await Pi.authenticate(['username', 'payments'], onIncompletePaymentFound);
         piUser = auth.user;
 
-        // DITO ILALAGAY ANG MISMONG PI USERNAME NG NAKALOG-IN NA PIONEER
         document.getElementById('username').innerText = "@" + piUser.username;
         document.getElementById('piUid').innerText = piUser.uid.substring(0, 8) + "...";
         document.getElementById('invite').innerText = "https://bonene28.github.io?ref=" + piUser.username;
@@ -194,7 +311,6 @@
 
         loadUserData();
       } catch (err) {
-        // DEFAULT FALLBACK KUNG WALA PA SA PI BROWSER (GAMIT ANG PI USERNAME MO)
         document.getElementById('username').innerText = "@utoy0913";
         document.getElementById('invite').innerText = "https://bonene28.github.io?ref=utoy0913";
         document.getElementById('status').innerText = "Please open inside Pi Browser app.";
@@ -229,6 +345,50 @@
         const earnedTT = elapsedSeconds * RATE_PER_SECOND;
         document.getElementById('balance').innerText = earnedTT.toFixed(6) + " TT";
       }, 1000);
+    }
+
+    function buyPet(petName, amount) {
+      if (!piUser) return alert("Please authenticate inside Pi Browser first.");
+
+      const paymentData = {
+        amount: amount,
+        memo: `Purchase Small Pet: ${petName}`,
+        metadata: { petName: petName }
+      };
+
+      const paymentCallbacks = {
+        onReadyForServerApproval: async function(paymentId) {
+          try {
+            await fetch(`${RENDER_BACKEND_URL}/api/payments/approve`, {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ paymentId })
+            });
+          } catch (e) {}
+        },
+        onReadyForServerCompletion: async function(paymentId, txid) {
+          try {
+            const res = await fetch(`${RENDER_BACKEND_URL}/api/payments/complete`, {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ paymentId, txid })
+            });
+            const data = await res.json();
+            if (data.success) {
+              alert(`🎉 Success! You have bought ${petName}!`);
+              closePetModal();
+            }
+          } catch (e) {}
+        },
+        onCancel: function(paymentId) { alert("Payment cancelled."); },
+        onError: function(error) { alert("Payment error."); }
+      };
+
+      try {
+        window.Pi.createPayment(paymentData, paymentCallbacks);
+      } catch (err) {
+        alert("Open inside Pi Browser.");
+      }
     }
 
     function setupEventListeners() {
@@ -288,47 +448,6 @@
         } finally {
           claimBtn.innerText = "🎁 CLAIM TT";
           claimBtn.disabled = false;
-        }
-      });
-
-      document.getElementById('buyBtn').addEventListener('click', () => {
-        if (!piUser) return alert("Please authenticate inside Pi Browser first.");
-
-        const paymentData = {
-          amount: 1,
-          memo: "Purchase Genesis Pet (Pimon #001)",
-          metadata: { productId: "pimon_001" }
-        };
-
-        const paymentCallbacks = {
-          onReadyForServerApproval: async function(paymentId) {
-            try {
-              await fetch(`${RENDER_BACKEND_URL}/api/payments/approve`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ paymentId })
-              });
-            } catch (e) {}
-          },
-          onReadyForServerCompletion: async function(paymentId, txid) {
-            try {
-              const res = await fetch(`${RENDER_BACKEND_URL}/api/payments/complete`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ paymentId, txid })
-              });
-              const data = await res.json();
-              if (data.success) alert("🎉 Success! Pimon #001 bought!");
-            } catch (e) {}
-          },
-          onCancel: function(paymentId) { alert("Payment cancelled."); },
-          onError: function(error) { alert("Payment error."); }
-        };
-
-        try {
-          window.Pi.createPayment(paymentData, paymentCallbacks);
-        } catch (err) {
-          alert("Open inside Pi Browser.");
         }
       });
     }
