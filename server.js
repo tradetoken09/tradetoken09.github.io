@@ -22,6 +22,7 @@ const purchases = new Map();
 ========================= */
 
 const PET_PRICES = new Map([
+  ["Pimon #001", 1],
   ["Lunar Owl", 1],
   ["Crystal Hedgehog", 1],
   ["Sky Fox", 1.5],
