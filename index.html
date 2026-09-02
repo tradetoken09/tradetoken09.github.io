@@ -217,6 +217,7 @@ let lastMiningUpdate = 0;
 let isMining = false;
 let selectedPetName = "";
 let selectedPetPrice = 1;
+let pendingIncompletePayment = null;
 
 const $ = id => document.getElementById(id);
 
@@ -309,6 +310,7 @@ async function triggerPiLogin() {
       ["username", "payments"],
       function onIncompletePaymentFound(payment) {
         console.log("Incomplete payment:", payment);
+        pendingIncompletePayment = payment;
       }
     );
 
@@ -318,6 +320,32 @@ async function triggerPiLogin() {
 
     piUser = result.user;
     piAccessToken = result.accessToken || null;
+
+    if (pendingIncompletePayment &&
+        pendingIncompletePayment.identifier &&
+        pendingIncompletePayment.transaction &&
+        pendingIncompletePayment.transaction.txid) {
+      try {
+        const recoveryResponse = await fetch(RENDER_BACKEND_URL + "/api/payments/complete", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            paymentId: pendingIncompletePayment.identifier,
+            txid: pendingIncompletePayment.transaction.txid,
+            uid: piUser.uid,
+            accessToken: piAccessToken
+          })
+        });
+
+        if (!recoveryResponse.ok) {
+          console.warn("Incomplete payment recovery returned HTTP", recoveryResponse.status);
+        }
+      } catch (error) {
+        console.error("Incomplete payment recovery error:", error);
+      } finally {
+        pendingIncompletePayment = null;
+      }
+    }
 
     $("username").textContent = "@" + (piUser.username || "Pioneer");
     $("piUid").textContent = piUser.uid.substring(0, 8) + "...";
@@ -437,17 +465,114 @@ async function claimMiningReward() {
   }
 }
 
-function buyPet() {
+async function buyPet() {
   if (!piUser) {
     alert("🔑 Please connect your Pi account first.");
     return;
   }
 
-  alert(
-    "🛒 " + selectedPetName +
-    "\n\nPrice: " + selectedPetPrice + " TEST-PI" +
-    "\n\nPi payment endpoint is not connected yet."
-  );
+  if (!selectedPetName || !Number.isFinite(selectedPetPrice) || selectedPetPrice <= 0) {
+    alert("❌ Invalid pet selection.");
+    return;
+  }
+
+  if (!window.Pi || !await initPiSDK()) {
+    alert("❌ Pi SDK is not ready. Please open TT Token inside Pi Browser.");
+    return;
+  }
+
+  const btn = $("modalBuyBtn");
+  const originalText = btn.textContent;
+  btn.disabled = true;
+  btn.textContent = "⏳ OPENING PI PAYMENT...";
+
+  try {
+    window.Pi.createPayment({
+      amount: selectedPetPrice,
+      memo: "TT Token Pet: " + selectedPetName,
+      metadata: {
+        productType: "pet",
+        petName: selectedPetName,
+        price: selectedPetPrice
+      }
+    }, {
+      onReadyForServerApproval: async function(paymentId) {
+        console.log("Pi payment approval requested:", paymentId);
+
+        const response = await fetch(RENDER_BACKEND_URL + "/api/payments/approve", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            paymentId,
+            uid: piUser.uid,
+            accessToken: piAccessToken
+          })
+        });
+
+        const data = await response.json().catch(() => ({}));
+        if (!response.ok || !data.success) {
+          throw new Error(data.error || "Payment approval failed.");
+        }
+      },
+
+      onReadyForServerCompletion: async function(paymentId, txid) {
+        console.log("Pi payment completion requested:", paymentId, txid);
+
+        try {
+          const response = await fetch(RENDER_BACKEND_URL + "/api/payments/complete", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              paymentId,
+              txid,
+              uid: piUser.uid,
+              accessToken: piAccessToken
+            })
+          });
+
+          const data = await response.json().catch(() => ({}));
+
+          if (!response.ok || !data.success) {
+            throw new Error(data.error || "Payment completion failed.");
+          }
+
+          closePetModal();
+          setStatus("SYSTEM ONLINE • PET PURCHASE SUCCESSFUL");
+          alert(
+            "🎉 PET PURCHASE SUCCESSFUL!\n\n" +
+            "Pet: " + selectedPetName +
+            "\nPrice: " + selectedPetPrice + " TEST-PI" +
+            "\n\nTransaction: " + txid
+          );
+        } catch (error) {
+          console.error("Payment completion error:", error);
+          alert("⚠️ Pi payment was submitted, but the server could not confirm it yet.\n\n" + error.message);
+        } finally {
+          btn.disabled = false;
+          btn.textContent = originalText;
+        }
+      },
+
+      onCancel: function(paymentId) {
+        console.log("Pi payment cancelled:", paymentId);
+        btn.disabled = false;
+        btn.textContent = originalText;
+        alert("❌ Payment cancelled. No pet was purchased.");
+      },
+
+      onError: function(error, payment) {
+        console.error("Pi payment error:", error, payment);
+        btn.disabled = false;
+        btn.textContent = originalText;
+        alert("❌ Pi payment failed.\n\n" + (error?.message || String(error)));
+      }
+    });
+  } catch (error) {
+    console.error("Pi createPayment error:", error);
+    btn.disabled = false;
+    btn.textContent = originalText;
+    alert("❌ Could not start Pi payment.\n\n" + (error?.message || String(error)));
+  }
 }
 
 document.addEventListener("DOMContentLoaded", () => {
