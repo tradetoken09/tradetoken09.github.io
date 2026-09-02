@@ -554,10 +554,14 @@ async function buyPet() {
       },
 
       onCancel: function(paymentId) {
-        console.log("Pi payment cancelled:", paymentId);
+        console.log("Pi payment cancelled or expired:", paymentId);
         btn.disabled = false;
         btn.textContent = originalText;
-        alert("❌ Payment cancelled. No pet was purchased.");
+        alert(
+          "⏰ Pi payment expired or was cancelled.\n\n" +
+          "No pet was purchased.\n\n" +
+          "Please start the BUY process again."
+        );
       },
 
       onError: function(error, payment) {
