@@ -326,417 +326,198 @@
 
 
     /* =========================
-       PI SDK INITIALIZATION
-    ========================= */
+   PI SDK INITIALIZATION
+========================= */
 
-    async function initPiSDK() {
-        if (!window.Pi) {
-            console.error("❌ Pi SDK is not available.");
-            return false;
-        }
+async function initPiSDK() {
 
-        if (isPiInitialized) {
-            return true;
-        }
+    if (!window.Pi) {
+        console.error("❌ Pi SDK is not available.");
+        return false;
+    }
 
-        try {
-            await window.Pi.init({
-                version: "2.0"
-            });
+    if (isPiInitialized) {
+        console.log("✅ Pi SDK already initialized.");
+        return true;
+    }
 
-            isPiInitialized = true;
+    try {
 
-            console.log("✅ Pi SDK initialized successfully.");
+        console.log("🔵 STEP 1: Starting Pi SDK initialization...");
 
-            return true;
+        await window.Pi.init({
+            version: "2.0"
+        });
 
-        } catch (error) {
-            console.error(
-                "❌ Pi SDK initialization error:",
-                error
-            );
+        isPiInitialized = true;
 
-            return false;
-        }
+        console.log("✅ STEP 2: Pi SDK initialized successfully.");
+
+        return true;
+
+    } catch (error) {
+
+        console.error(
+            "❌ STEP 2 FAILED: Pi SDK initialization error:",
+            error
+        );
+
+        return false;
+    }
+}
+
+
+/* =========================
+   PI AUTHENTICATION
+========================= */
+
+async function triggerPiLogin() {
+
+    const statusEl =
+        document.getElementById("status");
+
+    const authBtn =
+        document.getElementById("authBtn");
+
+    const badgeEl =
+        document.getElementById("liveBadge");
+
+
+    if (!statusEl || !authBtn || !badgeEl) {
+
+        console.error(
+            "❌ Authentication UI elements not found."
+        );
+
+        return;
     }
 
 
-    /* =========================
-       PI AUTHENTICATION
-    ========================= */
+    try {
 
-    async function triggerPiLogin() {
-        const statusEl = document.getElementById("status");
-        const authBtn = document.getElementById("authBtn");
-        const badgeEl = document.getElementById("liveBadge");
+        console.log("🔵 CONNECT PI ACCOUNT clicked.");
 
-        if (!statusEl || !authBtn || !badgeEl) {
-            console.error("❌ Authentication UI elements not found.");
-            return;
-        }
+        statusEl.innerText =
+            "Checking Pi Browser...";
 
-        statusEl.innerText = "Checking Pi Browser...";
-        authBtn.innerText = "⏳ CONNECTING...";
-        authBtn.disabled = true;
-        badgeEl.innerText = "• OFFLINE";
+        authBtn.innerText =
+            "⏳ CONNECTING...";
+
+        authBtn.disabled =
+            true;
+
+        badgeEl.innerText =
+            "• OFFLINE";
 
 
-        /* Check Pi SDK */
+        /* =========================
+           STEP 1 — CHECK PI SDK
+        ========================= */
 
         if (!window.Pi) {
+
+            console.error(
+                "❌ window.Pi is NOT available."
+            );
+
             statusEl.innerText =
-                "⚠️ Please open this app inside Pi Browser.";
+                "⚠️ PI SDK NOT FOUND";
 
             authBtn.innerText =
                 "🔑 CONNECT PI ACCOUNT";
 
-            authBtn.disabled = false;
+            authBtn.disabled =
+                false;
 
             alert(
-                "⚠️ Please open TradeToken inside the Pi Browser App."
+                "Pi SDK was not detected.\n\n" +
+                "Please make sure TT Token is opened inside Pi Browser."
             );
 
             return;
         }
 
 
-        /* Initialize Pi SDK */
+        console.log(
+            "✅ STEP 1: Pi SDK detected."
+        );
 
-        const initialized = await initPiSDK();
+
+        /* =========================
+           STEP 2 — INITIALIZE SDK
+        ========================= */
+
+        statusEl.innerText =
+            "Initializing Pi SDK...";
+
+
+        const initialized =
+            await initPiSDK();
+
 
         if (!initialized) {
+
             statusEl.innerText =
-                "❌ Pi SDK initialization failed.";
+                "❌ PI SDK INITIALIZATION FAILED";
 
             authBtn.innerText =
                 "🔑 RETRY CONNECT PI ACCOUNT";
 
-            authBtn.disabled = false;
+            authBtn.disabled =
+                false;
 
             return;
         }
 
 
+        /* =========================
+           STEP 3 — AUTHENTICATE
+        ========================= */
+
         statusEl.innerText =
-            "Connecting to Pi Network...";
+            "Waiting for Pi authorization...";
+
+        console.log(
+            "🟡 STEP 3: Calling Pi.authenticate()..."
+        );
 
 
-        try {
-
-            const authResult = await window.Pi.authenticate(
+        const authResult =
+            await window.Pi.authenticate(
                 [
                     "username",
                     "payments"
                 ],
 
-                async function onIncompletePaymentFound(payment) {
+                async function onIncompletePaymentFound(
+                    payment
+                ) {
 
                     console.log(
                         "⚠️ Incomplete payment found:",
                         payment
                     );
 
+
+                    /*
+                     * Do NOT attempt completion
+                     * unless a real transaction ID exists.
+                     */
+
                     if (
                         !payment ||
-                        !payment.identifier
+                        !payment.identifier ||
+                        !payment.transaction ||
+                        !payment.transaction.txid
                     ) {
+
+                        console.log(
+                            "ℹ️ No valid transaction ID yet. Skipping completion."
+                        );
+
                         return;
                     }
 
-                    try {
-
-                        const response = await fetch(
-                            `${RENDER_BACKEND_URL}/api/payments/complete`,
-                            {
-                                method: "POST",
-
-                                headers: {
-                                    "Content-Type": "application/json"
-                                },
-
-                                body: JSON.stringify({
-                                    paymentId: payment.identifier,
-
-                                    txid:
-                                        payment.transaction &&
-                                        payment.transaction.txid
-                                            ? payment.transaction.txid
-                                            : null
-                                })
-                            }
-                        );
-
-                        console.log(
-                            "Incomplete payment response:",
-                            await response.text()
-                        );
-
-                    } catch (error) {
-
-                        console.error(
-                            "❌ Incomplete payment completion error:",
-                            error
-                        );
-                    }
-                }
-            );
-
-
-            console.log(
-                "✅ Pi authentication result:",
-                authResult
-            );
-
-
-            /* =========================
-               IMPORTANT PI AUTH DATA
-            ========================= */
-
-            piUser = authResult.user;
-            piAccessToken = authResult.accessToken;
-
-
-            if (!piUser || !piUser.uid) {
-                throw new Error(
-                    "Pi did not return a valid user account."
-                );
-            }
-
-
-            /* =========================
-               UPDATE PROFILE
-            ========================= */
-
-            document.getElementById("username").innerText =
-                "@" + piUser.username;
-
-            document.getElementById("piUid").innerText =
-                piUser.uid.substring(0, 8) + "...";
-
-
-            /* =========================
-               UPDATE REFERRAL
-            ========================= */
-
-            document.getElementById("invite").innerText =
-                "https://tradetoken09.github.io?ref=" +
-                encodeURIComponent(piUser.username);
-
-
-            /* =========================
-               CONNECTED STATUS
-            ========================= */
-
-            statusEl.innerText =
-                "SYSTEM ONLINE • CONNECTED";
-
-            badgeEl.innerText =
-                "• LIVE";
-
-            authBtn.style.display =
-                "none";
-
-
-            console.log(
-                "✅ Connected Pi username:",
-                piUser.username
-            );
-
-            console.log(
-                "✅ Pi UID:",
-                piUser.uid
-            );
-
-            console.log(
-                "✅ Pi access token received:",
-                piAccessToken ? "YES" : "NO"
-            );
-
-
-            /* Load user data */
-
-            loadUserData();
-
-
-        } catch (error) {
-
-            console.error(
-                "❌ Pi Authentication Error:",
-                error
-            );
-
-            piUser = null;
-            piAccessToken = null;
-
-            statusEl.innerText =
-                "❌ Authentication failed.";
-
-            authBtn.innerText =
-                "🔑 RETRY CONNECT PI ACCOUNT";
-
-            authBtn.disabled = false;
-
-            authBtn.style.display =
-                "block";
-
-            badgeEl.innerText =
-                "• OFFLINE";
-        }
-    }
-
-
-    /* =========================
-       USER DATA
-    ========================= */
-
-    function loadUserData() {
-
-        if (!piUser) {
-            return;
-        }
-
-        const savedClaimed =
-            localStorage.getItem(
-                `tt_claimed_${piUser.uid}`
-            ) || "0.0000";
-
-        document.getElementById(
-            "claimedBalance"
-        ).innerText =
-            parseFloat(savedClaimed).toFixed(4);
-    }
-
-
-    /* =========================
-       MINING
-    ========================= */
-
-    function checkMiningLoop() {
-
-        const startTime =
-            localStorage.getItem("tt_mining_start");
-
-        if (startTime) {
-            startMiningUI(parseInt(startTime, 10));
-        }
-    }
-
-
-    function startMiningUI(startTime) {
-
-        document.getElementById("status").innerText =
-            "⚡ MINING CORE ACTIVE (+0.24 TT/hr)";
-
-        document.getElementById("mineBtn").innerText =
-            "⚡ MINING ACTIVE";
-
-        document.getElementById("mineBtn").disabled =
-            true;
-
-
-        if (miningInterval) {
-            clearInterval(miningInterval);
-        }
-
-
-        miningInterval = setInterval(() => {
-
-            const now = Date.now();
-
-            const elapsedSeconds =
-                (now - startTime) / 1000;
-
-            const earnedTT =
-                elapsedSeconds * RATE_PER_SECOND;
-
-            document.getElementById("balance").innerText =
-                earnedTT.toFixed(6) + " TT";
-
-        }, 1000);
-    }
-
-
-    /* =========================
-       BUY PET
-    ========================= */
-
-    function buyPet(petName, amount) {
-
-        if (!piUser) {
-
-            alert(
-                "Please connect your Pi account first."
-            );
-
-            return;
-        }
-
-
-        if (!window.Pi) {
-
-            alert(
-                "Please open this app inside Pi Browser."
-            );
-
-            return;
-        }
-
-
-        const paymentData = {
-
-            amount: amount,
-
-            memo:
-                `Purchase Small Pet: ${petName}`,
-
-            metadata: {
-                petName: petName
-            }
-        };
-
-
-        const paymentCallbacks = {
-
-            onReadyForServerApproval:
-                async function (paymentId) {
-
-                    try {
-
-                        const response =
-                            await fetch(
-                                `${RENDER_BACKEND_URL}/api/payments/approve`,
-                                {
-                                    method: "POST",
-
-                                    headers: {
-                                        "Content-Type":
-                                            "application/json"
-                                    },
-
-                                    body: JSON.stringify({
-                                        paymentId:
-                                            paymentId
-                                    })
-                                }
-                            );
-
-                        console.log(
-                            "Payment approval:",
-                            await response.text()
-                        );
-
-                    } catch (error) {
-
-                        console.error(
-                            "❌ Payment approval error:",
-                            error
-                        );
-                    }
-                },
-
-
-            onReadyForServerCompletion:
-                async function (paymentId, txid) {
 
                     try {
 
@@ -753,359 +534,195 @@
 
                                     body: JSON.stringify({
                                         paymentId:
-                                            paymentId,
+                                            payment.identifier,
 
                                         txid:
-                                            txid
+                                            payment.transaction.txid
                                     })
                                 }
                             );
 
-                        const data =
-                            await response.json();
 
+                        console.log(
+                            "Incomplete payment completion:",
+                            await response.text()
+                        );
 
-                        if (data.success) {
-
-                            alert(
-                                `🎉 Success! You have bought ${petName}!`
-                            );
-
-                            closePetModal();
-
-                        } else {
-
-                            alert(
-                                "❌ Payment completion failed."
-                            );
-                        }
 
                     } catch (error) {
 
                         console.error(
-                            "❌ Payment completion error:",
+                            "❌ Incomplete payment completion error:",
                             error
                         );
-
-                        alert(
-                            "❌ Unable to complete payment."
-                        );
                     }
-                },
-
-
-            onCancel:
-                function () {
-
-                    alert(
-                        "Payment cancelled."
-                    );
-                },
-
-
-            onError:
-                function (error) {
-
-                    console.error(
-                        "❌ Pi payment error:",
-                        error
-                    );
-
-                    alert(
-                        "❌ Payment error."
-                    );
                 }
-        };
-
-
-        try {
-
-            window.Pi.createPayment(
-                paymentData,
-                paymentCallbacks
             );
 
-        } catch (error) {
 
-            console.error(
-                "❌ createPayment error:",
-                error
-            );
+        console.log(
+            "✅ STEP 4: Pi.authenticate() returned:",
+            authResult
+        );
 
-            alert(
-                "⚠️ Please open this app inside Pi Browser."
+
+        /* =========================
+           VALIDATE AUTH RESULT
+        ========================= */
+
+        if (
+            !authResult ||
+            !authResult.user
+        ) {
+
+            throw new Error(
+                "Pi authentication returned no user."
             );
         }
-    }
 
 
-    /* =========================
-       EVENT LISTENERS
-    ========================= */
+        piUser =
+            authResult.user;
 
-    function setupEventListeners() {
-
-        const authBtn =
-            document.getElementById("authBtn");
-
-        const mineBtn =
-            document.getElementById("mineBtn");
-
-        const claimBtn =
-            document.getElementById("claimBtn");
+        piAccessToken =
+            authResult.accessToken;
 
 
-        /* CONNECT PI */
+        if (
+            !piUser.uid
+        ) {
 
-        authBtn.addEventListener(
-            "click",
-            function () {
-                triggerPiLogin();
-            }
+            throw new Error(
+                "Pi did not return a valid UID."
+            );
+        }
+
+
+        console.log(
+            "✅ STEP 5: Pi account received."
+        );
+
+        console.log(
+            "Pi username:",
+            piUser.username
+        );
+
+        console.log(
+            "Pi UID:",
+            piUser.uid
+        );
+
+        console.log(
+            "Access token:",
+            piAccessToken ? "RECEIVED" : "MISSING"
         );
 
 
-        /* START MINING */
+        /* =========================
+           UPDATE PROFILE
+        ========================= */
 
-        mineBtn.addEventListener(
-            "click",
-            function () {
+        const usernameEl =
+            document.getElementById("username");
 
-                if (!piUser) {
+        const piUidEl =
+            document.getElementById("piUid");
 
-                    alert(
-                        "Please connect your Pi account first."
-                    );
-
-                    return;
-                }
+        const inviteEl =
+            document.getElementById("invite");
 
 
-                const now =
-                    Date.now();
+        if (usernameEl) {
 
-                localStorage.setItem(
-                    "tt_mining_start",
-                    now.toString()
+            usernameEl.innerText =
+                "@" + piUser.username;
+        }
+
+
+        if (piUidEl) {
+
+            piUidEl.innerText =
+                piUser.uid.substring(0, 8) + "...";
+        }
+
+
+        if (inviteEl) {
+
+            inviteEl.innerText =
+                "https://tradetoken09.github.io?ref=" +
+                encodeURIComponent(
+                    piUser.username
                 );
+        }
 
-                startMiningUI(now);
-            }
+
+        /* =========================
+           CONNECTED
+        ========================= */
+
+        statusEl.innerText =
+            "SYSTEM ONLINE • CONNECTED";
+
+        badgeEl.innerText =
+            "• LIVE";
+
+        authBtn.style.display =
+            "none";
+
+
+        console.log(
+            "🎉 TT Token Pi connection successful!"
         );
 
 
-        /* CLAIM TT */
+        /* =========================
+           LOAD USER DATA
+        ========================= */
 
-        claimBtn.addEventListener(
-            "click",
-            async function () {
+        loadUserData();
 
-                if (!piUser) {
 
-                    alert(
-                        "Please connect your Pi account first."
-                    );
+    } catch (error) {
 
-                    return;
-                }
+        console.error(
+            "❌ PI AUTHENTICATION ERROR:",
+            error
+        );
 
 
-                if (!piAccessToken) {
+        piUser =
+            null;
 
-                    alert(
-                        "Pi authentication token is missing. Please reconnect your Pi account."
-                    );
+        piAccessToken =
+            null;
 
-                    return;
-                }
 
+        statusEl.innerText =
+            "❌ PI AUTHENTICATION FAILED";
 
-                const startTime =
-                    localStorage.getItem(
-                        "tt_mining_start"
-                    );
 
+        authBtn.innerText =
+            "🔑 RETRY CONNECT PI ACCOUNT";
 
-                if (!startTime) {
+        authBtn.disabled =
+            false;
 
-                    alert(
-                        "No active mining session."
-                    );
+        authBtn.style.display =
+            "block";
 
-                    return;
-                }
+        badgeEl.innerText =
+            "• OFFLINE";
 
 
-                const now =
-                    Date.now();
-
-                const elapsedSeconds =
-                    (now - parseInt(startTime, 10)) / 1000;
-
-                const earnedTT =
-                    elapsedSeconds *
-                    RATE_PER_SECOND;
-
-
-                if (earnedTT <= 0.0001) {
-
-                    alert(
-                        "Mined amount is too small to claim."
-                    );
-
-                    return;
-                }
-
-
-                claimBtn.innerText =
-                    "PROCESSING...";
-
-                claimBtn.disabled =
-                    true;
-
-
-                try {
-
-                    const response =
-                        await fetch(
-                            `${RENDER_BACKEND_URL}/api/claim`,
-                            {
-                                method: "POST",
-
-                                headers: {
-                                    "Content-Type":
-                                        "application/json"
-                                },
-
-                                body: JSON.stringify({
-
-                                    uid:
-                                        piUser.uid,
-
-                                    username:
-                                        piUser.username,
-
-                                    amount:
-                                        earnedTT,
-
-                                    accessToken:
-                                        piAccessToken
-                                })
-                            }
-                        );
-
-
-                    const result =
-                        await response.json();
-
-
-                    if (
-                        response.ok &&
-                        result.success
-                    ) {
-
-                        localStorage.removeItem(
-                            "tt_mining_start"
-                        );
-
-                        clearInterval(
-                            miningInterval
-                        );
-
-
-                        const newTotal =
-                            result.newTotalBalance ||
-                            earnedTT;
-
-
-                        localStorage.setItem(
-                            `tt_claimed_${piUser.uid}`,
-                            newTotal.toString()
-                        );
-
-
-                        document.getElementById(
-                            "balance"
-                        ).innerText =
-                            "0.000000 TT";
-
-
-                        document.getElementById(
-                            "claimedBalance"
-                        ).innerText =
-                            parseFloat(
-                                newTotal
-                            ).toFixed(4);
-
-
-                        document.getElementById(
-                            "status"
-                        ).innerText =
-                            "CLAIM SUCCESSFUL";
-
-
-                        document.getElementById(
-                            "mineBtn"
-                        ).innerText =
-                            "⚡ START MINING";
-
-
-                        document.getElementById(
-                            "mineBtn"
-                        ).disabled =
-                            false;
-
-
-                        alert(
-                            `✅ Claimed ${earnedTT.toFixed(4)} TT successfully!`
-                        );
-
-                    } else {
-
-                        alert(
-                            result.message ||
-                            "❌ Claim failed."
-                        );
-                    }
-
-
-                } catch (error) {
-
-                    console.error(
-                        "❌ Claim connection error:",
-                        error
-                    );
-
-                    alert(
-                        "❌ Connection error to Render backend."
-                    );
-
-                } finally {
-
-                    claimBtn.innerText =
-                        "🎁 CLAIM TT";
-
-                    claimBtn.disabled =
-                        false;
-                }
-            }
+        alert(
+            "Pi connection failed.\n\n" +
+            "Error: " +
+            (
+                error &&
+                error.message
+                    ? error.message
+                    : String(error)
+            )
         );
     }
-
-
-    /* =========================
-       START APP
-    ========================= */
-
-    window.addEventListener(
-    "DOMContentLoaded",
-    function () {
-
-        setupEventListeners();
-        checkMiningLoop();
-
-        console.log("TT Token app loaded.");
-        console.log("Waiting for user to connect Pi account.");
-
-    }
-);
+}
