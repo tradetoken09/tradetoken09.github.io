@@ -726,3 +726,17 @@ async function triggerPiLogin() {
         );
     }
 }
+document.addEventListener("DOMContentLoaded", () => {
+
+    const authBtn = document.getElementById("authBtn");
+
+    if (authBtn) {
+        authBtn.addEventListener("click", triggerPiLogin);
+        console.log("✅ Pi Connect button handler attached.");
+    }
+
+});
+</script>
+
+</body>
+</html>
