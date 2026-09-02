@@ -1098,21 +1098,14 @@
     ========================= */
 
     window.addEventListener(
-        "DOMContentLoaded",
-        function () {
+    "DOMContentLoaded",
+    function () {
 
-            setupEventListeners();
+        setupEventListeners();
+        checkMiningLoop();
 
-            checkMiningLoop();
+        console.log("TT Token app loaded.");
+        console.log("Waiting for user to connect Pi account.");
 
-
-            setTimeout(
-                function () {
-                    triggerPiLogin();
-                },
-                500
-            );
-        }
-    );
-
-</script>
+    }
+);
