@@ -4,200 +4,202 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <title>TT Token • Holographic Mining dApp</title>
-
   <link rel="stylesheet" href="css/style.css">
   <script src="https://sdk.minepi.com/pi-sdk.js"></script>
 </head>
 <body>
-  <main class="app">
-    <header>
-      <div>
-        <h1>TT TOKEN</h1>
-        <p>Holographic Mining Machine</p>
-      </div>
-      <span class="badge" id="liveBadge">• OFFLINE</span>
-    </header>
+<main class="app">
 
-    <div id="tab-mining" class="tab-content active">
-      <section class="card">
-        <p class="label">MINING MACHINE CORE</p>
+<header>
+  <div>
+    <h1>TT TOKEN</h1>
+    <p>Holographic Mining Machine</p>
+  </div>
+  <span class="badge" id="liveBadge">• OFFLINE</span>
+</header>
 
-        <div class="core-container">
-          <div class="outer-ring"></div>
-          <div class="inner-core">
-            <span class="core-text">TT</span>
-          </div>
-        </div>
+<!-- MINING -->
+<div id="tab-mining" class="tab-content active">
+<section class="card">
+  <p class="label">MINING MACHINE CORE</p>
 
-        <div id="balance" class="counter-text">0.000000 TT</div>
-        <p class="rate-text">Mining Rate: <strong>0.24 TT / hour</strong></p>
-
-        <div class="actions">
-          <button id="mineBtn" type="button">⚡ START MINING</button>
-          <button id="claimBtn" class="secondary" type="button" disabled>🎁 CLAIM TT</button>
-        </div>
-
-        <div style="margin-top:15px;text-align:center;">
-          <p id="status" class="status">Click button below to Connect Account</p>
-          <button id="authBtn" type="button" style="margin-top:8px;width:100%;background:#00f0ff;color:#000;font-weight:bold;padding:12px;border-radius:8px;border:none;cursor:pointer;">
-            🔑 CONNECT PI ACCOUNT
-          </button>
-        </div>
-      </section>
-    </div>
-
-    <div id="tab-wallet" class="tab-content">
-      <section class="card">
-        <p class="label">WALLET LEDGER</p>
-        <h2 style="color:#ff007f;font-size:2rem;margin:15px 0;">
-          <span id="claimedBalance">0.0000</span> TT
-        </h2>
-        <p style="font-size:.85rem;color:#8e9bb0;">Status: Pi Testnet Ledger</p>
-        <p style="font-size:.85rem;color:#00f0ff;margin-top:10px;">Daily Streak: 7 Days 🔥</p>
-      </section>
-    </div>
-
-    <div id="tab-profile" class="tab-content">
-      <section class="card" style="margin-bottom:12px;">
-        <p class="label">USER PROFILE</p>
-        <h3 id="username" style="color:#00f0ff;font-size:1.3rem;margin-top:8px;">Not Connected</h3>
-        <p style="font-size:.85rem;color:#8e9bb0;margin-top:6px;">UID: <span id="piUid">...</span></p>
-      </section>
-
-      <section class="card" style="border-color:rgba(138,43,226,.5);">
-        <p class="label">PIONEER REPUTA TRUST SCORE</p>
-        <div style="display:flex;justify-content:space-between;align-items:center;width:100%;margin-top:10px;">
-          <div style="text-align:left;">
-            <h2 id="reputaScoreText" style="font-family:'Orbitron',sans-serif;color:#00f0ff;font-size:1.6rem;">
-              850 <span style="font-size:.8rem;color:#8e9bb0;">/ 1000</span>
-            </h2>
-            <p id="reputaRankText" style="font-size:.8rem;color:#ff007f;font-weight:bold;margin-top:4px;">💎 DIAMOND MINER</p>
-          </div>
-          <div style="text-align:right;">
-            <span style="background:rgba(0,240,255,.1);border:1px solid #00f0ff;padding:6px 10px;border-radius:8px;font-size:.75rem;color:#00f0ff;">
-              Trust Rank: #124
-            </span>
-          </div>
-        </div>
-      </section>
-    </div>
-
-    <div id="tab-referral" class="tab-content">
-      <section class="card">
-        <p class="label">YOUR REFERRAL LINK</p>
-        <p style="font-size:.85rem;color:#8e9bb0;margin-bottom:15px;">
-          I-share ang iyong natatanging link gamit ang iyong Pi Username para kumita ng dagdag na TT Tokens!
-        </p>
-
-        <div id="invite" class="invite"
-             style="user-select:all;cursor:pointer;padding:12px;background:rgba(0,240,255,.05);border:1px dashed #00f0ff;border-radius:8px;word-break:break-all;">
-          https://tradetoken09.github.io?ref=guest
-        </div>
-
-        <button id="copyReferralBtn" type="button" class="secondary" style="margin-top:15px;width:100%;">
-          📋 COPY REFERRAL LINK
-        </button>
-        <p style="font-size:.75rem;color:#00f0ff;margin-top:12px;">Earn +0.05 TT/hr per active referral</p>
-      </section>
-    </div>
-
-    <div id="tab-market" class="tab-content">
-      <section class="card">
-        <p class="label">PET MARKETPLACE</p>
-        <p style="font-size:.85rem;color:#8e9bb0;margin-bottom:15px;">Click any pet to view stats and abilities!</p>
-
-        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:12px;width:100%;">
-
-          <div class="pet-card" data-name="Lunar Owl" data-img="images/lunar-owl.png" data-price="1" data-boost="+5% TT Speed" data-rarity="Rare" data-ability="Cosmic Sight" data-desc="Increases nocturnal mining yields by collecting moonlight energy.">
-            <img src="images/lunar-owl.png" alt="Lunar Owl" onerror="this.src='https://via.placeholder.com/100?text=Lunar+Owl'">
-            <h4>Lunar Owl</h4><p>1 TEST-PI</p>
-          </div>
-
-          <div class="pet-card" data-name="Crystal Hedgehog" data-img="images/crystal-hedgehog.png" data-price="1" data-boost="+5% TT Speed" data-rarity="Rare" data-ability="Prismatic Spikes" data-desc="Reflects network hash pulses to optimize energy efficiency.">
-            <img src="images/crystal-hedgehog.png" alt="Crystal Hedgehog" onerror="this.src='https://via.placeholder.com/100?text=Crystal+Hedgehog'">
-            <h4>Crystal Hedgehog</h4><p>1 TEST-PI</p>
-          </div>
-
-          <div class="pet-card" data-name="Sky Fox" data-img="images/sky-fox.png" data-price="1.5" data-boost="+7% TT Speed" data-rarity="Epic" data-ability="Wind Dash" data-desc="Accelerates block verification intervals using atmospheric currents.">
-            <img src="images/sky-fox.png" alt="Sky Fox" onerror="this.src='https://via.placeholder.com/100?text=Sky+Fox'">
-            <h4>Sky Fox</h4><p>1.5 TEST-PI</p>
-          </div>
-
-          <div class="pet-card" data-name="Rock Turtle" data-img="images/rock-turtle.png" data-price="1" data-boost="+5% TT Speed" data-rarity="Common" data-ability="Solid Core" data-desc="Provides uninterrupted mining stability during ledger syncing.">
-            <img src="images/rock-turtle.png" alt="Rock Turtle" onerror="this.src='https://via.placeholder.com/100?text=Rock+Turtle'">
-            <h4>Rock Turtle</h4><p>1 TEST-PI</p>
-          </div>
-
-          <div class="pet-card" data-name="Storm Squirrel" data-img="images/storm-squirrel.png" data-price="1.5" data-boost="+7% TT Speed" data-rarity="Epic" data-ability="Static Overcharge" data-desc="Stores electric static charges to power up mining cycles.">
-            <img src="images/storm-squirrel.png" alt="Storm Squirrel" onerror="this.src='https://via.placeholder.com/100?text=Storm+Squirrel'">
-            <h4>Storm Squirrel</h4><p>1.5 TEST-PI</p>
-          </div>
-
-          <div class="pet-card" data-name="Dragonfly" data-img="images/dragonfly.png" data-price="2" data-boost="+8% TT Speed" data-rarity="Epic" data-ability="Cyber Flutter" data-desc="Hovering sensory system that boosts passive reward gain.">
-            <img src="images/dragonfly.png" alt="Dragonfly" onerror="this.src='https://via.placeholder.com/100?text=Dragonfly'">
-            <h4>Dragonfly</h4><p>2 TEST-PI</p>
-          </div>
-
-          <div class="pet-card" data-name="Shadow Scorpion" data-img="images/shadow-scorpion.png" data-price="2" data-boost="+8% TT Speed" data-rarity="Epic" data-ability="Venom Strike" data-desc="Bypasses algorithm latency to ensure smooth token stream.">
-            <img src="images/shadow-scorpion.png" alt="Shadow Scorpion" onerror="this.src='https://via.placeholder.com/100?text=Shadow+Scorpion'">
-            <h4>Shadow Scorpion</h4><p>2 TEST-PI</p>
-          </div>
-
-          <div class="pet-card" data-name="Crystal Mantis" data-img="images/crystal-mantis.png" data-price="2" data-boost="+8% TT Speed" data-rarity="Epic" data-ability="Precision Cut" data-desc="Slices through cryptographic tasks with surgical precision.">
-            <img src="images/crystal-mantis.png" alt="Crystal Mantis" onerror="this.src='https://via.placeholder.com/100?text=Crystal+Mantis'">
-            <h4>Crystal Mantis</h4><p>2 TEST-PI</p>
-          </div>
-
-          <div class="pet-card" data-name="Fire Lizard" data-img="images/fire-lizard.png" data-price="2.5" data-boost="+10% TT Speed" data-rarity="Legendary" data-ability="Thermal Aura" data-desc="Generates high computing heat to maximize mining output.">
-            <img src="images/fire-lizard.png" alt="Fire Lizard" onerror="this.src='https://via.placeholder.com/100?text=Fire+Lizard'">
-            <h4>Fire Lizard</h4><p>2.5 TEST-PI</p>
-          </div>
-
-          <div class="pet-card" data-name="Leaf Frog" data-img="images/leaf-frog.png" data-price="1" data-boost="+5% TT Speed" data-rarity="Common" data-ability="Bio-Regen" data-desc="Sustains steady mining flow through natural ecosystem balance.">
-            <img src="images/leaf-frog.png" alt="Leaf Frog" onerror="this.src='https://via.placeholder.com/100?text=Leaf+Frog'">
-            <h4>Leaf Frog</h4><p>1 TEST-PI</p>
-          </div>
-
-          <div class="pet-card" data-name="Pixie Ant" data-img="images/pixie-ant.png" data-price="1" data-boost="+5% TT Speed" data-rarity="Common" data-ability="Swarm Effort" data-desc="Works continuously in the background for extra token drops.">
-            <img src="images/pixie-ant.png" alt="Pixie Ant" onerror="this.src='https://via.placeholder.com/100?text=Pixie+Ant'">
-            <h4>Pixie Ant</h4><p>1 TEST-PI</p>
-          </div>
-
-        </div>
-      </section>
-    </div>
-
-    <footer style="text-align:center;margin-top:15px;margin-bottom:20px;">
-      <p style="font-size:.8rem;color:#8e9bb0;">
-        <a href="privacy.html" style="color:#00f0ff;text-decoration:underline;">Privacy Policy</a>
-      </p>
-    </footer>
-  </main>
-
-  <div id="petModal" class="modal-overlay">
-    <div class="modal-content">
-      <span id="closePetBtn" class="close-btn">&times;</span>
-      <img id="modalPetImg" src="" alt="Pet Preview" class="modal-img">
-      <h3 id="modalPetName" style="color:#00f0ff;margin-top:10px;">Pet Name</h3>
-      <div style="margin:8px 0;"><span id="modalPetRarity" class="rarity-badge">Rare</span></div>
-
-      <div class="stats-box">
-        <p>⚡ <strong>Boost:</strong> <span id="modalPetBoost" style="color:#00f0ff;">+5%</span></p>
-        <p>✨ <strong>Ability:</strong> <span id="modalPetAbility" style="color:#ff007f;">Ability Name</span></p>
-        <p id="modalPetDesc" style="font-size:.75rem;color:#8e9bb0;margin-top:6px;">Description text goes here.</p>
-      </div>
-
-      <button id="modalBuyBtn" type="button" style="width:100%;margin-top:15px;">🛒 BUY WITH 1 TEST-PI</button>
-    </div>
+  <div class="core-container">
+    <div class="outer-ring"></div>
+    <div class="inner-core"><span class="core-text">TT</span></div>
   </div>
 
-  <nav class="bottom-nav">
-    <a href="javascript:void(0)" class="nav-item active" data-tab="tab-mining"><span class="nav-icon">🤖</span><span>Mining</span></a>
-    <a href="javascript:void(0)" class="nav-item" data-tab="tab-wallet"><span class="nav-icon">👛</span><span>Wallet</span></a>
-    <a href="javascript:void(0)" class="nav-item" data-tab="tab-profile"><span class="nav-icon">👤</span><span>Profile</span></a>
-    <a href="javascript:void(0)" class="nav-item" data-tab="tab-referral"><span class="nav-icon">👥</span><span>Referral</span></a>
-    <a href="javascript:void(0)" class="nav-item" data-tab="tab-market"><span class="nav-icon">🛒</span><span>Market</span></a>
-  </nav>
+  <div id="balance" class="counter-text">0.000000 TT</div>
+  <p class="rate-text">Mining Rate: <strong>0.24 TT / hour</strong></p>
+
+  <div class="actions">
+    <button id="mineBtn" type="button">⚡ START MINING</button>
+    <button id="claimBtn" class="secondary" type="button" disabled>🎁 CLAIM TT</button>
+  </div>
+
+  <div style="margin-top:15px;text-align:center">
+    <p id="status" class="status">Click button below to Connect Account</p>
+    <button id="authBtn" type="button"
+      style="margin-top:8px;width:100%;background:#00f0ff;color:#000;font-weight:bold;padding:12px;border-radius:8px;border:none;cursor:pointer">
+      🔑 CONNECT PI ACCOUNT
+    </button>
+  </div>
+</section>
+</div>
+
+<!-- WALLET -->
+<div id="tab-wallet" class="tab-content">
+<section class="card">
+  <p class="label">WALLET LEDGER</p>
+  <h2 style="color:#ff007f;font-size:2rem;margin:15px 0">
+    <span id="claimedBalance">0.0000</span> TT
+  </h2>
+  <p style="font-size:.85rem;color:#8e9bb0">Status: Pi Testnet Ledger</p>
+  <p style="font-size:.85rem;color:#00f0ff;margin-top:10px">Daily Streak: 7 Days 🔥</p>
+</section>
+</div>
+
+<!-- PROFILE -->
+<div id="tab-profile" class="tab-content">
+<section class="card" style="margin-bottom:12px">
+  <p class="label">USER PROFILE</p>
+  <h3 id="username" style="color:#00f0ff;font-size:1.3rem;margin-top:8px">Not Connected</h3>
+  <p style="font-size:.85rem;color:#8e9bb0;margin-top:6px">UID: <span id="piUid">...</span></p>
+</section>
+
+<section class="card" style="border-color:rgba(138,43,226,.5)">
+  <p class="label">PIONEER REPUTA TRUST SCORE</p>
+  <div style="display:flex;justify-content:space-between;align-items:center;width:100%;margin-top:10px">
+    <div>
+      <h2 style="font-family:'Orbitron',sans-serif;color:#00f0ff;font-size:1.6rem">
+        850 <span style="font-size:.8rem;color:#8e9bb0">/ 1000</span>
+      </h2>
+      <p style="font-size:.8rem;color:#ff007f;font-weight:bold;margin-top:4px">💎 DIAMOND MINER</p>
+    </div>
+    <span style="background:rgba(0,240,255,.1);border:1px solid #00f0ff;padding:6px 10px;border-radius:8px;font-size:.75rem;color:#00f0ff">
+      Trust Rank: #124
+    </span>
+  </div>
+</section>
+</div>
+
+<!-- REFERRAL -->
+<div id="tab-referral" class="tab-content">
+<section class="card">
+  <p class="label">YOUR REFERRAL LINK</p>
+  <p style="font-size:.85rem;color:#8e9bb0;margin-bottom:15px">
+    I-share ang iyong natatanging link gamit ang iyong Pi Username para kumita ng dagdag na TT Tokens!
+  </p>
+  <div id="invite" class="invite"
+    style="user-select:all;cursor:pointer;padding:12px;background:rgba(0,240,255,.05);border:1px dashed #00f0ff;border-radius:8px;word-break:break-all">
+    https://tradetoken09.github.io?ref=guest
+  </div>
+  <button id="copyReferralBtn" type="button" class="secondary" style="margin-top:15px;width:100%">
+    📋 COPY REFERRAL LINK
+  </button>
+  <p style="font-size:.75rem;color:#00f0ff;margin-top:12px">Earn +0.05 TT/hr per active referral</p>
+</section>
+</div>
+
+<!-- MARKET -->
+<div id="tab-market" class="tab-content">
+<section class="card">
+  <p class="label">PET MARKETPLACE</p>
+  <p style="font-size:.85rem;color:#8e9bb0;margin-bottom:15px">Click any pet to view stats and abilities!</p>
+
+  <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:12px;width:100%">
+
+    <div class="pet-card" data-name="Lunar Owl" data-img="images/lunar-owl.png" data-price="1" data-boost="+5% TT Speed" data-rarity="Rare" data-ability="Cosmic Sight" data-desc="Increases nocturnal mining yields by collecting moonlight energy.">
+      <img src="images/lunar-owl.png" alt="Lunar Owl">
+      <h4>Lunar Owl</h4><p>1 TEST-PI</p>
+    </div>
+
+    <div class="pet-card" data-name="Crystal Hedgehog" data-img="images/crystal-hedgehog.png" data-price="1" data-boost="+5% TT Speed" data-rarity="Rare" data-ability="Prismatic Spikes" data-desc="Reflects network hash pulses to optimize energy efficiency.">
+      <img src="images/crystal-hedgehog.png" alt="Crystal Hedgehog">
+      <h4>Crystal Hedgehog</h4><p>1 TEST-PI</p>
+    </div>
+
+    <div class="pet-card" data-name="Sky Fox" data-img="images/sky-fox.png" data-price="1.5" data-boost="+7% TT Speed" data-rarity="Epic" data-ability="Wind Dash" data-desc="Accelerates block verification intervals using atmospheric currents.">
+      <img src="images/sky-fox.png" alt="Sky Fox">
+      <h4>Sky Fox</h4><p>1.5 TEST-PI</p>
+    </div>
+
+    <div class="pet-card" data-name="Rock Turtle" data-img="images/rock-turtle.png" data-price="1" data-boost="+5% TT Speed" data-rarity="Common" data-ability="Solid Core" data-desc="Provides uninterrupted mining stability during ledger syncing.">
+      <img src="images/rock-turtle.png" alt="Rock Turtle">
+      <h4>Rock Turtle</h4><p>1 TEST-PI</p>
+    </div>
+
+    <div class="pet-card" data-name="Storm Squirrel" data-img="images/storm-squirrel.png" data-price="1.5" data-boost="+7% TT Speed" data-rarity="Epic" data-ability="Static Overcharge" data-desc="Stores electric static charges to power up mining cycles.">
+      <img src="images/storm-squirrel.png" alt="Storm Squirrel">
+      <h4>Storm Squirrel</h4><p>1.5 TEST-PI</p>
+    </div>
+
+    <div class="pet-card" data-name="Dragonfly" data-img="images/dragonfly.png" data-price="2" data-boost="+8% TT Speed" data-rarity="Epic" data-ability="Cyber Flutter" data-desc="Hovering sensory system that boosts passive reward gain.">
+      <img src="images/dragonfly.png" alt="Dragonfly">
+      <h4>Dragonfly</h4><p>2 TEST-PI</p>
+    </div>
+
+    <div class="pet-card" data-name="Shadow Scorpion" data-img="images/shadow-scorpion.png" data-price="2" data-boost="+8% TT Speed" data-rarity="Epic" data-ability="Venom Strike" data-desc="Bypasses algorithm latency to ensure smooth token stream.">
+      <img src="images/shadow-scorpion.png" alt="Shadow Scorpion">
+      <h4>Shadow Scorpion</h4><p>2 TEST-PI</p>
+    </div>
+
+    <!-- IMPORTANT: filename matches the GitHub file exactly -->
+    <div class="pet-card" data-name="Crystal Mantis" data-img="images/crsytal-mantis.png" data-price="2" data-boost="+8% TT Speed" data-rarity="Epic" data-ability="Precision Cut" data-desc="Slices through cryptographic tasks with surgical precision.">
+      <img src="images/crsytal-mantis.png" alt="Crystal Mantis">
+      <h4>Crystal Mantis</h4><p>2 TEST-PI</p>
+    </div>
+
+    <div class="pet-card" data-name="Fire Lizard" data-img="images/fire-lizard.png" data-price="2.5" data-boost="+10% TT Speed" data-rarity="Legendary" data-ability="Thermal Aura" data-desc="Generates high computing heat to maximize mining output.">
+      <img src="images/fire-lizard.png" alt="Fire Lizard">
+      <h4>Fire Lizard</h4><p>2.5 TEST-PI</p>
+    </div>
+
+    <div class="pet-card" data-name="Leaf Frog" data-img="images/leaf-frog.png" data-price="1" data-boost="+5% TT Speed" data-rarity="Common" data-ability="Bio-Regen" data-desc="Sustains steady mining flow through natural ecosystem balance.">
+      <img src="images/leaf-frog.png" alt="Leaf Frog">
+      <h4>Leaf Frog</h4><p>1 TEST-PI</p>
+    </div>
+
+    <div class="pet-card" data-name="Pixie Ant" data-img="images/pixie-ant.png" data-price="1" data-boost="+5% TT Speed" data-rarity="Common" data-ability="Swarm Effort" data-desc="Works continuously in the background for extra token drops.">
+      <img src="images/pixie-ant.png" alt="Pixie Ant">
+      <h4>Pixie Ant</h4><p>1 TEST-PI</p>
+    </div>
+
+  </div>
+</section>
+</div>
+
+<footer style="text-align:center;margin-top:15px;margin-bottom:20px">
+  <p style="font-size:.8rem;color:#8e9bb0">
+    <a href="privacy.html" style="color:#00f0ff;text-decoration:underline">Privacy Policy</a>
+  </p>
+</footer>
+
+</main>
+
+<!-- PET MODAL -->
+<div id="petModal" class="modal-overlay">
+  <div class="modal-content">
+    <span id="closePetBtn" class="close-btn">&times;</span>
+    <img id="modalPetImg" src="" alt="Pet Preview" class="modal-img">
+    <h3 id="modalPetName" style="color:#00f0ff;margin-top:10px">Pet Name</h3>
+    <div style="margin:8px 0"><span id="modalPetRarity" class="rarity-badge">Rare</span></div>
+    <div class="stats-box">
+      <p>⚡ <strong>Boost:</strong> <span id="modalPetBoost" style="color:#00f0ff">+5%</span></p>
+      <p>✨ <strong>Ability:</strong> <span id="modalPetAbility" style="color:#ff007f">Ability Name</span></p>
+      <p id="modalPetDesc" style="font-size:.75rem;color:#8e9bb0;margin-top:6px">Description</p>
+    </div>
+    <button id="modalBuyBtn" type="button" style="width:100%;margin-top:15px">🛒 BUY WITH 1 TEST-PI</button>
+  </div>
+</div>
+
+<!-- NAVIGATION -->
+<nav class="bottom-nav">
+  <a href="#" class="nav-item active" data-tab="tab-mining"><span class="nav-icon">🤖</span><span>Mining</span></a>
+  <a href="#" class="nav-item" data-tab="tab-wallet"><span class="nav-icon">👛</span><span>Wallet</span></a>
+  <a href="#" class="nav-item" data-tab="tab-profile"><span class="nav-icon">👤</span><span>Profile</span></a>
+  <a href="#" class="nav-item" data-tab="tab-referral"><span class="nav-icon">👥</span><span>Referral</span></a>
+  <a href="#" class="nav-item" data-tab="tab-market"><span class="nav-icon">🛒</span><span>Market</span></a>
+</nav>
 
 <script>
 "use strict";
@@ -207,78 +209,60 @@ const RATE_PER_SECOND = 0.24 / 3600;
 
 let piUser = null;
 let piAccessToken = null;
+let isPiInitialized = false;
 let miningInterval = null;
 let miningBalance = 0;
 let claimedBalance = 0;
 let lastMiningUpdate = 0;
 let isMining = false;
-let isPiInitialized = false;
 let selectedPetName = "";
 let selectedPetPrice = 1;
 
-function $(id) {
-  return document.getElementById(id);
+const $ = id => document.getElementById(id);
+
+function setStatus(text) {
+  if ($("status")) $("status").textContent = text;
 }
 
-function setStatus(message) {
-  const el = $("status");
-  if (el) el.innerText = message;
-}
-
-function updateMiningDisplay() {
-  const el = $("balance");
-  if (el) el.innerText = miningBalance.toFixed(6) + " TT";
-}
-
-function updateClaimedDisplay() {
-  const el = $("claimedBalance");
-  if (el) el.innerText = claimedBalance.toFixed(4);
+function updateDisplays() {
+  if ($("balance")) $("balance").textContent = miningBalance.toFixed(6) + " TT";
+  if ($("claimedBalance")) $("claimedBalance").textContent = claimedBalance.toFixed(4);
 }
 
 function switchTab(tabId, element) {
-  document.querySelectorAll(".tab-content").forEach(tab => {
-    tab.classList.remove("active");
-  });
+  document.querySelectorAll(".tab-content").forEach(x => x.classList.remove("active"));
+  document.querySelectorAll(".nav-item").forEach(x => x.classList.remove("active"));
 
-  document.querySelectorAll(".nav-item").forEach(nav => {
-    nav.classList.remove("active");
-  });
-
-  const selectedTab = $(tabId);
-  if (selectedTab) selectedTab.classList.add("active");
+  const tab = $(tabId);
+  if (tab) tab.classList.add("active");
   if (element) element.classList.add("active");
 }
 
 function copyReferral() {
   const invite = $("invite");
   if (!invite) return;
-
-  const text = invite.innerText.trim();
+  const text = invite.textContent.trim();
 
   if (navigator.clipboard && window.isSecureContext) {
     navigator.clipboard.writeText(text)
       .then(() => alert("✅ Referral link copied!"))
-      .catch(() => fallbackCopy(text));
+      .catch(() => window.prompt("Copy your referral link:", text));
   } else {
-    fallbackCopy(text);
+    window.prompt("Copy your referral link:", text);
   }
 }
 
-function fallbackCopy(text) {
-  window.prompt("Copy your referral link:", text);
-}
+function openPetModal(card) {
+  selectedPetName = card.dataset.name;
+  selectedPetPrice = Number(card.dataset.price);
 
-function openPetModal(name, imgSrc, price, boost, rarity, ability, desc) {
-  selectedPetName = name;
-  selectedPetPrice = Number(price);
-
-  $("modalPetImg").src = imgSrc;
-  $("modalPetName").innerText = name;
-  $("modalPetRarity").innerText = rarity;
-  $("modalPetBoost").innerText = boost;
-  $("modalPetAbility").innerText = ability;
-  $("modalPetDesc").innerText = desc;
-  $("modalBuyBtn").innerText = `🛒 BUY WITH ${price} TEST-PI`;
+  $("modalPetImg").src = card.dataset.img;
+  $("modalPetName").textContent = card.dataset.name;
+  $("modalPetRarity").textContent = card.dataset.rarity;
+  $("modalPetBoost").textContent = card.dataset.boost;
+  $("modalPetAbility").textContent = card.dataset.ability;
+  $("modalPetDesc").textContent = card.dataset.desc;
+  $("modalBuyBtn").textContent = "🛒 BUY WITH " + card.dataset.price + " TEST-PI";
 
   $("petModal").classList.add("show");
 }
@@ -288,78 +272,65 @@ function closePetModal() {
 }
 
 async function initPiSDK() {
-  if (!window.Pi) {
-    console.error("Pi SDK not available.");
-    return false;
-  }
-
+  if (!window.Pi) return false;
   if (isPiInitialized) return true;
 
   try {
     await window.Pi.init({ version: "2.0" });
     isPiInitialized = true;
-    console.log("Pi SDK initialized.");
     return true;
   } catch (error) {
-    console.error("Pi SDK initialization failed:", error);
+    console.error("Pi SDK init error:", error);
     return false;
   }
 }
 
 async function triggerPiLogin() {
-  const authBtn = $("authBtn");
+  const btn = $("authBtn");
   const badge = $("liveBadge");
 
   if (!window.Pi) {
     setStatus("⚠️ PI SDK NOT FOUND");
-    alert("Pi SDK was not detected. Open this dApp inside Pi Browser.");
+    alert("Pi SDK was not detected. Please open TT Token inside Pi Browser.");
     return;
   }
 
+  btn.disabled = true;
+  btn.textContent = "⏳ CONNECTING...";
+  setStatus("Initializing Pi SDK...");
+  badge.textContent = "• CONNECTING";
+
   try {
-    authBtn.disabled = true;
-    authBtn.innerText = "⏳ CONNECTING...";
-    setStatus("Initializing Pi SDK...");
-    badge.innerText = "• CONNECTING";
-
-    const initialized = await initPiSDK();
-
-    if (!initialized) {
-      throw new Error("Pi SDK initialization failed.");
-    }
+    if (!await initPiSDK()) throw new Error("Pi SDK initialization failed.");
 
     setStatus("Waiting for Pi authorization...");
 
-    const authResult = await window.Pi.authenticate(
+    const result = await window.Pi.authenticate(
       ["username", "payments"],
-      async function onIncompletePaymentFound(payment) {
-        console.log("Incomplete payment found:", payment);
+      function onIncompletePaymentFound(payment) {
+        console.log("Incomplete payment:", payment);
       }
     );
 
-    if (!authResult || !authResult.user) {
-      throw new Error("Pi authentication returned no user.");
+    if (!result || !result.user || !result.user.uid) {
+      throw new Error("Pi authentication returned no valid user.");
     }
 
-    piUser = authResult.user;
-    piAccessToken = authResult.accessToken || null;
+    piUser = result.user;
+    piAccessToken = result.accessToken || null;
 
-    if (!piUser.uid) {
-      throw new Error("Pi did not return a valid UID.");
-    }
-
-    $("username").innerText = "@" + (piUser.username || "Pioneer");
-    $("piUid").innerText = piUser.uid.substring(0, 8) + "...";
-    $("invite").innerText =
+    $("username").textContent = "@" + (piUser.username || "Pioneer");
+    $("piUid").textContent = piUser.uid.substring(0, 8) + "...";
+    $("invite").textContent =
       "https://tradetoken09.github.io?ref=" +
       encodeURIComponent(piUser.username || "");
 
     setStatus("SYSTEM ONLINE • CONNECTED");
-    badge.innerText = "• LIVE";
-    authBtn.style.display = "none";
+    badge.textContent = "• LIVE";
+    btn.style.display = "none";
 
     $("mineBtn").disabled = false;
-    console.log("Pi account connected:", piUser.username);
+    console.log("Pi connected:", piUser.username);
 
   } catch (error) {
     console.error("Pi authentication error:", error);
@@ -368,15 +339,11 @@ async function triggerPiLogin() {
     piAccessToken = null;
 
     setStatus("❌ PI AUTHENTICATION FAILED");
-    authBtn.innerText = "🔑 RETRY CONNECT PI ACCOUNT";
-    authBtn.disabled = false;
-    authBtn.style.display = "block";
-    badge.innerText = "• OFFLINE";
+    badge.textContent = "• OFFLINE";
+    btn.textContent = "🔑 RETRY CONNECT PI ACCOUNT";
+    btn.disabled = false;
 
-    alert(
-      "Pi connection failed.\n\n" +
-      (error && error.message ? error.message : String(error))
-    );
+    alert("Pi connection failed.\n\n" + (error.message || String(error)));
   }
 }
 
@@ -392,25 +359,16 @@ function startMining() {
   lastMiningUpdate = Date.now();
 
   $("mineBtn").disabled = true;
-  $("mineBtn").innerText = "⛏️ MINING...";
+  $("mineBtn").textContent = "⛏️ MINING...";
   $("claimBtn").disabled = false;
   setStatus("⛏️ MINING ACTIVE • 0.24 TT / HOUR");
 
   miningInterval = setInterval(() => {
     const now = Date.now();
-    const elapsedSeconds = (now - lastMiningUpdate) / 1000;
-    miningBalance += RATE_PER_SECOND * elapsedSeconds;
+    miningBalance += RATE_PER_SECOND * ((now - lastMiningUpdate) / 1000);
     lastMiningUpdate = now;
-    updateMiningDisplay();
+    updateDisplays();
   }, 1000);
-}
-
-function stopMiningTimer() {
-  if (miningInterval) {
-    clearInterval(miningInterval);
-    miningInterval = null;
-  }
-  isMining = false;
 }
 
 async function claimMiningReward() {
@@ -423,163 +381,106 @@ async function claimMiningReward() {
     const now = Date.now();
     miningBalance += RATE_PER_SECOND * ((now - lastMiningUpdate) / 1000);
     lastMiningUpdate = now;
-    stopMiningTimer();
+    clearInterval(miningInterval);
+    miningInterval = null;
+    isMining = false;
   }
 
-  const reward = Number(miningBalance);
+  const reward = miningBalance;
 
   if (reward <= 0) {
     alert("⚠️ No TT reward available yet.");
     return;
   }
 
-  const claimBtn = $("claimBtn");
-  claimBtn.disabled = true;
-  claimBtn.innerText = "⏳ CLAIMING...";
+  const btn = $("claimBtn");
+  btn.disabled = true;
+  btn.textContent = "⏳ CLAIMING...";
 
   try {
-    /*
-      IMPORTANT:
-      This request only works if your Render backend has
-      POST /api/mining/claim implemented.
+    const response = await fetch(RENDER_BACKEND_URL + "/api/mining/claim", {
+      method: "POST",
+      headers: {"Content-Type": "application/json"},
+      body: JSON.stringify({
+        uid: piUser.uid,
+        username: piUser.username,
+        amount: reward
+      })
+    });
 
-      The browser does NOT create a real on-chain TT token.
-    */
-    const response = await fetch(
-      `${RENDER_BACKEND_URL}/api/mining/claim`,
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify({
-          uid: piUser.uid,
-          username: piUser.username,
-          amount: reward
-        })
-      }
-    );
-
-    if (!response.ok) {
-      throw new Error("Claim API returned HTTP " + response.status);
-    }
+    if (!response.ok) throw new Error("Backend HTTP " + response.status);
 
     const data = await response.json();
 
     miningBalance = 0;
-    updateMiningDisplay();
+    claimedBalance = data.balance !== undefined
+      ? Number(data.balance)
+      : claimedBalance + reward;
 
-    if (data.balance !== undefined) {
-      claimedBalance = Number(data.balance);
-    } else {
-      claimedBalance += reward;
-    }
-
-    updateClaimedDisplay();
+    updateDisplays();
 
     $("mineBtn").disabled = false;
-    $("mineBtn").innerText = "⚡ START MINING";
+    $("mineBtn").textContent = "⚡ START MINING";
     setStatus("SYSTEM ONLINE • CLAIM SUCCESSFUL");
-
-    alert(
-      "🎉 TT CLAIM SUCCESSFUL!\n\n" +
-      "Amount: " + reward.toFixed(6) + " TT"
-    );
+    alert("🎉 TT CLAIM SUCCESSFUL!\n\nAmount: " + reward.toFixed(6) + " TT");
 
   } catch (error) {
-    console.error("TT claim failed:", error);
-
+    console.error("Claim error:", error);
     $("mineBtn").disabled = false;
-    $("mineBtn").innerText = "⚡ START MINING";
+    $("mineBtn").textContent = "⚡ START MINING";
+    setStatus("SYSTEM ONLINE • CLAIM FAILED");
+    alert("❌ Claim was not completed.\n\nYour TT amount was not cleared.\n\n" + error.message);
 
-    alert(
-      "❌ TT claim was not completed.\n\n" +
-      "Your local mining amount was NOT cleared.\n\n" +
-      "Backend response: " + error.message
-    );
   } finally {
-    claimBtn.disabled = miningBalance <= 0;
-    claimBtn.innerText = "🎁 CLAIM TT";
+    btn.disabled = miningBalance <= 0;
+    btn.textContent = "🎁 CLAIM TT";
   }
 }
 
-function buyPet(name, price) {
+function buyPet() {
   if (!piUser) {
     alert("🔑 Please connect your Pi account first.");
     return;
   }
 
   alert(
-    "🛒 " + name + "\n\n" +
-    "Price: " + price + " TEST-PI\n\n" +
-    "⚠️ Pi payment is not executed yet. " +
-    "We will connect the real Pi payment flow after the backend payment endpoint is verified."
+    "🛒 " + selectedPetName +
+    "\n\nPrice: " + selectedPetPrice + " TEST-PI" +
+    "\n\nPi payment endpoint is not connected yet."
   );
 }
 
 document.addEventListener("DOMContentLoaded", () => {
-  const authBtn = $("authBtn");
-  const mineBtn = $("mineBtn");
-  const claimBtn = $("claimBtn");
-  const copyBtn = $("copyReferralBtn");
-  const modalBuyBtn = $("modalBuyBtn");
-  const modal = $("petModal");
-  const closeBtn = $("closePetBtn");
+  $("authBtn").addEventListener("click", triggerPiLogin);
+  $("mineBtn").addEventListener("click", startMining);
+  $("claimBtn").addEventListener("click", claimMiningReward);
+  $("copyReferralBtn").addEventListener("click", copyReferral);
 
-  if (authBtn) authBtn.addEventListener("click", triggerPiLogin);
+  $("closePetBtn").addEventListener("click", closePetModal);
+  $("petModal").addEventListener("click", e => {
+    if (e.target === $("petModal")) closePetModal();
+  });
 
-  if (mineBtn) {
-    mineBtn.disabled = false;
-    mineBtn.addEventListener("click", startMining);
-  }
+  $("modalBuyBtn").addEventListener("click", buyPet);
 
-  if (claimBtn) {
-    claimBtn.disabled = true;
-    claimBtn.addEventListener("click", claimMiningReward);
-  }
-
-  if (copyBtn) copyBtn.addEventListener("click", copyReferral);
-
-  if (closeBtn) closeBtn.addEventListener("click", closePetModal);
-
-  if (modal) {
-    modal.addEventListener("click", event => {
-      if (event.target === modal) closePetModal();
-    });
-  }
-
-  if (modalBuyBtn) {
-    modalBuyBtn.addEventListener("click", () => {
-      buyPet(selectedPetName, selectedPetPrice);
-    });
-  }
-
-  document.querySelectorAll(".nav-item").forEach(nav => {
-    nav.addEventListener("click", event => {
-      event.preventDefault();
-      switchTab(nav.dataset.tab, nav);
+  document.querySelectorAll(".nav-item").forEach(item => {
+    item.addEventListener("click", e => {
+      e.preventDefault();
+      switchTab(item.dataset.tab, item);
     });
   });
 
   document.querySelectorAll(".pet-card").forEach(card => {
-    card.addEventListener("click", () => {
-      openPetModal(
-        card.dataset.name,
-        card.dataset.img,
-        card.dataset.price,
-        card.dataset.boost,
-        card.dataset.rarity,
-        card.dataset.ability,
-        card.dataset.desc
-      );
-    });
+    card.addEventListener("click", () => openPetModal(card));
   });
 
-  updateMiningDisplay();
-  updateClaimedDisplay();
+  $("mineBtn").disabled = false;
+  $("claimBtn").disabled = true;
+  updateDisplays();
 
-  console.log("✅ TT Token UI handlers attached.");
+  console.log("✅ TT Token buttons initialized.");
 });
 </script>
+
 </body>
 </html>
