@@ -1,654 +1,1519 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="theme-color" content="#0b1020">
-  <title>TT Token • Mining & Marketplace</title>
+<meta charset="UTF-8">
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0,
+               maximum-scale=1.0,user-scalable=no">
 
-  <!-- Pi SDK -->
-  <script src="https://sdk.minepi.com/pi-sdk.js"></script>
+<title>TradeToken TT</title>
 
-  <style>
-    *{box-sizing:border-box}
-    body{
-      margin:0;
-      font-family:Arial,Helvetica,sans-serif;
-      background:#070b16;
-      color:#fff;
+<!-- Pi SDK -->
+<script src="https://sdk.minepi.com/pi-sdk.js"></script>
+
+<style>
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+:root {
+    --bg: #070a18;
+    --panel: #10162d;
+    --panel2: #151c38;
+    --purple: #7c3cff;
+    --purple2: #a855f7;
+    --gold: #f5c542;
+    --cyan: #25d9ff;
+    --text: #ffffff;
+    --muted: #9ba5c5;
+    --border: rgba(255,255,255,0.09);
+}
+
+body {
+    min-height: 100vh;
+    background:
+        radial-gradient(circle at 50% -10%, #352070 0%, transparent 38%),
+        linear-gradient(180deg, #080b1c 0%, #050711 100%);
+    color: var(--text);
+    font-family: Arial, Helvetica, sans-serif;
+    padding-bottom: 82px;
+}
+
+button {
+    font-family: inherit;
+}
+
+/* =========================
+   HEADER
+========================= */
+
+.header {
+    height: 76px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 16px;
+    background: rgba(7,10,24,0.94);
+    border-bottom: 1px solid var(--border);
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    backdrop-filter: blur(14px);
+}
+
+.brand {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.logo {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    background:
+        radial-gradient(circle at 35% 30%, #ffe58a, #d49a16 42%, #6f4500 100%);
+    border: 2px solid #f7d35b;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #190d35;
+    font-weight: 900;
+    font-size: 19px;
+    box-shadow: 0 0 20px rgba(245,197,66,0.35);
+}
+
+.brand-text strong {
+    display: block;
+    font-size: 18px;
+}
+
+.brand-text small {
+    color: var(--muted);
+    font-size: 11px;
+}
+
+.header-actions {
+    display: flex;
+    gap: 8px;
+}
+
+.icon-btn {
+    width: 42px;
+    height: 42px;
+    border-radius: 50%;
+    border: 1px solid var(--border);
+    background: #11172d;
+    color: white;
+    font-size: 18px;
+}
+
+/* =========================
+   NETWORK SELECTOR
+========================= */
+
+.network-wrap {
+    padding: 14px 16px 0;
+}
+
+.network {
+    width: 100%;
+    border: 1px solid rgba(124,60,255,0.4);
+    background: linear-gradient(135deg,#17103a,#10162e);
+    color: white;
+    border-radius: 18px;
+    padding: 13px 15px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.network-left {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.network-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: #20e89b;
+    box-shadow: 0 0 10px #20e89b;
+}
+
+/* =========================
+   HERO
+========================= */
+
+.hero {
+    margin: 16px;
+    padding: 22px;
+    border-radius: 25px;
+    background:
+        radial-gradient(circle at 90% 20%, rgba(124,60,255,.35), transparent 35%),
+        linear-gradient(135deg,#121c4c,#101329);
+    border: 1px solid rgba(124,60,255,.25);
+    overflow: hidden;
+}
+
+.hero small {
+    color: #aeb8df;
+}
+
+.hero h1 {
+    margin-top: 6px;
+    font-size: 30px;
+    line-height: 1.05;
+}
+
+.hero p {
+    margin-top: 10px;
+    color: #adb6d3;
+    line-height: 1.5;
+    font-size: 14px;
+}
+
+.status {
+    margin-top: 16px;
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    padding: 7px 11px;
+    border-radius: 20px;
+    background: rgba(25,229,155,.10);
+    color: #55f2b4;
+    font-size: 12px;
+}
+
+/* =========================
+   WALLET
+========================= */
+
+.wallet-card {
+    margin: 16px;
+    padding: 20px;
+    border-radius: 25px;
+    background:
+        linear-gradient(145deg,#191035,#10172d);
+    border: 1px solid rgba(245,197,66,.22);
+    box-shadow: 0 12px 35px rgba(0,0,0,.25);
+}
+
+.wallet-title {
+    color: #aeb8d8;
+    font-size: 12px;
+    letter-spacing: 2px;
+}
+
+.wallet-total {
+    margin-top: 7px;
+    font-size: 31px;
+    font-weight: 800;
+}
+
+.wallet-total span {
+    color: var(--gold);
+    font-size: 18px;
+}
+
+.wallet-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    margin-top: 18px;
+}
+
+.balance-box {
+    background: rgba(255,255,255,.045);
+    border: 1px solid var(--border);
+    border-radius: 17px;
+    padding: 14px;
+}
+
+.balance-box small {
+    display: block;
+    color: var(--muted);
+    margin-bottom: 7px;
+}
+
+.balance {
+    font-size: 18px;
+    font-weight: 800;
+}
+
+.pi {
+    color: #d7b6ff;
+}
+
+.tt {
+    color: var(--gold);
+}
+
+.wallet-buttons {
+    display: grid;
+    grid-template-columns: repeat(3,1fr);
+    gap: 8px;
+    margin-top: 14px;
+}
+
+.action-btn {
+    border: 1px solid var(--border);
+    border-radius: 13px;
+    padding: 12px 5px;
+    color: white;
+    background: #11172d;
+    font-weight: 700;
+}
+
+.action-btn.primary {
+    background: linear-gradient(135deg,#7137ff,#a545e8);
+    border: 0;
+}
+
+/* =========================
+   QUICK LAUNCH
+========================= */
+
+.section {
+    padding: 0 16px;
+    margin-top: 22px;
+}
+
+.section-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 13px;
+}
+
+.section-head h2 {
+    font-size: 20px;
+}
+
+.section-head span {
+    color: var(--purple2);
+    font-size: 12px;
+}
+
+.quick-grid {
+    display: grid;
+    grid-template-columns: repeat(4,1fr);
+    gap: 10px;
+}
+
+.quick {
+    min-height: 92px;
+    background: rgba(16,22,45,.92);
+    border: 1px solid var(--border);
+    border-radius: 18px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 7px;
+    color: white;
+    font-size: 12px;
+    font-weight: 700;
+}
+
+.quick-icon {
+    font-size: 27px;
+}
+
+/* =========================
+   FEATURE CARDS
+========================= */
+
+.cards {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+}
+
+.feature {
+    padding: 17px;
+    border-radius: 19px;
+    background: var(--panel);
+    border: 1px solid var(--border);
+}
+
+.feature-icon {
+    font-size: 28px;
+}
+
+.feature h3 {
+    margin-top: 10px;
+    font-size: 15px;
+}
+
+.feature p {
+    margin-top: 6px;
+    color: var(--muted);
+    font-size: 11px;
+    line-height: 1.4;
+}
+
+.feature button {
+    margin-top: 12px;
+    width: 100%;
+    padding: 9px;
+    border-radius: 10px;
+    border: 0;
+    background: #20294b;
+    color: white;
+}
+
+/* =========================
+   SECURITY
+========================= */
+
+.security {
+    margin-top: 10px;
+    padding: 18px;
+    border-radius: 20px;
+    background: linear-gradient(135deg,#101b31,#15132f);
+    border: 1px solid rgba(25,229,155,.15);
+}
+
+.security-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.security-status {
+    color: #52e9af;
+    font-size: 13px;
+}
+
+.security-circle {
+    display: flex;
+    gap: 8px;
+    margin-top: 15px;
+}
+
+.member {
+    width: 42px;
+    height: 42px;
+    border-radius: 50%;
+    background: #20294b;
+    border: 2px solid #4b5a8c;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* =========================
+   REFERRAL
+========================= */
+
+.referral {
+    padding: 18px;
+    border-radius: 20px;
+    background:
+        linear-gradient(135deg,rgba(124,60,255,.25),rgba(20,25,55,.9));
+    border: 1px solid rgba(124,60,255,.25);
+}
+
+.ref-code {
+    margin-top: 12px;
+    padding: 13px;
+    border-radius: 12px;
+    background: rgba(0,0,0,.25);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.ref-code strong {
+    color: var(--gold);
+}
+
+.copy {
+    border: 0;
+    padding: 7px 10px;
+    border-radius: 8px;
+    background: var(--purple);
+    color: white;
+}
+
+/* =========================
+   CHAT
+========================= */
+
+.chat-box {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    overflow: hidden;
+}
+
+.chat-header {
+    padding: 15px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    border-bottom: 1px solid var(--border);
+}
+
+.online {
+    color: #55efb3;
+    font-size: 11px;
+}
+
+.chat-messages {
+    padding: 15px;
+    min-height: 130px;
+}
+
+.message {
+    display: inline-block;
+    background: #20294b;
+    padding: 10px 13px;
+    border-radius: 14px 14px 14px 4px;
+    font-size: 12px;
+}
+
+.chat-input {
+    display: flex;
+    padding: 10px;
+    border-top: 1px solid var(--border);
+    gap: 7px;
+}
+
+.chat-input input {
+    flex: 1;
+    background: #080c1b;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 11px;
+    color: white;
+    outline: none;
+}
+
+.chat-input button {
+    width: 48px;
+    border: 0;
+    border-radius: 12px;
+    background: var(--purple);
+    color: white;
+}
+
+/* =========================
+   ADDRESS
+========================= */
+
+.address {
+    margin-top: 22px;
+    padding: 16px;
+    background: #0d1225;
+    border: 1px solid var(--border);
+    border-radius: 18px;
+}
+
+.address small {
+    color: var(--muted);
+}
+
+.address-code {
+    margin-top: 8px;
+    font-size: 10px;
+    color: #c5cae4;
+    word-break: break-all;
+}
+
+/* =========================
+   BOTTOM NAV
+========================= */
+
+.bottom-nav {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 72px;
+    background: rgba(7,10,24,.97);
+    border-top: 1px solid var(--border);
+    display: grid;
+    grid-template-columns: repeat(5,1fr);
+    z-index: 100;
+    backdrop-filter: blur(14px);
+}
+
+.nav-item {
+    border: 0;
+    background: transparent;
+    color: #7f89a9;
+    font-size: 10px;
+}
+
+.nav-item.active {
+    color: #9c65ff;
+}
+
+.nav-item div {
+    font-size: 21px;
+    margin-bottom: 4px;
+}
+
+/* =========================
+   TOAST
+========================= */
+
+#toast {
+    position: fixed;
+    left: 50%;
+    bottom: 90px;
+    transform: translateX(-50%) translateY(20px);
+    background: #171d35;
+    border: 1px solid rgba(124,60,255,.35);
+    color: white;
+    padding: 12px 18px;
+    border-radius: 14px;
+    opacity: 0;
+    pointer-events: none;
+    transition: .25s;
+    z-index: 200;
+    font-size: 12px;
+    white-space: nowrap;
+}
+
+#toast.show {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+}
+
+/* =========================
+   DESKTOP
+========================= */
+
+@media (min-width: 700px) {
+    body {
+        max-width: 520px;
+        margin: auto;
     }
-    .app{max-width:560px;margin:auto;min-height:100vh;padding-bottom:90px}
-    header{
-      padding:22px 18px 16px;
-      background:#0d1326;
-      border-bottom:1px solid #202946;
-      position:sticky;top:0;z-index:5;
+
+    .bottom-nav {
+        max-width: 520px;
+        left: 50%;
+        transform: translateX(-50%);
     }
-    .brand{font-size:25px;font-weight:800}
-    .sub{color:#9ca8c7;font-size:12px;margin-top:4px}
-    .badge{float:right;color:#6ee7b7;font-size:12px;margin-top:4px}
-    main{padding:16px}
-    .card{
-      background:#0e1529;
-      border:1px solid #202b4a;
-      border-radius:18px;
-      padding:18px;
-      margin-bottom:14px;
-      box-shadow:0 8px 25px rgba(0,0,0,.18);
-    }
-    .hero{text-align:center;padding:24px 18px}
-    .logo{
-      width:82px;height:82px;border-radius:50%;
-      margin:0 auto 12px;
-      display:flex;align-items:center;justify-content:center;
-      background:#151e39;border:2px solid #394a7a;
-      font-size:30px;font-weight:900;
-    }
-    h2,h3{margin:0 0 10px}
-    p{color:#aeb8d0;line-height:1.5}
-    .balance{font-size:36px;font-weight:900;margin:12px 0}
-    button{
-      width:100%;border:0;border-radius:13px;padding:14px;
-      font-size:15px;font-weight:800;cursor:pointer;
-      background:#fff;color:#080b13;margin-top:8px;
-    }
-    button:disabled{opacity:.45;cursor:not-allowed}
-    .secondary{background:#1a2340;color:#fff}
-    .status{
-      text-align:center;color:#9ca8c7;font-size:12px;
-      margin:12px 0;
-    }
-    .userrow{
-      display:flex;justify-content:space-between;gap:10px;
-      border-bottom:1px solid #202946;padding:9px 0;
-      font-size:13px;
-    }
-    .userrow:last-child{border-bottom:0}
-    .pet{
-      overflow:hidden;padding:0;
-    }
-    .pet img{
-      width:100%;height:230px;object-fit:cover;
-      display:block;background:#151e39;
-    }
-    .petbody{padding:16px}
-    .price{font-size:22px;font-weight:900;margin:7px 0}
-    .tag{font-size:11px;color:#9ca8c7}
-    .nav{
-      position:fixed;bottom:0;left:0;right:0;
-      background:#0d1326;border-top:1px solid #202946;
-      display:flex;justify-content:center;z-index:10;
-    }
-    .navinner{max-width:560px;width:100%;display:flex}
-    .nav button{
-      margin:0;border-radius:0;background:transparent;color:#9ca8c7;
-      padding:14px 8px;font-size:11px;
-    }
-    .nav button.active{color:#fff}
-    .tab{display:none}.tab.active{display:block}
-    .modal{
-      position:fixed;inset:0;background:rgba(0,0,0,.75);
-      display:none;align-items:flex-end;z-index:20;
-    }
-    .modal.show{display:flex}
-    .modalbox{
-      width:100%;max-width:560px;margin:auto;
-      background:#0e1529;border:1px solid #263354;
-      border-radius:22px 22px 0 0;padding:18px;
-      max-height:90vh;overflow:auto;
-    }
-    .modalbox img{width:100%;max-height:280px;object-fit:cover;border-radius:14px}
-    .close{background:#1a2340;color:#fff}
-    .tiny{font-size:11px;color:#7783a3}
-  </style>
+}
+</style>
 </head>
 
 <body>
-<div class="app">
 
-  <header>
-    <span class="badge" id="liveBadge">• OFFLINE</span>
-    <div class="brand">TT TOKEN</div>
-    <div class="sub">Mining • Rewards • Marketplace</div>
-  </header>
+<!-- HEADER -->
+<header class="header">
 
-  <main>
+    <div class="brand">
 
-    <!-- HOME / MINING -->
-    <section id="homeTab" class="tab active">
-      <div class="card hero">
         <div class="logo">TT</div>
-        <h2>TT Token Mining</h2>
-        <p>Connect your Pi account to start your TT mining journey.</p>
 
-        <button id="authBtn">🔑 CONNECT PI ACCOUNT</button>
-
-        <div class="status" id="status">SYSTEM OFFLINE</div>
-
-        <div class="userrow">
-          <span>Username</span>
-          <strong id="username">Not connected</strong>
-        </div>
-        <div class="userrow">
-          <span>Pi UID</span>
-          <strong id="piUid">—</strong>
-        </div>
-      </div>
-
-      <div class="card">
-        <h3>⛏️ Mining Balance</h3>
-        <div class="balance" id="balance">0.000000 TT</div>
-        <div class="tiny">Mining rate: 0.24 TT / hour</div>
-        <button id="mineBtn">⚡ START MINING</button>
-        <button id="claimBtn" class="secondary" disabled>🎁 CLAIM TT</button>
-      </div>
-
-      <div class="card">
-        <h3>🎁 Claimed TT</h3>
-        <div class="balance" id="claimedBalance">0.0000</div>
-        <p>Your claimed TT balance.</p>
-      </div>
-    </section>
-
-    <!-- MARKETPLACE -->
-    <section id="marketTab" class="tab">
-      <div class="card">
-        <h2>🐾 TT Marketplace</h2>
-        <p>Collect TT pets using Pi Testnet payments.</p>
-      </div>
-
-      <div class="card pet">
-        <div style="height:230px;display:flex;align-items:center;justify-content:center;background:#151e39;font-size:80px">
-          🐾
-        </div>
-        <div class="petbody">
-          <div class="tag">PET #001 • COMMON</div>
-          <h2>Pimon #001</h2>
-          <p>Starter TT companion for the marketplace.</p>
-          <div class="price">1 TEST-PI</div>
-          <button
-            class="pet-card"
-            data-name="Pimon #001"
-            data-price="1"
-            data-rarity="Common"
-            data-boost="Starter Pet"
-            data-ability="Basic Companion"
-            data-desc="Pimon #001 is the first TT Token marketplace pet."
-            data-img="">
-            🛒 VIEW & BUY PIMON
-          </button>
-        </div>
-      </div>
-    </section>
-
-    <!-- REFERRAL -->
-    <section id="refTab" class="tab">
-      <div class="card">
-        <h2>👥 TT Referral</h2>
-        <p>Your Pi username is used as your TT referral identity.</p>
-
-        <div class="userrow">
-          <span>Referral code</span>
-          <strong id="refCode">Connect Pi</strong>
+        <div class="brand-text">
+            <strong>TradeToken</strong>
+            <small>TT Digital Ecosystem</small>
         </div>
 
-        <div class="userrow">
-          <span>Referral link</span>
-          <strong id="invite" style="word-break:break-all">Connect Pi first</strong>
+    </div>
+
+    <div class="header-actions">
+
+        <button class="icon-btn"
+                onclick="showToast('Notifications coming soon')">
+            🔔
+        </button>
+
+        <button class="icon-btn"
+                onclick="toggleTheme()">
+            🌙
+        </button>
+
+    </div>
+
+</header>
+
+
+<!-- NETWORK -->
+<div class="network-wrap">
+
+    <button class="network"
+            onclick="switchNetwork()">
+
+        <div class="network-left">
+
+            <span class="network-dot"
+                  id="networkDot"></span>
+
+            <div>
+                <strong id="networkName">
+                    Pi Testnet
+                </strong>
+
+                <div style="font-size:10px;color:#8f99b9">
+                    Network
+                </div>
+            </div>
+
         </div>
 
-        <button id="copyReferralBtn">📋 COPY REFERRAL LINK</button>
-      </div>
+        <span>⌄</span>
 
-      <div class="card">
-        <h3>🏆 Referral Tier</h3>
-        <p>Starter → Bronze → Silver → Gold → Platinum → Diamond</p>
-      </div>
-    </section>
+    </button>
 
-    <!-- INFO -->
-    <section id="infoTab" class="tab">
-      <div class="card">
-        <h2>ℹ️ TT Token</h2>
-        <p>
-          TT Token is a Pi Testnet-focused mining and marketplace application.
-          Test purchases are made with Test-Pi during development.
-        </p>
-        <div class="userrow"><span>Supply target</span><strong>30,000,000 TT</strong></div>
-        <div class="userrow"><span>Mining rate</span><strong>0.24 TT/hour</strong></div>
-        <div class="userrow"><span>Network</span><strong>Pi Testnet</strong></div>
-      </div>
-    </section>
-
-  </main>
 </div>
+
+
+<!-- HERO -->
+<section class="hero">
+
+    <small>WELCOME BACK 👋</small>
+
+    <h1>TradeToken TT</h1>
+
+    <p>
+        Your gateway to TT wallet, marketplace,
+        referrals, chat and digital services.
+    </p>
+
+    <div class="status">
+        ● TT SYSTEM ONLINE
+    </div>
+
+</section>
+
+
+<!-- WALLET -->
+<section class="wallet-card">
+
+    <div class="wallet-title">
+        TOTAL WALLET VALUE
+    </div>
+
+    <div class="wallet-total">
+        <span>π</span>
+        <span id="totalPi">
+            0.000000
+        </span>
+    </div>
+
+    <div class="wallet-grid">
+
+        <div class="balance-box">
+
+            <small>Pi Balance</small>
+
+            <div class="balance pi"
+                 id="piBalance">
+                Connect Wallet
+            </div>
+
+        </div>
+
+
+        <div class="balance-box">
+
+            <small>TT Testnet Balance</small>
+
+            <div class="balance tt"
+                 id="ttBalance">
+                0.000000 TT
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <div class="wallet-buttons">
+
+        <button class="action-btn"
+                onclick="walletAction('Receive')">
+            Receive
+        </button>
+
+        <button class="action-btn"
+                onclick="walletAction('Send')">
+            Send
+        </button>
+
+        <button class="action-btn primary"
+                onclick="walletAction('Swap')">
+            Swap
+        </button>
+
+    </div>
+
+</section>
+
+
+<!-- QUICK LAUNCH -->
+<section class="section">
+
+    <div class="section-head">
+        <h2>⚡ Quick Launch</h2>
+        <span>View All</span>
+    </div>
+
+    <div class="quick-grid">
+
+        <button class="quick"
+                onclick="openFeature('Wallet')">
+            <span class="quick-icon">💰</span>
+            Wallet
+        </button>
+
+        <button class="quick"
+                onclick="openFeature('Marketplace')">
+            <span class="quick-icon">🛒</span>
+            Marketplace
+        </button>
+
+        <button class="quick"
+                onclick="openFeature('Swap')">
+            <span class="quick-icon">🔄</span>
+            Swap
+        </button>
+
+        <button class="quick"
+                onclick="openFeature('Referral')">
+            <span class="quick-icon">👥</span>
+            Referral
+        </button>
+
+        <button class="quick"
+                onclick="openFeature('Chat')">
+            <span class="quick-icon">💬</span>
+            TT Chat
+        </button>
+
+        <button class="quick"
+                onclick="openFeature('Security')">
+            <span class="quick-icon">🛡️</span>
+            Security
+        </button>
+
+        <button class="quick"
+                onclick="openFeature('History')">
+            <span class="quick-icon">📊</span>
+            History
+        </button>
+
+        <button class="quick"
+                onclick="openFeature('Rewards')">
+            <span class="quick-icon">🎁</span>
+            Rewards
+        </button>
+
+    </div>
+
+</section>
+
+
+<!-- SERVICES -->
+<section class="section">
+
+    <div class="section-head">
+        <h2>🚀 TT Services</h2>
+        <span>Explore</span>
+    </div>
+
+    <div class="cards">
+
+        <div class="feature">
+
+            <div class="feature-icon">🛒</div>
+
+            <h3>TT Marketplace</h3>
+
+            <p>
+                Buy and sell supported TT
+                assets and digital products.
+            </p>
+
+            <button onclick="openFeature('Marketplace')">
+                Open Marketplace
+            </button>
+
+        </div>
+
+
+        <div class="feature">
+
+            <div class="feature-icon">💱</div>
+
+            <h3>TT Swap</h3>
+
+            <p>
+                Prepare token swap functions
+                for supported assets.
+            </p>
+
+            <button onclick="openFeature('Swap')">
+                Open Swap
+            </button>
+
+        </div>
+
+
+        <div class="feature">
+
+            <div class="feature-icon">👥</div>
+
+            <h3>Referral Network</h3>
+
+            <p>
+                Invite users and track
+                referral activity.
+            </p>
+
+            <button onclick="openFeature('Referral')">
+                View Referral
+            </button>
+
+        </div>
+
+
+        <div class="feature">
+
+            <div class="feature-icon">🔐</div>
+
+            <h3>Security Center</h3>
+
+            <p>
+                Manage trusted members and
+                account security.
+            </p>
+
+            <button onclick="openFeature('Security')">
+                Security Center
+            </button>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- SECURITY CIRCLE -->
+<section class="section">
+
+    <div class="section-head">
+        <h2>🛡️ Security Circle</h2>
+        <span>Protected</span>
+    </div>
+
+    <div class="security">
+
+        <div class="security-row">
+
+            <div>
+                <strong>Account Security</strong>
+
+                <div style="color:#8f99b9;font-size:11px;margin-top:5px">
+                    Trusted network
+                </div>
+            </div>
+
+            <div class="security-status">
+                ● Active
+            </div>
+
+        </div>
+
+
+        <div class="security-circle">
+
+            <div class="member">👤</div>
+            <div class="member">👤</div>
+            <div class="member">👤</div>
+            <div class="member">＋</div>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- REFERRAL -->
+<section class="section">
+
+    <div class="section-head">
+        <h2>👥 Referral Network</h2>
+        <span>Invite</span>
+    </div>
+
+    <div class="referral">
+
+        <div style="color:#aeb8d8;font-size:12px">
+            YOUR REFERRAL CODE
+        </div>
+
+        <div class="ref-code">
+
+            <strong id="refCode">
+                TT-ALBERTO
+            </strong>
+
+            <button class="copy"
+                    onclick="copyReferral()">
+                Copy
+            </button>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- CHAT -->
+<section class="section">
+
+    <div class="section-head">
+        <h2>💬 TT Chat</h2>
+        <span>Community</span>
+    </div>
+
+    <div class="chat-box">
+
+        <div class="chat-header">
+
+            <div class="member">
+                💬
+            </div>
+
+            <div>
+                <strong>TradeToken Chat</strong>
+
+                <div class="online">
+                    ● Online
+                </div>
+            </div>
+
+        </div>
+
+
+        <div class="chat-messages"
+             id="chatMessages">
+
+            <div class="message">
+                Welcome to TradeToken TT! 👋
+            </div>
+
+        </div>
+
+
+        <div class="chat-input">
+
+            <input
+                id="chatInput"
+                type="text"
+                placeholder="Write a message..."
+                maxlength="200">
+
+            <button onclick="sendMessage()">
+                ➤
+            </button>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- WALLET ADDRESS -->
+<section class="section">
+
+    <div class="address">
+
+        <small>Connected Public Wallet Address</small>
+
+        <div class="address-code">
+            GAVFYNEHSTW4P65DM75P4TYAC6PNO5A6LGSYSGEFNN3O7A23XHWABSBP
+        </div>
+
+    </div>
+
+</section>
+
 
 <!-- BOTTOM NAV -->
-<nav class="nav">
-  <div class="navinner">
-    <button class="nav-item active" data-tab="homeTab">⛏️<br>MINING</button>
-    <button class="nav-item" data-tab="marketTab">🐾<br>MARKET</button>
-    <button class="nav-item" data-tab="refTab">👥<br>REFERRAL</button>
-    <button class="nav-item" data-tab="infoTab">ℹ️<br>INFO</button>
-  </div>
+<nav class="bottom-nav">
+
+    <button class="nav-item active"
+            onclick="scrollTopPage()">
+
+        <div>⌂</div>
+        Home
+
+    </button>
+
+
+    <button class="nav-item"
+            onclick="openFeature('Marketplace')">
+
+        <div>⌕</div>
+        Discover
+
+    </button>
+
+
+    <button class="nav-item"
+            onclick="openFeature('Chat')">
+
+        <div>💬</div>
+        TT Chat
+
+    </button>
+
+
+    <button class="nav-item"
+            onclick="openFeature('Wallet')">
+
+        <div>💰</div>
+        Wallet
+
+    </button>
+
+
+    <button class="nav-item"
+            onclick="openFeature('Profile')">
+
+        <div>♙</div>
+        Me
+
+    </button>
+
 </nav>
 
-<!-- PET MODAL -->
-<div class="modal" id="petModal">
-  <div class="modalbox">
-    <img id="modalPetImg" alt="Pimon #001" style="display:none">
-    <div class="tag" id="modalPetRarity">Common</div>
-    <h2 id="modalPetName">Pimon #001</h2>
-    <p><strong>Boost:</strong> <span id="modalPetBoost"></span></p>
-    <p><strong>Ability:</strong> <span id="modalPetAbility"></span></p>
-    <p id="modalPetDesc"></p>
 
-    <button id="modalBuyBtn">🛒 BUY WITH 1 TEST-PI</button>
-    <button id="closePetBtn" class="close">CLOSE</button>
-  </div>
-</div>
+<div id="toast"></div>
+
 
 <script>
-"use strict";
 
-const RENDER_BACKEND_URL = "https://trade-token-github-io.onrender.com";
-const RATE_PER_SECOND = 0.24 / 3600;
+/* =========================================
+   TRADETOKEN TT
+   MAIN APP SCRIPT
+========================================= */
 
-let piUser = null;
-let piAccessToken = null;
-let isPiInitialized = false;
 
-let miningInterval = null;
-let miningBalance = 0;
-let claimedBalance = 0;
-let lastMiningUpdate = 0;
-let isMining = false;
+/* -----------------------------------------
+   USER DATA
+----------------------------------------- */
 
-let selectedPetName = "";
-let selectedPetPrice = 1;
+const TT_WALLET_ADDRESS =
+"GAVFYNEHSTW4P65DM75P4TYAC6PNO5A6LGSYSGEFNN3O7A23XHWABSBP";
 
-let pendingIncompletePayment = null;
 
-const $ = id => document.getElementById(id);
+let currentUser = null;
+let currentNetwork = "Pi Testnet";
 
-function setStatus(text){
-  if($("status")) $("status").textContent = text;
-}
 
-function updateDisplays(){
-  $("balance").textContent = miningBalance.toFixed(6) + " TT";
-  $("claimedBalance").textContent = claimedBalance.toFixed(4);
-}
+/* -----------------------------------------
+   PI SDK INITIALIZATION
+----------------------------------------- */
 
-function switchTab(tabId, element){
-  document.querySelectorAll(".tab").forEach(x=>x.classList.remove("active"));
-  document.querySelectorAll(".nav-item").forEach(x=>x.classList.remove("active"));
-  const tab=$(tabId);
-  if(tab) tab.classList.add("active");
-  if(element) element.classList.add("active");
-}
+function initPi() {
 
-function openPetModal(card){
-  selectedPetName = card.dataset.name || "";
-  selectedPetPrice = Number(card.dataset.price);
+    if (typeof Pi === "undefined") {
 
-  if(!selectedPetName || !Number.isFinite(selectedPetPrice) || selectedPetPrice<=0){
-    alert("❌ Invalid pet information.");
-    return;
-  }
+        console.log("Pi SDK not available.");
 
-  $("modalPetName").textContent = selectedPetName;
-  $("modalPetRarity").textContent = card.dataset.rarity || "Common";
-  $("modalPetBoost").textContent = card.dataset.boost || "";
-  $("modalPetAbility").textContent = card.dataset.ability || "";
-  $("modalPetDesc").textContent = card.dataset.desc || "";
-  $("modalBuyBtn").textContent = "🛒 BUY WITH " + selectedPetPrice + " TEST-PI";
-  $("petModal").classList.add("show");
-}
+        return;
 
-function closePetModal(){
-  $("petModal").classList.remove("show");
-}
-
-async function initPiSDK(){
-  if(!window.Pi){
-    console.error("Pi SDK was not found.");
-    return false;
-  }
-
-  if(isPiInitialized) return true;
-
-  try{
-    await window.Pi.init({version:"2.0"});
-    isPiInitialized = true;
-    console.log("Pi SDK initialized.");
-    return true;
-  }catch(error){
-    console.error("Pi SDK initialization error:",error);
-    return false;
-  }
-}
-
-async function triggerPiLogin(){
-  const btn=$("authBtn");
-  const badge=$("liveBadge");
-
-  if(!window.Pi){
-    alert("Please open TT Token inside Pi Browser.");
-    return;
-  }
-
-  btn.disabled=true;
-  btn.textContent="⏳ CONNECTING...";
-  setStatus("Initializing Pi SDK...");
-  badge.textContent="• CONNECTING";
-
-  try{
-    if(!(await initPiSDK())) throw new Error("Pi SDK initialization failed.");
-
-    pendingIncompletePayment=null;
-
-    const result=await window.Pi.authenticate(
-      ["username","payments"],
-      function(payment){
-        console.log("Incomplete Pi payment found:",payment);
-        pendingIncompletePayment=payment;
-      }
-    );
-
-    if(!result || !result.user || !result.user.uid){
-      throw new Error("Pi authentication returned no valid user.");
     }
 
-    piUser=result.user;
-    piAccessToken=result.accessToken || null;
+    try {
 
-    if(!piAccessToken) throw new Error("Pi access token was not returned.");
+        Pi.init({
+            version: "2.0",
+            sandbox: true
+        });
 
-    $("username").textContent="@"+(piUser.username || "Pioneer");
-    $("piUid").textContent=piUser.uid.substring(0,8)+"...";
-    $("refCode").textContent=piUser.username || "—";
-    $("invite").textContent="https://tradetoken09.github.io?ref="+encodeURIComponent(piUser.username || "");
+        console.log("Pi SDK initialized.");
 
-    setStatus("SYSTEM ONLINE • CONNECTED");
-    badge.textContent="• LIVE";
-    btn.style.display="none";
+    } catch (error) {
 
-    $("mineBtn").disabled=false;
+        console.error(
+            "Pi SDK initialization error:",
+            error
+        );
 
-    console.log("Pi connection successful:",piUser);
+    }
 
-  }catch(error){
-    console.error("Pi authentication error:",error);
-    piUser=null;
-    piAccessToken=null;
-    setStatus("❌ PI AUTHENTICATION FAILED");
-    badge.textContent="• OFFLINE";
-    btn.textContent="🔑 RETRY CONNECT PI ACCOUNT";
-    btn.disabled=false;
-    alert("Pi connection failed.\n\n"+(error.message || String(error)));
-  }
 }
 
-function startMining(){
-  if(!piUser){
-    alert("🔑 Please connect your Pi account first.");
-    return;
-  }
 
-  if(isMining) return;
+/* -----------------------------------------
+   PI LOGIN
+----------------------------------------- */
 
-  isMining=true;
-  lastMiningUpdate=Date.now();
+async function connectPi() {
 
-  $("mineBtn").disabled=true;
-  $("mineBtn").textContent="⛏️ MINING...";
-  $("claimBtn").disabled=false;
+    if (typeof Pi === "undefined") {
 
-  setStatus("⛏️ MINING ACTIVE • 0.24 TT / HOUR");
+        showToast(
+            "Open TradeToken inside Pi Browser."
+        );
 
-  miningInterval=setInterval(()=>{
-    const now=Date.now();
-    miningBalance += RATE_PER_SECOND*((now-lastMiningUpdate)/1000);
-    lastMiningUpdate=now;
-    updateDisplays();
-  },1000);
-}
+        return;
 
-async function claimMiningReward(){
-  if(!piUser){
-    alert("🔑 Please connect your Pi account first.");
-    return;
-  }
+    }
 
-  if(isMining){
-    const now=Date.now();
-    miningBalance += RATE_PER_SECOND*((now-lastMiningUpdate)/1000);
-    lastMiningUpdate=now;
-    clearInterval(miningInterval);
-    miningInterval=null;
-    isMining=false;
-  }
 
-  const reward=miningBalance;
+    try {
 
-  if(reward<=0){
-    alert("⚠️ No TT reward available yet.");
-    return;
-  }
+        const scopes = [
+            "username",
+            "payments"
+        ];
 
-  const btn=$("claimBtn");
-  btn.disabled=true;
-  btn.textContent="⏳ CLAIMING...";
 
-  try{
-    const response=await fetch(RENDER_BACKEND_URL+"/api/mining/claim",{
-      method:"POST",
-      headers:{"Content-Type":"application/json"},
-      body:JSON.stringify({wallet:piUser.uid})
-    });
+        currentUser = await Pi.authenticate(
+            scopes,
+            onIncompletePaymentFound
+        );
 
-    const data=await response.json().catch(()=>({}));
 
-    if(!response.ok) throw new Error(data.error || "Backend HTTP "+response.status);
+        if (currentUser) {
 
-    miningBalance=0;
-    claimedBalance=data.balance!==undefined ? Number(data.balance) : claimedBalance+reward;
-    updateDisplays();
-
-    $("mineBtn").disabled=false;
-    $("mineBtn").textContent="⚡ START MINING";
-    setStatus("SYSTEM ONLINE • CLAIM SUCCESSFUL");
-
-    alert("🎉 TT CLAIM SUCCESSFUL!\n\nAmount: "+reward.toFixed(6)+" TT");
-
-  }catch(error){
-    console.error("Claim error:",error);
-    $("mineBtn").disabled=false;
-    $("mineBtn").textContent="⚡ START MINING";
-    setStatus("SYSTEM ONLINE • CLAIM FAILED");
-    alert("❌ Claim was not completed.\n\n"+(error.message || String(error)));
-  }finally{
-    btn.disabled=miningBalance<=0;
-    btn.textContent="🎁 CLAIM TT";
-  }
-}
-
-async function buyPet(){
-  if(!piUser){
-    alert("🔑 Please connect your Pi account first.");
-    return;
-  }
-
-  if(!piAccessToken){
-    alert("❌ Pi access token is missing. Please reconnect.");
-    return;
-  }
-
-  if(!window.Pi){
-    alert("❌ Pi SDK is not available. Open TT Token inside Pi Browser.");
-    return;
-  }
-
-  if(!selectedPetName || !Number.isFinite(selectedPetPrice) || selectedPetPrice<=0){
-    alert("❌ Invalid pet selection.");
-    return;
-  }
-
-  if(!(await initPiSDK())){
-    alert("❌ Pi SDK is not ready.");
-    return;
-  }
-
-  const btn=$("modalBuyBtn");
-  const originalText=btn.textContent;
-  btn.disabled=true;
-  btn.textContent="⏳ OPENING PI PAYMENT...";
-
-  try{
-    window.Pi.createPayment(
-      {
-        amount:selectedPetPrice,
-        memo:"TT Token Pet: "+selectedPetName,
-        metadata:{
-          productType:"pet",
-          petName:selectedPetName,
-          price:selectedPetPrice
-        }
-      },
-      {
-        onReadyForServerApproval:async function(paymentId){
-          console.log("PAYMENT APPROVAL REQUEST:",paymentId);
-
-          const response=await fetch(RENDER_BACKEND_URL+"/api/payments/approve",{
-            method:"POST",
-            headers:{"Content-Type":"application/json"},
-            body:JSON.stringify({
-              paymentId,
-              uid:piUser.uid,
-              accessToken:piAccessToken
-            })
-          });
-
-          const data=await response.json().catch(()=>({}));
-
-          console.log("APPROVAL RESPONSE:",response.status,data);
-
-          if(!response.ok || !data.success){
-            throw new Error(data.error || "Payment approval failed.");
-          }
-        },
-
-        onReadyForServerCompletion:async function(paymentId,txid){
-          console.log("PAYMENT COMPLETION REQUEST:",{paymentId,txid});
-
-          try{
-            const response=await fetch(RENDER_BACKEND_URL+"/api/payments/complete",{
-              method:"POST",
-              headers:{"Content-Type":"application/json"},
-              body:JSON.stringify({
-                paymentId,
-                txid,
-                uid:piUser.uid,
-                accessToken:piAccessToken
-              })
-            });
-
-            const data=await response.json().catch(()=>({}));
-
-            console.log("COMPLETION RESPONSE:",response.status,data);
-
-            if(!response.ok || !data.success){
-              throw new Error(data.error || "Payment completion failed.");
-            }
-
-            closePetModal();
-            setStatus("SYSTEM ONLINE • PET PURCHASE SUCCESSFUL");
-
-            alert(
-              "🎉 PET PURCHASE SUCCESSFUL!\n\n"+
-              "Pet: "+selectedPetName+
-              "\nPrice: "+selectedPetPrice+" TEST-PI"+
-              "\n\nTransaction: "+txid
+            showToast(
+                "Pi account connected: @" +
+                currentUser.username
             );
 
-          }catch(error){
-            console.error("Completion error:",error);
-            alert("⚠️ Pi payment was submitted, but TT server could not confirm it yet.\n\n"+(error.message || String(error)));
-          }finally{
-            btn.disabled=false;
-            btn.textContent=originalText;
-          }
-        },
+            document.getElementById(
+                "piBalance"
+            ).textContent =
+                "Connected";
 
-        onCancel:function(paymentId){
-          console.log("Payment cancelled/expired:",paymentId);
-          btn.disabled=false;
-          btn.textContent=originalText;
-          setStatus("SYSTEM ONLINE • PAYMENT CANCELLED");
-          alert("⏰ Pi payment expired or was cancelled.\n\nNo pet was purchased.\n\nPlease start the BUY process again.");
-        },
-
-        onError:function(error,payment){
-          console.error("Pi payment error:",error,payment);
-          btn.disabled=false;
-          btn.textContent=originalText;
-          setStatus("SYSTEM ONLINE • PAYMENT FAILED");
-          alert("❌ Pi payment failed.\n\n"+(error?.message || error?.error || String(error)));
         }
-      }
-    );
-  }catch(error){
-    console.error("createPayment error:",error);
-    btn.disabled=false;
-    btn.textContent=originalText;
-    alert("❌ Could not start Pi payment.\n\n"+(error.message || String(error)));
-  }
+
+    } catch (error) {
+
+        console.error(error);
+
+        showToast(
+            "Pi connection failed."
+        );
+
+    }
+
 }
 
-document.addEventListener("DOMContentLoaded",()=>{
-  $("authBtn").addEventListener("click",triggerPiLogin);
-  $("mineBtn").addEventListener("click",startMining);
-  $("claimBtn").addEventListener("click",claimMiningReward);
-  $("copyReferralBtn").addEventListener("click",()=>{
-    const text=$("invite").textContent.trim();
-    if(!text || text==="Connect Pi first"){
-      alert("🔑 Connect your Pi account first.");
-      return;
-    }
-    if(navigator.clipboard && window.isSecureContext){
-      navigator.clipboard.writeText(text)
-        .then(()=>alert("✅ Referral link copied!"))
-        .catch(()=>window.prompt("Copy your referral link:",text));
-    }else{
-      window.prompt("Copy your referral link:",text);
-    }
-  });
 
-  $("closePetBtn").addEventListener("click",closePetModal);
-  $("petModal").addEventListener("click",e=>{
-    if(e.target===$("petModal")) closePetModal();
-  });
-  $("modalBuyBtn").addEventListener("click",buyPet);
+/* -----------------------------------------
+   INCOMPLETE PAYMENT
+----------------------------------------- */
 
-  document.querySelectorAll(".nav-item").forEach(item=>{
-    item.addEventListener("click",e=>{
-      e.preventDefault();
-      switchTab(item.dataset.tab,item);
+function onIncompletePaymentFound(payment) {
+
+    console.log(
+        "Incomplete Pi payment:",
+        payment
+    );
+
+    showToast(
+        "Incomplete Pi payment detected."
+    );
+
+}
+
+
+/* -----------------------------------------
+   NETWORK SWITCH
+----------------------------------------- */
+
+function switchNetwork() {
+
+    if (currentNetwork === "Pi Testnet") {
+
+        currentNetwork = "Pi Mainnet";
+
+    } else {
+
+        currentNetwork = "Pi Testnet";
+
+    }
+
+
+    document.getElementById(
+        "networkName"
+    ).textContent = currentNetwork;
+
+
+    showToast(
+        "Network: " + currentNetwork
+    );
+
+}
+
+
+/* -----------------------------------------
+   WALLET ACTIONS
+----------------------------------------- */
+
+function walletAction(action) {
+
+    if (action === "Receive") {
+
+        showToast(
+            "Receive: use your public TT wallet address."
+        );
+
+        return;
+
+    }
+
+
+    if (action === "Send") {
+
+        showToast(
+            "Send module will be connected to the TT wallet."
+        );
+
+        return;
+
+    }
+
+
+    if (action === "Swap") {
+
+        showToast(
+            "TT Swap module ready for integration."
+        );
+
+        return;
+
+    }
+
+}
+
+
+/* -----------------------------------------
+   FEATURE BUTTONS
+----------------------------------------- */
+
+function openFeature(name) {
+
+    showToast(
+        name + " module selected."
+    );
+
+}
+
+
+/* -----------------------------------------
+   REFERRAL COPY
+----------------------------------------- */
+
+function copyReferral() {
+
+    const code =
+        document.getElementById(
+            "refCode"
+        ).textContent.trim();
+
+
+    if (
+        navigator.clipboard &&
+        navigator.clipboard.writeText
+    ) {
+
+        navigator.clipboard
+            .writeText(code)
+            .then(function() {
+
+                showToast(
+                    "Referral code copied."
+                );
+
+            })
+            .catch(function() {
+
+                showToast(
+                    "Copy failed."
+                );
+
+            });
+
+    } else {
+
+        showToast(
+            "Clipboard unavailable."
+        );
+
+    }
+
+}
+
+
+/* -----------------------------------------
+   CHAT
+----------------------------------------- */
+
+function sendMessage() {
+
+    const input =
+        document.getElementById(
+            "chatInput"
+        );
+
+    const message =
+        input.value.trim();
+
+
+    if (!message) {
+
+        return;
+
+    }
+
+
+    const container =
+        document.getElementById(
+            "chatMessages"
+        );
+
+
+    const bubble =
+        document.createElement("div");
+
+    bubble.className =
+        "message";
+
+    bubble.style.display =
+        "block";
+
+    bubble.style.marginTop =
+        "8px";
+
+    bubble.style.marginLeft =
+        "25px";
+
+    bubble.style.background =
+        "#7137ff";
+
+    bubble.textContent =
+        message;
+
+
+    container.appendChild(
+        bubble
+    );
+
+
+    input.value = "";
+
+
+    container.scrollTop =
+        container.scrollHeight;
+
+}
+
+
+/* -----------------------------------------
+   THEME
+----------------------------------------- */
+
+function toggleTheme() {
+
+    showToast(
+        "Dark mode is already active."
+    );
+
+}
+
+
+/* -----------------------------------------
+   TOAST
+----------------------------------------- */
+
+let toastTimer = null;
+
+
+function showToast(message) {
+
+    const toast =
+        document.getElementById(
+            "toast"
+        );
+
+
+    toast.textContent =
+        message;
+
+
+    toast.classList.add(
+        "show"
+    );
+
+
+    clearTimeout(
+        toastTimer
+    );
+
+
+    toastTimer = setTimeout(
+        function() {
+
+            toast.classList.remove(
+                "show"
+            );
+
+        },
+        2200
+    );
+
+}
+
+
+/* -----------------------------------------
+   HOME
+----------------------------------------- */
+
+function scrollTopPage() {
+
+    window.scrollTo({
+        top: 0,
+        behavior: "smooth"
     });
-  });
 
-  document.querySelectorAll(".pet-card").forEach(card=>{
-    card.addEventListener("click",()=>openPetModal(card));
-  });
+}
 
-  $("mineBtn").disabled=false;
-  $("claimBtn").disabled=true;
-  updateDisplays();
 
-  console.log("TT Token frontend initialized.");
-  console.log("Backend:",RENDER_BACKEND_URL);
-});
+/* -----------------------------------------
+   START
+----------------------------------------- */
+
+document.addEventListener(
+    "DOMContentLoaded",
+    function() {
+
+        initPi();
+
+        console.log(
+            "TradeToken TT loaded."
+        );
+
+        console.log(
+            "Public wallet:",
+            TT_WALLET_ADDRESS
+        );
+
+    }
+);
+
 </script>
+
 </body>
 </html>
