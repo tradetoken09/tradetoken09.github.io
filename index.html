@@ -4,65 +4,244 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
 <title>TT Mining Core V4</title>
+<!-- Official Pi Network SDK -->
 <script src="https://sdk.minepi.com/pi-sdk.js"></script>
 <style>
-:root{--bg:#050812;--panel:#0b1020;--panel2:#10172a;--gold:#ffc928;--purple:#a855f7;--cyan:#20e0ff;--green:#35e58b;--red:#ff5577;--muted:#91a0b8}
-*{box-sizing:border-box}body{margin:0;background:radial-gradient(circle at 50% 15%,#17103a 0,#070a14 38%,#03050b 100%);color:#fff;font-family:Arial,sans-serif;min-height:100vh}
-button{font:inherit;color:inherit}.top{position:sticky;top:0;z-index:20;background:rgba(4,7,15,.94);backdrop-filter:blur(12px);border-bottom:1px solid #293451;padding:12px 14px}
-.toprow{display:flex;align-items:center;justify-content:space-between}.brand{display:flex;gap:10px;align-items:center}.logo{width:42px;height:42px;border:1px solid var(--gold);border-radius:13px;display:grid;place-items:center;color:var(--gold);font-weight:900;box-shadow:0 0 18px #7c3aed55}.title{font-weight:900;letter-spacing:.5px}.sub{font-size:10px;color:var(--muted)}.iconbtn{width:44px;height:44px;border-radius:14px;background:#0c1425;border:1px solid #33415e;font-size:21px}
-main{max-width:720px;margin:auto;padding:14px 12px 100px}.view{display:none}.view.active{display:block}
-.grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px}.card{background:linear-gradient(145deg,#10182a,#070b16);border:1px solid #293858;border-radius:18px;padding:14px;box-shadow:0 12px 35px #0008}.label{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:1px}.value{font-size:24px;font-weight:900;margin-top:5px}.green{color:var(--green)}.gold{color:var(--gold)}.purple{color:#c084fc}
-.core{margin:12px 0;position:relative;text-align:center;padding:18px 8px 20px;overflow:hidden;border:1px solid #6842a5;border-radius:24px;background:radial-gradient(circle,#271052 0,#0b0d1b 58%,#070a12 100%);box-shadow:0 0 40px #7c3aed35}.core:before{content:"";position:absolute;inset:20px 24%;border:3px solid #a855f7;border-radius:50%;box-shadow:0 0 35px #a855f7, inset 0 0 30px #a855f7;animation:pulse 2.2s infinite}.core>*{position:relative;z-index:1}@keyframes pulse{50%{transform:scale(1.06);opacity:.7}}.coretag{font-size:12px;color:var(--gold);font-weight:900}.corev{font-size:38px;font-weight:1000;color:#d8b4fe;margin:4px}.tt{font-size:64px;font-weight:1000;margin:28px 0;color:#f0e9ff;text-shadow:0 0 22px #c084fc}.power{font-size:13px}.power b{font-size:25px;color:#c084fc}.status{display:inline-block;margin-top:14px;padding:9px 16px;border-radius:14px;border:1px solid #23a66a;background:#07351f;color:var(--green);font-weight:900}
-.panelbtn{width:100%;border:1px solid #765414;background:linear-gradient(180deg,#3c2b08,#171107);padding:12px;border-radius:12px;font-weight:900;margin-top:10px}.panelbtn:active,.navbtn:active{transform:scale(.98)}
-.sectionhead{display:flex;justify-content:space-between;align-items:center;margin:15px 2px 9px}.sectionhead h2{font-size:16px;margin:0}.tiny{font-size:11px;color:var(--muted)}
-.profilebar{display:grid;grid-template-columns:1.1fr 1fr 1fr;gap:8px;align-items:center}.profilebar .card{min-height:82px}.avatar{font-weight:1000;font-size:20px;color:var(--gold)}
-.progress{height:7px;background:#222b3c;border-radius:99px;overflow:hidden;margin-top:8px}.progress i{display:block;width:62%;height:100%;background:linear-gradient(90deg,#ffc928,#a855f7)}
-.squad{display:grid;grid-template-columns:repeat(4,1fr);gap:7px}.pet{background:#0b1020;border:1px solid #42516f;border-radius:13px;padding:5px;text-align:center;cursor:pointer}.pet img{width:100%;aspect-ratio:1;border-radius:9px;object-fit:cover;background:#151b2b}.pet b{display:block;font-size:10px;margin-top:4px}.pet span{font-size:9px;color:var(--gold)}
-.filters{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:12px}.select{background:#0b1323;border:1px solid #354764;border-radius:12px;padding:12px;color:#fff}
-.actions{display:grid;grid-template-columns:repeat(5,1fr);gap:7px;margin-top:14px}.navbtn{min-height:76px;background:linear-gradient(145deg,#10192a,#070b14);border:1px solid #34425d;border-radius:14px;font-size:10px;font-weight:900;cursor:pointer}.navbtn strong{display:block;font-size:25px;margin-bottom:5px;color:var(--gold)}
-.social{display:grid;grid-template-columns:repeat(5,1fr);gap:7px;margin-top:8px}.social .navbtn strong{font-size:21px}
-.bottom{position:fixed;bottom:0;left:0;right:0;z-index:30;background:#060a13ee;border-top:1px solid #28344c;display:grid;grid-template-columns:repeat(5,1fr);padding:7px 5px calc(7px + env(safe-area-inset-bottom))}.bottom button{background:none;border:0;color:#aeb9ca;font-size:9px}.bottom button.active{color:var(--gold)}.bottom b{display:block;font-size:21px}
-.pageTitle{font-size:25px;font-weight:1000;margin:8px 0 14px}.list{display:grid;gap:9px}.rowitem{display:flex;justify-content:space-between;align-items:center;padding:13px;border:1px solid #293958;border-radius:14px;background:#0b1120}.copy{padding:10px 14px;border-radius:10px;border:1px solid #755a16;background:#221a08;color:var(--gold);font-weight:900}.notice{padding:12px;border-radius:13px;background:#10172a;border:1px solid #33415e;color:#c7d0df;font-size:12px;line-height:1.5}
-#toast{position:fixed;left:50%;bottom:90px;transform:translateX(-50%);background:#111a2c;border:1px solid #51627f;border-radius:12px;padding:11px 15px;display:none;z-index:50;font-size:12px}
-@media(max-width:430px){.profilebar{grid-template-columns:1fr 1fr}.profilebar .card:first-child{grid-column:1/-1}.actions{grid-template-columns:repeat(5,1fr)}.navbtn{font-size:8px}.squad b{font-size:8px}}
+:root{
+  --bg:#050812;--panel:#0b1020;--panel2:#10172a;
+  --gold:#ffc928;--purple:#a855f7;--cyan:#20e0ff;
+  --green:#35e58b;--red:#ff5577;--muted:#91a0b8;
+}
+*{box-sizing:border-box}
+body{margin:0;background:radial-gradient(circle at 50% 15%,#17103a 0,#070a14 38%,#03050b 100%);color:#fff;font-family:Arial,sans-serif;min-height:100vh}
+button{font:inherit;color:inherit;cursor:pointer}
+.top{position:sticky;top:0;z-index:20;background:rgba(4,7,15,.94);backdrop-filter:blur(12px);border-bottom:1px solid #293451;padding:12px 14px}
+.toprow{display:flex;align-items:center;justify-content:space-between}
+.brand{display:flex;gap:10px;align-items:center}
+.logo{width:42px;height:42px;border:1px solid var(--gold);border-radius:13px;display:grid;place-items:center;color:var(--gold);font-weight:900;box-shadow:0 0 18px #7c3aed55}
+.title{font-weight:900;letter-spacing:.5px}
+.sub{font-size:10px;color:var(--muted)}
+.iconbtn{width:44px;height:44px;border-radius:14px;background:#0c1425;border:1px solid #33415e;font-size:21px}
+main{max-width:720px;margin:auto;padding:14px 12px 100px}
+.view{display:none}.view.active{display:block}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.card{background:linear-gradient(145deg,#10182a,#070b16);border:1px solid #293858;border-radius:18px;padding:14px;box-shadow:0 12px 35px #0008}
+.label{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:1px}
+.value{font-size:24px;font-weight:900;margin-top:5px}
+.green{color:var(--green)}.gold{color:var(--gold)}.purple{color:#c084fc}.red{color:var(--red)}
+.core{margin:12px 0;position:relative;text-align:center;padding:18px 8px 20px;overflow:hidden;border:1px solid #6842a5;border-radius:24px;background:radial-gradient(circle,#271052 0,#0b0d1b 58%,#070a12 100%);box-shadow:0 0 40px #7c3aed35}
+.core:before{content:"";position:absolute;inset:20px 24%;border:3px solid #a855f7;border-radius:50%;box-shadow:0 0 35px #a855f7, inset 0 0 30px #a855f7;animation:pulse 2.2s infinite}
+.core>*{position:relative;z-index:1}
+@keyframes pulse{50%{transform:scale(1.06);opacity:.7}}
+.coretag{font-size:12px;color:var(--gold);font-weight:900}
+.corev{font-size:38px;font-weight:1000;color:#d8b4fe;margin:4px}
+.tt{font-size:64px;font-weight:1000;margin:28px 0;color:#f0e9ff;text-shadow:0 0 22px #c084fc}
+.power{font-size:13px}.power b{font-size:25px;color:#c084fc}
+.status{display:inline-block;margin-top:14px;padding:9px 16px;border-radius:14px;border:1px solid #23a66a;background:#07351f;color:var(--green);font-weight:900}
+.status.off{border-color:#7a2a3a;background:#2a0f15;color:var(--red)}
+.panelbtn{width:100%;border:1px solid #765414;background:linear-gradient(180deg,#3c2b08,#171107);padding:14px;border-radius:12px;font-weight:900;margin-top:10px}
+.panelbtn:disabled{opacity:.55;cursor:not-allowed}
+.panelbtn.primary{border-color:#6d28d9;background:linear-gradient(180deg,#5b21b6,#2e1065)}
+.panelbtn.success{border-color:#15803d;background:linear-gradient(180deg,#166534,#052e16)}
+.sectionhead{display:flex;justify-content:space-between;align-items:center;margin:15px 2px 9px}
+.sectionhead h2{font-size:16px;margin:0}
+.tiny{font-size:11px;color:var(--muted)}
+.profilebar{display:grid;grid-template-columns:1.1fr 1fr 1fr;gap:8px;align-items:center}
+.profilebar .card{min-height:82px}
+.avatar{font-weight:1000;font-size:20px;color:var(--gold)}
+.progress{height:7px;background:#222b3c;border-radius:99px;overflow:hidden;margin-top:8px}
+.progress i{display:block;width:0%;height:100%;background:linear-gradient(90deg,#ffc928,#a855f7);transition:width .3s}
+.squad{display:grid;grid-template-columns:repeat(4,1fr);gap:7px}
+.pet{background:#0b1020;border:1px solid #42516f;border-radius:13px;padding:5px;text-align:center;cursor:pointer}
+.pet img{width:100%;aspect-ratio:1;border-radius:9px;object-fit:cover;background:#151b2b}
+.pet b{display:block;font-size:10px;margin-top:4px}
+.pet span{font-size:9px;color:var(--gold)}
+.filters{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:12px}
+.select{background:#0b1323;border:1px solid #354764;border-radius:12px;padding:12px;color:#fff}
+.actions{display:grid;grid-template-columns:repeat(5,1fr);gap:7px;margin-top:14px}
+.navbtn{min-height:76px;background:linear-gradient(145deg,#10192a,#070b14);border:1px solid #34425d;border-radius:14px;font-size:10px;font-weight:900}
+.navbtn strong{display:block;font-size:25px;margin-bottom:5px;color:var(--gold)}
+.social{display:grid;grid-template-columns:repeat(5,1fr);gap:7px;margin-top:8px}
+.social .navbtn strong{font-size:21px}
+.bottom{position:fixed;bottom:0;left:0;right:0;z-index:30;background:#060a13ee;border-top:1px solid #28344c;display:grid;grid-template-columns:repeat(5,1fr);padding:7px 5px calc(7px + env(safe-area-inset-bottom))}
+.bottom button{background:none;border:0;color:#aeb9ca;font-size:9px}
+.bottom button.active{color:var(--gold)}
+.bottom b{display:block;font-size:21px}
+.pageTitle{font-size:25px;font-weight:1000;margin:8px 0 14px}
+.list{display:grid;gap:9px}
+.rowitem{display:flex;justify-content:space-between;align-items:center;padding:13px;border:1px solid #293958;border-radius:14px;background:#0b1120}
+.copy{padding:10px 14px;border-radius:10px;border:1px solid #755a16;background:#221a08;color:var(--gold);font-weight:900}
+.notice{padding:12px;border-radius:13px;background:#10172a;border:1px solid #33415e;color:#c7d0df;font-size:12px;line-height:1.5}
+#toast{position:fixed;left:50%;bottom:90px;transform:translateX(-50%);background:#111a2c;border:1px solid #51627f;border-radius:12px;padding:11px 15px;display:none;z-index:50;font-size:12px;max-width:90%;text-align:center}
+
+/* ===== LOGIN PAGE ===== */
+#loginView{
+  min-height:calc(100vh - 70px);
+  display:none;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  text-align:center;
+  padding:24px 16px 100px;
+}
+#loginView.active{display:flex}
+.login-card{
+  width:100%;
+  max-width:380px;
+  background:linear-gradient(160deg,#121a2e,#080c18);
+  border:1px solid #3d2a6b;
+  border-radius:24px;
+  padding:28px 22px;
+  box-shadow:0 20px 50px #000a,0 0 40px #7c3aed33;
+}
+.login-logo{
+  width:72px;height:72px;margin:0 auto 16px;
+  border:2px solid var(--gold);border-radius:20px;
+  display:grid;place-items:center;font-size:28px;font-weight:900;color:var(--gold);
+  box-shadow:0 0 30px #7c3aed66;
+}
+.login-title{font-size:22px;font-weight:1000;margin:0 0 6px}
+.login-sub{font-size:13px;color:var(--muted);margin-bottom:22px;line-height:1.45}
+.login-status{
+  font-size:12px;padding:10px 14px;border-radius:12px;margin-bottom:16px;
+  background:#0d1525;border:1px solid #33415e;color:#aeb9ca;
+}
+.login-status.ok{border-color:#15803d;color:var(--green);background:#052e16}
+.login-status.err{border-color:#9f1239;color:#fda4af;background:#2a0f15}
+.pi-btn{
+  width:100%;padding:16px;border-radius:14px;font-weight:900;font-size:15px;
+  border:1px solid #7c3aed;background:linear-gradient(180deg,#6d28d9,#3b0764);
+  box-shadow:0 8px 24px #7c3aed44;margin-bottom:12px;
+}
+.pi-btn:disabled{opacity:.6}
+.guest-btn{
+  width:100%;padding:12px;border-radius:12px;font-weight:700;font-size:13px;
+  border:1px solid #33415e;background:#0c1425;color:var(--muted);
+}
+.hint{font-size:11px;color:var(--muted);margin-top:18px;line-height:1.5}
+
+@media(max-width:430px){
+  .profilebar{grid-template-columns:1fr 1fr}
+  .profilebar .card:first-child{grid-column:1/-1}
+  .actions{grid-template-columns:repeat(5,1fr)}
+  .navbtn{font-size:8px}
+  .squad b{font-size:8px}
+}
 </style>
 </head>
 <body>
-<header class="top">
+<header class="top" id="appHeader" style="display:none">
  <div class="toprow">
   <button class="iconbtn" onclick="toast('Menu')">☰</button>
-  <div class="brand"><div class="logo">TT</div><div><div class="title">TT MINING CORE <span class="purple">V4</span></div><div class="sub">AMT ECOSYSTEM • PI TESTNET</div></div></div>
-  <button class="iconbtn" onclick="toast('Notifications')">♧</button>
+  <div class="brand">
+    <div class="logo">TT</div>
+    <div>
+      <div class="title">TT MINING CORE <span class="purple">V4</span></div>
+      <div class="sub">AMT ECOSYSTEM • PI TESTNET</div>
+    </div>
+  </div>
+  <button class="iconbtn" id="headerLogout" onclick="logout()" title="Logout">⏻</button>
  </div>
 </header>
 
-<main>
+<!-- ==================== LOGIN VIEW ==================== -->
+<section id="loginView" class="view">
+  <div class="login-card">
+    <div class="login-logo">TT</div>
+    <h1 class="login-title">TT Mining Core V4</h1>
+    <p class="login-sub">Alberto Marketplace Token<br>Pi Testnet Mining</p>
+
+    <div id="loginStatus" class="login-status">Checking Pi Browser…</div>
+
+    <button class="pi-btn" id="btnPiLogin" onclick="doLogin()" disabled>
+      🔐 Sign in with Pi
+    </button>
+
+    <button class="guest-btn" id="btnGuest" onclick="enterGuest()" style="display:none">
+      Continue as Guest (view only)
+    </button>
+
+    <p class="hint">
+      Gumagamit ng <b>Official Pi SDK</b> (<code>sdk.minepi.com</code>).<br>
+      Buksan ang app sa <b>Pi Browser</b> para makapag-login.<br>
+      Kung nasa normal browser ka, limited view lang ang available.
+    </p>
+  </div>
+</section>
+
+<main id="appMain" style="display:none">
 <!-- DASHBOARD -->
 <section id="dashboard" class="view active">
  <div class="grid2">
-  <div class="card"><div class="label">Mining status</div><div class="value green" id="mineStatus">● ACTIVE</div><div class="tiny">24/7 HARD MINING</div><div class="label" style="margin-top:12px">Rate</div><b id="rate">0.0100 AMT / HOUR</b></div>
-  <div class="card"><div class="label">AMT balance</div><div class="value gold" id="balance">0.00000000</div><div class="tiny">AMT • Pi Testnet</div><button class="panelbtn" onclick="go('wallet')">OPEN WALLET</button></div>
+  <div class="card">
+    <div class="label">Mining status</div>
+    <div class="value green" id="mineStatus">● READY</div>
+    <div class="tiny" id="mineSub">Tap Start to begin</div>
+    <div class="label" style="margin-top:12px">Rate</div>
+    <b id="rate">0.0100 AMT / HOUR</b>
+  </div>
+  <div class="card">
+    <div class="label">AMT balance</div>
+    <div class="value gold" id="balance">0.00000000</div>
+    <div class="tiny">AMT • Pi Testnet</div>
+    <button class="panelbtn" onclick="go('wallet')">OPEN WALLET</button>
+  </div>
  </div>
- <div class="core"><div class="coretag">TT MINING CORE</div><div class="corev">V4</div><div class="tt">TT</div><div class="power">POWER LEVEL<br><b>100%</b></div><div class="status" id="coreStatus">● ACTIVE MINING</div></div>
+
+ <div class="core">
+   <div class="coretag">TT MINING CORE</div>
+   <div class="corev">V4</div>
+   <div class="tt">TT</div>
+   <div class="power">POWER LEVEL<br><b id="powerLevel">100%</b></div>
+   <div class="status off" id="coreStatus">● READY TO MINE</div>
+ </div>
+
  <div class="grid2">
-  <div class="card"><div class="label">Mining time left</div><div class="value purple" id="timer">24:00:00</div><button class="panelbtn" onclick="startMining()">START / BOOST</button></div>
-  <div class="card"><div class="label">Daily reward</div><div class="value gold" id="daily">+0.2400 AMT</div><button class="panelbtn" onclick="go('reward')">CLAIM REWARD</button></div>
+  <div class="card">
+    <div class="label">Mining time left</div>
+    <div class="value purple" id="timer">24:00:00</div>
+    <button class="panelbtn primary" id="btnStartMine" onclick="startMining()">⛏ START MINING</button>
+  </div>
+  <div class="card">
+    <div class="label">Session reward</div>
+    <div class="value gold" id="daily">+0.0000 AMT</div>
+    <button class="panelbtn success" id="btnClaim" onclick="claim()" disabled>💰 CLAIM REWARD</button>
+  </div>
  </div>
- <div class="sectionhead"><h2>👤 Miner</h2><span class="tiny" id="loginState">Not signed in</span></div>
+
+ <div class="sectionhead">
+   <h2>👤 Miner</h2>
+   <span class="tiny" id="loginState">Signed in</span>
+ </div>
  <div class="profilebar">
-  <div class="card"><div class="avatar" id="username">Pi Pioneer</div><div class="tiny" id="uid">@pioneer</div></div>
-  <div class="card"><div class="label">Reputation</div><div class="value gold" id="rep">0</div></div>
-  <div class="card"><div class="label">Referral</div><div class="purple" id="tier">PIONEER</div><div class="progress"><i id="tierProgress"></i></div></div>
+  <div class="card">
+    <div class="avatar" id="username">—</div>
+    <div class="tiny" id="uid">@—</div>
+  </div>
+  <div class="card">
+    <div class="label">Reputation</div>
+    <div class="value gold" id="rep">0</div>
+  </div>
+  <div class="card">
+    <div class="label">Referral</div>
+    <div class="purple" id="tier">PIONEER</div>
+    <div class="progress"><i id="tierProgress"></i></div>
+  </div>
  </div>
+
  <div class="sectionhead"><h2>🐾 My Pet Owner</h2><span class="tiny">4/4 active</span></div>
  <div class="notice">Equipped pets stay here only. Your Profile does <b>not</b> show the squad. Tap a pet to see its abilities.</div>
  <div class="squad" style="margin-top:8px">
-  <div class="pet" onclick="petDetails('Ember Wing','Lv.15','+22% Mining Speed','MYTHIC')"><img src="https://images.unsplash.com/photo-1511497584788-876760111969?auto=format&fit=crop&w=300&q=70"><b>EMBER WING</b><span>+22% Mining</span></div>
-  <div class="pet" onclick="petDetails('Foxie','Lv.12','-5% Marketplace Fee','LEGEND')"><img src="https://images.unsplash.com/photo-1474511320723-9a56873867b5?auto=format&fit=crop&w=300&q=70"><b>FOXIE</b><span>-5% Fee</span></div>
-  <div class="pet" onclick="petDetails('Shadowclaw','Lv.10','+10% Reward Boost','MYTHIC')"><img src="https://images.unsplash.com/photo-1546182990-dffeafbe841d?auto=format&fit=crop&w=300&q=70"><b>SHADOWCLAW</b><span>+10% Reward</span></div>
-  <div class="pet" onclick="petDetails('Luna','Lv.8','+5% Referral Bonus','EPIC')"><img src="https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?auto=format&fit=crop&w=300&q=70"><b>LUNA</b><span>+5% Referral</span></div>
+  <div class="pet" onclick="petDetails('Ember Wing','Lv.15','+22% Mining Speed','MYTHIC')"><img src="https://images.unsplash.com/photo-1511497584788-876760111969?auto=format&fit=crop&w=300&q=70" alt=""><b>EMBER WING</b><span>+22% Mining</span></div>
+  <div class="pet" onclick="petDetails('Foxie','Lv.12','-5% Marketplace Fee','LEGEND')"><img src="https://images.unsplash.com/photo-1474511320723-9a56873867b5?auto=format&fit=crop&w=300&q=70" alt=""><b>FOXIE</b><span>-5% Fee</span></div>
+  <div class="pet" onclick="petDetails('Shadowclaw','Lv.10','+10% Reward Boost','MYTHIC')"><img src="https://images.unsplash.com/photo-1546182990-dffeafbe841d?auto=format&fit=crop&w=300&q=70" alt=""><b>SHADOWCLAW</b><span>+10% Reward</span></div>
+  <div class="pet" onclick="petDetails('Luna','Lv.8','+5% Referral Bonus','EPIC')"><img src="https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?auto=format&fit=crop&w=300&q=70" alt=""><b>LUNA</b><span>+5% Referral</span></div>
  </div>
- <div class="filters"><div class="select">⚔ ALL CLANS ▾</div><div class="select">🧬 ALL SPECIES ▾</div></div>
+
+ <div class="filters">
+   <div class="select">⚔ ALL CLANS ▾</div>
+   <div class="select">🧬 ALL SPECIES ▾</div>
+ </div>
  <div class="actions">
   <button class="navbtn" onclick="go('wallet')"><strong>▣</strong>WALLET</button>
   <button class="navbtn" onclick="go('marketplace')"><strong>🛒</strong>MARKET</button>
@@ -79,25 +258,82 @@ main{max-width:720px;margin:auto;padding:14px 12px 100px}.view{display:none}.vie
  </div>
 </section>
 
-<section id="wallet" class="view"><div class="pageTitle">💰 AMT Wallet</div><div class="card"><div class="label">Available balance</div><div class="value gold" id="walletBalance">0.00000000 AMT</div><p class="tiny" id="walletAddress">Wallet not connected</p><button class="panelbtn" onclick="refresh()">REFRESH WALLET</button></div><div class="sectionhead"><h2>Transactions</h2></div><div class="notice">Your AMT balance is read from the existing PostgreSQL ledger through the AMT backend.</div></section>
+<section id="wallet" class="view">
+  <div class="pageTitle">💰 AMT Wallet</div>
+  <div class="card">
+    <div class="label">Available balance</div>
+    <div class="value gold" id="walletBalance">0.00000000 AMT</div>
+    <p class="tiny" id="walletAddress">Wallet not connected</p>
+    <button class="panelbtn" onclick="refresh()">REFRESH WALLET</button>
+  </div>
+  <div class="sectionhead"><h2>Transactions</h2></div>
+  <div class="notice">Your AMT balance is read from the existing PostgreSQL ledger through the AMT backend.</div>
+</section>
 
-<section id="marketplace" class="view"><div class="pageTitle">🛒 Marketplace</div><div class="notice">Buy & sell pets here. Pet cards are intentionally small so the marketplace stays fast on Pi Browser.</div><div class="list" style="margin-top:10px">
- <div class="rowitem"><span>🔥 Ember Wing<br><small class="tiny">Mythic • Lv.15</small></span><button class="copy" onclick="toast('Pet listing opened')">VIEW PET</button></div>
- <div class="rowitem"><span>🦊 Foxie<br><small class="tiny">Legend • Lv.12</small></span><button class="copy" onclick="toast('Pet listing opened')">VIEW PET</button></div>
- <div class="rowitem"><span>🌑 Shadowclaw<br><small class="tiny">Mythic • Lv.10</small></span><button class="copy" onclick="toast('Pet listing opened')">VIEW PET</button></div>
- <div class="rowitem"><span>🌙 Luna<br><small class="tiny">Epic • Lv.8</small></span><button class="copy" onclick="toast('Pet listing opened')">VIEW PET</button></div>
- </div></section>
+<section id="marketplace" class="view">
+  <div class="pageTitle">🛒 Marketplace</div>
+  <div class="notice">Buy & sell pets here. Pet cards are intentionally small so the marketplace stays fast on Pi Browser.</div>
+  <div class="list" style="margin-top:10px">
+   <div class="rowitem"><span>🔥 Ember Wing<br><small class="tiny">Mythic • Lv.15</small></span><button class="copy" onclick="toast('Pet listing opened')">VIEW PET</button></div>
+   <div class="rowitem"><span>🦊 Foxie<br><small class="tiny">Legend • Lv.12</small></span><button class="copy" onclick="toast('Pet listing opened')">VIEW PET</button></div>
+   <div class="rowitem"><span>🌑 Shadowclaw<br><small class="tiny">Mythic • Lv.10</small></span><button class="copy" onclick="toast('Pet listing opened')">VIEW PET</button></div>
+   <div class="rowitem"><span>🌙 Luna<br><small class="tiny">Epic • Lv.8</small></span><button class="copy" onclick="toast('Pet listing opened')">VIEW PET</button></div>
+  </div>
+</section>
 
-<section id="chat" class="view"><div class="pageTitle">💬 Pioneer Chat</div><div class="notice">Community chat module. This screen is separate from the Profile and Marketplace.</div><div class="card" style="margin-top:10px"><div class="label">Message</div><input id="chatInput" placeholder="Write a message..." style="width:100%;margin-top:8px;padding:13px;border-radius:10px;background:#070b14;border:1px solid #34415d;color:#fff"><button class="panelbtn" onclick="sendChat()">SEND MESSAGE</button></div></section>
+<section id="chat" class="view">
+  <div class="pageTitle">💬 Pioneer Chat</div>
+  <div class="notice">Community chat module. This screen is separate from the Profile and Marketplace.</div>
+  <div class="card" style="margin-top:10px">
+    <div class="label">Message</div>
+    <input id="chatInput" placeholder="Write a message..." style="width:100%;margin-top:8px;padding:13px;border-radius:10px;background:#070b14;border:1px solid #34415d;color:#fff">
+    <button class="panelbtn" onclick="sendChat()">SEND MESSAGE</button>
+  </div>
+</section>
 
-<section id="reward" class="view"><div class="pageTitle">🎁 Rewards</div><div class="card"><div class="label">Daily mining reward</div><div class="value gold">+0.2400 AMT</div><button class="panelbtn" onclick="claim()">CLAIM MINING REWARD</button></div><div class="card" style="margin-top:10px"><div class="label">Daily check-in</div><div class="value green" id="checkinState">READY</div><button class="panelbtn" onclick="dailyCheckin()">CHECK IN NOW</button></div></section>
+<section id="reward" class="view">
+  <div class="pageTitle">🎁 Rewards</div>
+  <div class="card">
+    <div class="label">Daily mining reward</div>
+    <div class="value gold" id="rewardAmount">+0.0000 AMT</div>
+    <button class="panelbtn success" id="btnClaim2" onclick="claim()">CLAIM MINING REWARD</button>
+  </div>
+  <div class="card" style="margin-top:10px">
+    <div class="label">Daily check-in</div>
+    <div class="value green" id="checkinState">READY</div>
+    <button class="panelbtn" onclick="dailyCheckin()">CHECK IN NOW</button>
+  </div>
+</section>
 
-<section id="referral" class="view"><div class="pageTitle">👥 Referral Center</div><div class="card"><div class="label">Your referral tier</div><div class="value purple" id="refTier">PIONEER</div><p class="tiny" id="refCount">0 / 5 direct referrals</p><div class="progress"><i id="refProgress"></i></div><button class="panelbtn" onclick="shareReferral()">SHARE REFERRAL</button></div><div class="sectionhead"><h2>Your referrals</h2></div><div id="refList" class="list"><div class="notice">Sign in with Pi to load your referral members.</div></div></section>
+<section id="referral" class="view">
+  <div class="pageTitle">👥 Referral Center</div>
+  <div class="card">
+    <div class="label">Your referral tier</div>
+    <div class="value purple" id="refTier">PIONEER</div>
+    <p class="tiny" id="refCount">0 / 5 direct referrals</p>
+    <div class="progress"><i id="refProgress"></i></div>
+    <button class="panelbtn" onclick="shareReferral()">SHARE REFERRAL</button>
+  </div>
+  <div class="sectionhead"><h2>Your referrals</h2></div>
+  <div id="refList" class="list"><div class="notice">Sign in with Pi to load your referral members.</div></div>
+</section>
 
-<section id="profile" class="view"><div class="pageTitle">👤 My Profile</div><div class="card"><div class="avatar" id="profileName">Pi Pioneer</div><p class="tiny" id="profileUid">@pioneer</p><div class="grid2"><div><div class="label">Reputation</div><div class="value gold" id="profileRep">0</div></div><div><div class="label">Referral tier</div><div class="value purple" id="profileTier">PIONEER</div></div></div><div class="notice" style="margin-top:12px">🐾 My Pet Owner / Squad is intentionally <b>not displayed on Profile</b>.</div></div></section>
+<section id="profile" class="view">
+  <div class="pageTitle">👤 My Profile</div>
+  <div class="card">
+    <div class="avatar" id="profileName">—</div>
+    <p class="tiny" id="profileUid">@—</p>
+    <div class="grid2">
+      <div><div class="label">Reputation</div><div class="value gold" id="profileRep">0</div></div>
+      <div><div class="label">Referral tier</div><div class="value purple" id="profileTier">PIONEER</div></div>
+    </div>
+    <div class="notice" style="margin-top:12px">🐾 My Pet Owner / Squad is intentionally <b>not displayed on Profile</b>.</div>
+    <button class="panelbtn" style="margin-top:14px;border-color:#9f1239;background:linear-gradient(180deg,#9f1239,#4c0519)" onclick="logout()">LOG OUT</button>
+  </div>
+</section>
 </main>
 
-<nav class="bottom">
+<nav class="bottom" id="bottomNav" style="display:none">
  <button class="active" data-view="dashboard" onclick="go('dashboard')"><b>⌂</b>Home</button>
  <button data-view="wallet" onclick="go('wallet')"><b>▣</b>Wallet</button>
  <button data-view="marketplace" onclick="go('marketplace')"><b>🛒</b>Market</button>
@@ -107,74 +343,440 @@ main{max-width:720px;margin:auto;padding:14px 12px 100px}.view{display:none}.vie
 <div id="toast"></div>
 
 <script>
-const API_BASE="https://alberto-amt-testnet.onrender.com";
-let accessToken=null, miningEnds=null;
+const API_BASE = "https://alberto-amt-testnet.onrender.com";
+const STORAGE_KEY = "tt_amt_access_token_v4";
 
-const $=id=>document.getElementById(id);
-function toast(msg){const t=$("toast");t.textContent=msg;t.style.display="block";clearTimeout(window.__t);window.__t=setTimeout(()=>t.style.display="none",2200)}
+let accessToken = null;
+let miningEnds = null;
+let isGuest = false;
+let isLoggingIn = false;
+
+const $ = id => document.getElementById(id);
+
+function toast(msg){
+  const t = $("toast");
+  t.textContent = msg;
+  t.style.display = "block";
+  clearTimeout(window.__t);
+  window.__t = setTimeout(() => t.style.display = "none", 2800);
+}
+
 function go(id){
- document.querySelectorAll(".view").forEach(v=>v.classList.remove("active"));
- $(id)?.classList.add("active");
- document.querySelectorAll(".bottom button").forEach(b=>b.classList.toggle("active",b.dataset.view===id));
- window.scrollTo({top:0,behavior:"smooth"});
+  document.querySelectorAll("main .view").forEach(v => v.classList.remove("active"));
+  $(id)?.classList.add("active");
+  document.querySelectorAll(".bottom button").forEach(b => b.classList.toggle("active", b.dataset.view === id));
+  window.scrollTo({top:0, behavior:"smooth"});
 }
-async function api(path,body={}){
- const r=await fetch(API_BASE+path,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(body)});
- const d=await r.json().catch(()=>({success:false,error:"Invalid server response"}));
- if(!r.ok||d.success===false) throw new Error(d.error||("HTTP "+r.status));
- return d;
+
+function setLoginStatus(text, type){
+  const el = $("loginStatus");
+  el.textContent = text;
+  el.className = "login-status" + (type ? " " + type : "");
 }
-async function login(){
- try{
-  if(!window.Pi) throw new Error("Pi SDK did not load.");
-  Pi.init({version:"2.0",sandbox:true});
-  const auth=await Pi.authenticate(["username","wallet_address"],()=>{});
-  accessToken=auth.accessToken;
-  const v=await api("/api/auth/verify",{accessToken});
-  $("loginState").textContent="Signed in: @"+(v.user.username||"Pioneer");
-  $("username").textContent=v.user.username||"Pi Pioneer";$("uid").textContent="@"+(v.user.username||"pioneer");
-  $("profileName").textContent=v.user.username||"Pi Pioneer";$("profileUid").textContent="@"+(v.user.username||"pioneer");
-  await refresh(); toast("Pi Sign-In successful");
- }catch(e){toast("Pi login failed: "+e.message)}
+
+function showLoginScreen(){
+  $("loginView").classList.add("active");
+  $("appMain").style.display = "none";
+  $("appHeader").style.display = "none";
+  $("bottomNav").style.display = "none";
 }
+
+function showApp(){
+  $("loginView").classList.remove("active");
+  $("appMain").style.display = "block";
+  $("appHeader").style.display = "block";
+  $("bottomNav").style.display = "grid";
+  go("dashboard");
+}
+
+async function api(path, body = {}){
+  const payload = { ...body };
+  if (accessToken) payload.accessToken = accessToken;
+
+  const r = await fetch(API_BASE + path, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(payload)
+  });
+
+  let d;
+  try {
+    d = await r.json();
+  } catch {
+    throw new Error("Invalid server response");
+  }
+
+  if (!r.ok || d.success === false || d.ok === false) {
+    throw new Error(d.error || d.message || ("HTTP " + r.status));
+  }
+  return d;
+}
+
+function isPiBrowser(){
+  return !!(window.Pi && typeof window.Pi.authenticate === "function");
+}
+
+async function initPi(){
+  if (!window.Pi) {
+    setLoginStatus("Pi SDK not loaded. Open in Pi Browser.", "err");
+    $("btnPiLogin").disabled = true;
+    $("btnGuest").style.display = "block";
+    return false;
+  }
+  try {
+    Pi.init({ version: "2.0", sandbox: true });
+    setLoginStatus("Pi Browser detected. Ready to sign in.", "ok");
+    $("btnPiLogin").disabled = false;
+    return true;
+  } catch (e) {
+    setLoginStatus("Pi init failed: " + e.message, "err");
+    $("btnPiLogin").disabled = true;
+    $("btnGuest").style.display = "block";
+    return false;
+  }
+}
+
+async function doLogin(){
+  if (isLoggingIn) return;
+  isLoggingIn = true;
+  $("btnPiLogin").disabled = true;
+  $("btnPiLogin").textContent = "Signing in…";
+  setLoginStatus("Waiting for Pi authentication via SDK…");
+
+  try {
+    // 1. Check if Official Pi SDK is loaded
+    if (!window.Pi || typeof window.Pi.authenticate !== "function") {
+      throw new Error("Pi SDK not loaded. Please open this app inside Pi Browser.");
+    }
+
+    // 2. Initialize Pi SDK (sandbox = true for Testnet)
+    await Pi.init({ version: "2.0", sandbox: true });
+
+    // 3. Authenticate user with required scopes
+    const scopes = ["username", "payments", "wallet_address"];
+    const auth = await Pi.authenticate(scopes, function onIncompletePaymentFound(payment) {
+      // Handle any unfinished payments
+      console.log("Incomplete payment found:", payment);
+      toast("May incomplete payment. Checking…");
+    });
+
+    if (!auth || !auth.accessToken) {
+      throw new Error("No accessToken received from Pi SDK.");
+    }
+
+    // 4. Save token
+    accessToken = auth.accessToken;
+    localStorage.setItem(STORAGE_KEY, accessToken);
+
+    // 5. Verify token with our backend
+    setLoginStatus("Verifying token with AMT backend…");
+    const v = await api("/api/auth/verify", { accessToken });
+
+    const user = v.user || v.profile || {};
+    const uname = user.username || (auth.user && auth.user.username) || "Pioneer";
+
+    $("loginState").textContent = "Signed in: @" + uname;
+    $("username").textContent = uname;
+    $("uid").textContent = "@" + uname;
+    $("profileName").textContent = uname;
+    $("profileUid").textContent = "@" + uname;
+
+    isGuest = false;
+    showApp();
+    toast("✅ Pi Sign-In successful (SDK)");
+    await refresh();
+  } catch (e) {
+    console.error("Pi SDK Login Error:", e);
+    setLoginStatus("Login failed: " + (e.message || e), "err");
+    toast("Pi login failed: " + (e.message || e));
+    accessToken = null;
+    localStorage.removeItem(STORAGE_KEY);
+  } finally {
+    isLoggingIn = false;
+    $("btnPiLogin").disabled = false;
+    $("btnPiLogin").textContent = "🔐 Sign in with Pi";
+  }
+}
+
+function enterGuest(){
+  isGuest = true;
+  accessToken = null;
+  $("loginState").textContent = "Guest mode (view only)";
+  $("username").textContent = "Guest";
+  $("uid").textContent = "@guest";
+  $("profileName").textContent = "Guest";
+  $("profileUid").textContent = "@guest";
+  showApp();
+  toast("Guest mode – mining disabled. Sign in with Pi to mine.");
+  $("btnStartMine").disabled = true;
+  $("btnClaim").disabled = true;
+  $("btnClaim2").disabled = true;
+}
+
+function logout(){
+  accessToken = null;
+  isGuest = false;
+  miningEnds = null;
+  localStorage.removeItem(STORAGE_KEY);
+  $("balance").textContent = "0.00000000";
+  $("walletBalance").textContent = "0.00000000 AMT";
+  $("mineStatus").textContent = "● READY";
+  $("coreStatus").textContent = "● READY TO MINE";
+  $("coreStatus").className = "status off";
+  $("timer").textContent = "24:00:00";
+  $("btnStartMine").disabled = false;
+  $("btnClaim").disabled = true;
+  showLoginScreen();
+  setLoginStatus("Signed out. Sign in again to continue.", "ok");
+  $("btnPiLogin").disabled = !isPiBrowser();
+  toast("Logged out");
+}
+
 async function refresh(){
- if(!accessToken){await login();return}
- try{
-  const [p,w,r,m]=await Promise.all([
-   api("/api/profile",{accessToken}),api("/api/wallet",{accessToken}),api("/api/referral/status",{accessToken}),api("/api/mining/status",{accessToken})
-  ]);
-  $("balance").textContent=Number(w.wallet.amt).toFixed(8);$("walletBalance").textContent=Number(w.wallet.amt).toFixed(8)+" AMT";
-  $("walletAddress").textContent=(w.wallet.walletStatus||"NOT_CONNECTED")+" • "+(w.wallet.walletAddress||"No wallet address saved");
-  $("rep").textContent=p.profile.reputationScore||0;$("profileRep").textContent=p.profile.reputationScore||0;
-  $("tier").textContent=p.profile.referralTier||"PIONEER";$("profileTier").textContent=p.profile.referralTier||"PIONEER";$("refTier").textContent=r.referral.tier||"PIONEER";
-  const count=Number(r.referral.count||0);$("refCount").textContent=count+" / "+r.referral.limit+" direct referrals";$("tierProgress").style.width=Math.min(100,count/5*100)+"%";$("refProgress").style.width=Math.min(100,count/5*100)+"%";
-  $("refList").innerHTML=(r.referral.referrals||[]).map(x=>`<div class="rowitem"><span>@${escapeHtml(x.username)}</span><span class="${x.mining?'green':''}">${x.mining?'● MINING':'○ OFFLINE'}</span></div>`).join("")||'<div class="notice">No direct referrals yet.</div>';
-  if(m.mining){$("mineStatus").textContent="● ACTIVE";$("coreStatus").textContent="● ACTIVE MINING";miningEnds=new Date(m.session.endsAt||m.session.ends_at).getTime()}else{ $("mineStatus").textContent="● READY";$("coreStatus").textContent="● READY TO MINE";miningEnds=null}
- }catch(e){toast(e.message)}
+  if (!accessToken) {
+    if (!isGuest) showLoginScreen();
+    return;
+  }
+
+  try {
+    const [p, w, r, m] = await Promise.all([
+      api("/api/profile", { accessToken }).catch(() => null),
+      api("/api/wallet", { accessToken }).catch(() => null),
+      api("/api/referral/status", { accessToken }).catch(() => null),
+      api("/api/mining/status", { accessToken }).catch(() => null)
+    ]);
+
+    if (w && w.wallet) {
+      const amt = Number(w.wallet.amt || w.wallet.balance || 0);
+      $("balance").textContent = amt.toFixed(8);
+      $("walletBalance").textContent = amt.toFixed(8) + " AMT";
+      $("walletAddress").textContent =
+        (w.wallet.walletStatus || "CONNECTED") + " • " +
+        (w.wallet.walletAddress || w.wallet.address || "No address");
+    }
+
+    if (p && (p.profile || p.user)) {
+      const prof = p.profile || p.user;
+      $("rep").textContent = prof.reputationScore || prof.reputation || 0;
+      $("profileRep").textContent = $("rep").textContent;
+      $("tier").textContent = prof.referralTier || prof.tier || "PIONEER";
+      $("profileTier").textContent = $("tier").textContent;
+    }
+
+    if (r && r.referral) {
+      $("refTier").textContent = r.referral.tier || "PIONEER";
+      const count = Number(r.referral.count || 0);
+      const limit = Number(r.referral.limit || 5);
+      $("refCount").textContent = count + " / " + limit + " direct referrals";
+      $("tierProgress").style.width = Math.min(100, (count / limit) * 100) + "%";
+      $("refProgress").style.width = Math.min(100, (count / limit) * 100) + "%";
+      $("refList").innerHTML = (r.referral.referrals || []).map(x =>
+        `<div class="rowitem"><span>@${escapeHtml(x.username)}</span>
+         <span class="${x.mining ? 'green' : ''}">${x.mining ? '● MINING' : '○ OFFLINE'}</span></div>`
+      ).join("") || '<div class="notice">No direct referrals yet.</div>';
+    }
+
+    // Mining status
+    if (m) {
+      const active = m.mining === true || m.active === true || (m.session && m.session.active);
+      if (active) {
+        $("mineStatus").textContent = "● ACTIVE";
+        $("mineStatus").className = "value green";
+        $("mineSub").textContent = "24/7 HARD MINING";
+        $("coreStatus").textContent = "● ACTIVE MINING";
+        $("coreStatus").className = "status";
+        $("btnStartMine").textContent = "⏳ MINING…";
+        $("btnStartMine").disabled = true;
+
+        const ends = m.session?.endsAt || m.session?.ends_at || m.endsAt;
+        if (ends) miningEnds = new Date(ends).getTime();
+        else miningEnds = Date.now() + 24 * 3600 * 1000;
+
+        $("btnClaim").disabled = false;
+        $("btnClaim2").disabled = false;
+      } else {
+        setReadyState();
+        const earned = Number(m.earned || m.pending || 0);
+        if (earned > 0) {
+          $("daily").textContent = "+" + earned.toFixed(4) + " AMT";
+          $("rewardAmount").textContent = "+" + earned.toFixed(4) + " AMT";
+          $("btnClaim").disabled = false;
+          $("btnClaim2").disabled = false;
+        }
+      }
+    }
+  } catch (e) {
+    console.error(e);
+    toast(e.message || "Refresh failed");
+    if (String(e.message).toLowerCase().includes("login") || String(e.message).toLowerCase().includes("token")) {
+      logout();
+    }
+  }
 }
-function escapeHtml(s){return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[c]))}
+
+function setReadyState(){
+  $("mineStatus").textContent = "● READY";
+  $("mineStatus").className = "value green";
+  $("mineSub").textContent = "Tap Start to begin";
+  $("coreStatus").textContent = "● READY TO MINE";
+  $("coreStatus").className = "status off";
+  $("btnStartMine").textContent = "⛏ START MINING";
+  $("btnStartMine").disabled = false;
+  miningEnds = null;
+  $("timer").textContent = "24:00:00";
+}
+
+function escapeHtml(s){
+  return String(s).replace(/[&<>"']/g, c =>
+    ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[c])
+  );
+}
+
 async function startMining(){
- if(!accessToken){await login();if(!accessToken)return}
- try{await api("/api/mining/start",{accessToken});toast("Mining started");await refresh()}catch(e){toast(e.message)}
+  if (isGuest || !accessToken) {
+    toast("Sign in with Pi first to start mining");
+    showLoginScreen();
+    return;
+  }
+
+  $("btnStartMine").disabled = true;
+  $("btnStartMine").textContent = "Starting…";
+
+  try {
+    const res = await api("/api/mining/start", { accessToken });
+    toast("Mining started successfully!");
+    $("mineStatus").textContent = "● ACTIVE";
+    $("coreStatus").textContent = "● ACTIVE MINING";
+    $("coreStatus").className = "status";
+    $("btnStartMine").textContent = "⏳ MINING…";
+
+    const ends = res.session?.endsAt || res.endsAt || res.ends_at;
+    miningEnds = ends ? new Date(ends).getTime() : Date.now() + 24 * 3600 * 1000;
+
+    $("btnClaim").disabled = false;
+    $("btnClaim2").disabled = false;
+    await refresh();
+  } catch (e) {
+    console.error(e);
+    toast(e.message || "Failed to start mining");
+    $("btnStartMine").disabled = false;
+    $("btnStartMine").textContent = "⛏ START MINING";
+
+    // Common backend messages
+    if (String(e.message).toLowerCase().includes("already")) {
+      toast("Already mining – refreshing status");
+      await refresh();
+    }
+  }
 }
+
 async function claim(){
- if(!accessToken){await login();if(!accessToken)return}
- try{const r=await api("/api/mining/claim",{accessToken});toast("Claimed "+Number(r.claimed).toFixed(8)+" AMT");await refresh()}catch(e){toast(e.message)}
+  if (isGuest || !accessToken) {
+    toast("Sign in with Pi first");
+    return;
+  }
+
+  $("btnClaim").disabled = true;
+  $("btnClaim2").disabled = true;
+  $("btnClaim").textContent = "Claiming…";
+  $("btnClaim2").textContent = "Claiming…";
+
+  try {
+    const r = await api("/api/mining/claim", { accessToken });
+    const claimed = Number(r.claimed || r.amount || r.reward || 0);
+    toast("Claimed " + claimed.toFixed(8) + " AMT");
+    setReadyState();
+    await refresh();
+  } catch (e) {
+    console.error(e);
+    toast(e.message || "Claim failed");
+  } finally {
+    $("btnClaim").textContent = "💰 CLAIM REWARD";
+    $("btnClaim2").textContent = "CLAIM MINING REWARD";
+  }
 }
-function petDetails(name,level,ability,rarity){toast(name+" • "+rarity+" • "+level+" • "+ability)}
-function dailyCheckin(){ $("checkinState").textContent="CHECKED IN ✓";toast("Daily check-in recorded locally for this demo") }
+
+function petDetails(name, level, ability, rarity){
+  toast(name + " • " + rarity + " • " + level + " • " + ability);
+}
+
+function dailyCheckin(){
+  $("checkinState").textContent = "CHECKED IN ✓";
+  toast("Daily check-in recorded");
+}
+
 async function shareReferral(){
- const u=$("username").textContent||"Pioneer";
- const text="Join TT Mining Core V4 with my Pi referral: @"+u;
- try{if(navigator.share) await navigator.share({title:"TT Mining Core V4",text});else{await navigator.clipboard.writeText(text);toast("Referral text copied")}}catch(e){}
+  const u = $("username").textContent || "Pioneer";
+  const text = "Join TT Mining Core V4 with my Pi referral: @" + u;
+  try {
+    if (navigator.share) await navigator.share({ title: "TT Mining Core V4", text });
+    else {
+      await navigator.clipboard.writeText(text);
+      toast("Referral text copied");
+    }
+  } catch (e) {}
 }
+
 function social(type){
- const urls={fb:"https://www.facebook.com/",x:"https://x.com/",insta:"https://www.instagram.com/",yt:"https://www.youtube.com/"};
- window.open(urls[type],"_blank","noopener"); 
+  const urls = {
+    fb: "https://www.facebook.com/",
+    x: "https://x.com/",
+    insta: "https://www.instagram.com/",
+    yt: "https://www.youtube.com/"
+  };
+  window.open(urls[type], "_blank", "noopener");
 }
-function sendChat(){const v=$("chatInput").value.trim();if(!v)return toast("Write a message first");$("chatInput").value="";toast("Message ready for chat backend")}
-setInterval(()=>{if(!miningEnds)return;let s=Math.max(0,Math.floor((miningEnds-Date.now())/1000));let h=Math.floor(s/3600),m=Math.floor(s%3600/60),sec=s%60;$("timer").textContent=[h,m,sec].map(x=>String(x).padStart(2,"0")).join(":")},1000);
-refresh();
+
+function sendChat(){
+  const v = $("chatInput").value.trim();
+  if (!v) return toast("Write a message first");
+  $("chatInput").value = "";
+  toast("Message ready for chat backend");
+}
+
+// Timer tick
+setInterval(() => {
+  if (!miningEnds) return;
+  let s = Math.max(0, Math.floor((miningEnds - Date.now()) / 1000));
+  if (s <= 0) {
+    $("timer").textContent = "00:00:00";
+    $("btnClaim").disabled = false;
+    $("btnClaim2").disabled = false;
+    $("btnStartMine").disabled = false;
+    $("btnStartMine").textContent = "⛏ START MINING";
+    $("coreStatus").textContent = "● READY TO CLAIM";
+    return;
+  }
+  const h = Math.floor(s / 3600);
+  const m = Math.floor((s % 3600) / 60);
+  const sec = s % 60;
+  $("timer").textContent = [h, m, sec].map(x => String(x).padStart(2, "0")).join(":");
+}, 1000);
+
+// ========== BOOT ==========
+(async function boot(){
+  showLoginScreen();
+
+  // Restore token if any
+  const saved = localStorage.getItem(STORAGE_KEY);
+  if (saved) {
+    accessToken = saved;
+    setLoginStatus("Restoring session…");
+    try {
+      await api("/api/auth/verify", { accessToken });
+      showApp();
+      await refresh();
+      toast("Welcome back");
+      return;
+    } catch (e) {
+      localStorage.removeItem(STORAGE_KEY);
+      accessToken = null;
+      setLoginStatus("Session expired. Please sign in again.", "err");
+    }
+  }
+
+  await initPi();
+})();
 </script>
 </body>
 </html>
