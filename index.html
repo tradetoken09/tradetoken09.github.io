@@ -280,18 +280,28 @@ function showApp() {
 
 /* ======================== API HELPERS ======================== */
 async function apiPost(path, body = {}) {
-  const r = await fetch(API_BASE + path, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(body)
-  });
+  let r;
+  try {
+    r = await fetch(API_BASE + path, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(body)
+    });
+  } catch (e) {
+    throw new Error("Failed to fetch — check backend URL / CORS / Render sleeping");
+  }
   const d = await r.json().catch(() => ({}));
   if (!r.ok) throw new Error(d.error || d.message || "HTTP " + r.status);
   return d;
 }
 
 async function apiGet(path) {
-  const r = await fetch(API_BASE + path);
+  let r;
+  try {
+    r = await fetch(API_BASE + path);
+  } catch (e) {
+    throw new Error("Failed to fetch — check backend URL / CORS / Render sleeping");
+  }
   const d = await r.json().catch(() => ({}));
   if (!r.ok) throw new Error(d.error || d.message || "HTTP " + r.status);
   return d;
