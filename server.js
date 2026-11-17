@@ -37,35 +37,32 @@ const PET_PRICES = new Map([
 ]);
 
 /* =========================
-   CORS
+   CORS  (FIXED)
 ========================= */
 
-const ALLOWED_ORIGINS = new Set([
+const ALLOWED_ORIGINS = [
   "https://tradetoken09.github.io",
   "http://localhost:3000",
   "http://127.0.0.1:3000"
-]);
+];
 
 app.use((req, res, next) => {
   const origin = req.headers.origin;
 
-  if (ALLOWED_ORIGINS.has(origin)) {
+  // Allow known origins, or * while testing
+  if (origin && ALLOWED_ORIGINS.includes(origin)) {
     res.setHeader("Access-Control-Allow-Origin", origin);
-    res.setHeader("Vary", "Origin");
+  } else {
+    res.setHeader("Access-Control-Allow-Origin", "*");
   }
 
-  res.setHeader(
-    "Access-Control-Allow-Headers",
-    "Content-Type, Authorization"
-  );
+  res.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization");
+  res.setHeader("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
+  res.setHeader("Access-Control-Max-Age", "86400");
 
-  res.setHeader(
-    "Access-Control-Allow-Methods",
-    "GET, POST, OPTIONS"
-  );
-
+  // Handle preflight
   if (req.method === "OPTIONS") {
-    return res.sendStatus(204);
+    return res.status(204).end();
   }
 
   next();
@@ -85,7 +82,6 @@ function getUser(wallet) {
       claims: 0
     });
   }
-
   return users.get(wallet);
 }
 
@@ -99,10 +95,8 @@ function requirePiKey(res) {
       success: false,
       error: "PI_API_KEY is not configured on the server"
     });
-
     return false;
   }
-
   return true;
 }
 
@@ -113,7 +107,6 @@ function requirePiKey(res) {
 async function piRequest(path, options = {}) {
   const response = await fetch(`${PI_API_BASE}${path}`, {
     ...options,
-
     headers: {
       Authorization: `Key ${PI_API_KEY}`,
       "Content-Type": "application/json",
@@ -122,27 +115,19 @@ async function piRequest(path, options = {}) {
   });
 
   const text = await response.text();
-
   let data;
-
   try {
     data = JSON.parse(text);
   } catch {
-    data = {
-      raw: text
-    };
+    data = { raw: text };
   }
 
   if (!response.ok) {
     const error = new Error(
-      data?.error ||
-      data?.message ||
-      `Pi API HTTP ${response.status}`
+      data?.error || data?.message || `Pi API HTTP ${response.status}`
     );
-
     error.status = response.status;
     error.data = data;
-
     throw error;
   }
 
@@ -162,27 +147,19 @@ async function piUserRequest(accessToken) {
   });
 
   const text = await response.text();
-
   let data;
-
   try {
     data = JSON.parse(text);
   } catch {
-    data = {
-      raw: text
-    };
+    data = { raw: text };
   }
 
   if (!response.ok) {
     const error = new Error(
-      data?.error ||
-      data?.message ||
-      `Pi /me HTTP ${response.status}`
+      data?.error || data?.message || `Pi /me HTTP ${response.status}`
     );
-
     error.status = response.status;
     error.data = data;
-
     throw error;
   }
 
@@ -195,33 +172,23 @@ async function piUserRequest(accessToken) {
 
 async function verifyPaymentUser(payment, accessToken, uid) {
   if (!accessToken || !uid) {
-    throw Object.assign(
-      new Error("Pi user verification data is required"),
-      {
-        status: 401
-      }
-    );
+    throw Object.assign(new Error("Pi user verification data is required"), {
+      status: 401
+    });
   }
 
   const me = await piUserRequest(accessToken);
 
   if (!me?.uid || me.uid !== uid) {
-    throw Object.assign(
-      new Error("Pi user verification failed"),
-      {
-        status: 401
-      }
-    );
+    throw Object.assign(new Error("Pi user verification failed"), {
+      status: 401
+    });
   }
 
   if (!payment?.user_uid || payment.user_uid !== me.uid) {
     throw Object.assign(
-      new Error(
-        "Payment does not belong to the authenticated Pi user"
-      ),
-      {
-        status: 403
-      }
+      new Error("Payment does not belong to the authenticated Pi user"),
+      { status: 403 }
     );
   }
 
@@ -240,7 +207,8 @@ app.get("/", (req, res) => {
     maxSupply: MAX_SUPPLY,
     miningPool: MINING_POOL,
     status: "Development",
-    piApiConfigured: Boolean(PI_API_KEY)
+    piApiConfigured: Boolean(PI_API_KEY),
+    timestamp: new Date().toISOString()
   });
 });
 
@@ -268,10 +236,7 @@ app.post("/api/mining/start", (req, res) => {
 
   const user = getUser(wallet);
 
-  if (
-    user.mining &&
-    Date.now() < user.mining.endTime
-  ) {
+  if (user.mining && Date.now() < user.mining.endTime) {
     return res.status(400).json({
       error: "Mining session is already active"
     });
@@ -312,42 +277,20 @@ app.get("/api/mining/status/:wallet", (req, res) => {
   }
 
   const now = Date.now();
-
   const elapsed = Math.max(
     0,
-    Math.min(
-      now,
-      user.mining.endTime
-    ) - user.mining.startTime
+    Math.min(now, user.mining.endTime) - user.mining.startTime
   );
-
-  const hours =
-    elapsed / (60 * 60 * 1000);
-
-  const earned =
-    Math.min(
-      hours * MINING_RATE,
-      24
-    );
+  const hours = elapsed / (60 * 60 * 1000);
+  const earned = Math.min(hours * MINING_RATE, 24);
 
   res.json({
-    mining:
-      now < user.mining.endTime,
-
-    startTime:
-      user.mining.startTime,
-
-    endTime:
-      user.mining.endTime,
-
-    earned:
-      Number(earned.toFixed(6)),
-
-    balance:
-      user.balance,
-
-    mined:
-      user.mined
+    mining: now < user.mining.endTime,
+    startTime: user.mining.startTime,
+    endTime: user.mining.endTime,
+    earned: Number(earned.toFixed(6)),
+    balance: user.balance,
+    mined: user.mined
   });
 });
 
@@ -378,22 +321,15 @@ app.post("/api/mining/claim", (req, res) => {
     });
   }
 
-  if (
-    Date.now() <
-    user.mining.endTime
-  ) {
+  if (Date.now() < user.mining.endTime) {
     return res.status(400).json({
       error: "Mining session is not finished"
     });
   }
 
-  const reward =
-    24 * MINING_RATE;
+  const reward = 24 * MINING_RATE;
 
-  if (
-    user.mined + reward >
-    MINING_POOL
-  ) {
+  if (user.mined + reward > MINING_POOL) {
     return res.status(400).json({
       error: "Mining pool limit reached"
     });
@@ -418,8 +354,7 @@ app.post("/api/mining/claim", (req, res) => {
 ========================= */
 
 app.get("/api/balance/:wallet", (req, res) => {
-  const user =
-    getUser(req.params.wallet);
+  const user = getUser(req.params.wallet);
 
   res.json({
     wallet: user.wallet,
@@ -432,531 +367,291 @@ app.get("/api/balance/:wallet", (req, res) => {
    PI PAYMENT APPROVAL
 ========================= */
 
-app.post(
-  "/api/payments/approve",
-  async (req, res) => {
+app.post("/api/payments/approve", async (req, res) => {
+  const { paymentId, uid, accessToken } = req.body;
 
-    const {
-      paymentId,
-      uid,
-      accessToken
-    } = req.body;
+  if (!paymentId || !uid || !accessToken) {
+    return res.status(400).json({
+      success: false,
+      error: "paymentId, uid and accessToken are required"
+    });
+  }
 
-    if (
-      !paymentId ||
-      !uid ||
-      !accessToken
-    ) {
+  if (!requirePiKey(res)) return;
+
+  try {
+    const paymentBeforeApproval = await piRequest(
+      `/payments/${encodeURIComponent(paymentId)}`
+    );
+
+    await verifyPaymentUser(paymentBeforeApproval, accessToken, uid);
+
+    if (paymentBeforeApproval.direction !== "user_to_app") {
       return res.status(400).json({
         success: false,
-        error:
-          "paymentId, uid and accessToken are required"
+        error: "This payment is not a User-to-App payment"
       });
     }
 
-    if (!requirePiKey(res)) {
-      return;
+    if (paymentBeforeApproval.network !== "Pi Testnet") {
+      return res.status(400).json({
+        success: false,
+        error: "This TT Token test purchase must use Pi Testnet"
+      });
     }
 
-    try {
+    const metadata = paymentBeforeApproval.metadata || {};
+    const petName = String(metadata.petName || "");
+    const expectedPrice = PET_PRICES.get(petName);
+    const requestedPrice = Number(metadata.price);
 
-      const paymentBeforeApproval =
-        await piRequest(
-          `/payments/${encodeURIComponent(
-            paymentId
-          )}`
-        );
+    if (metadata.productType !== "pet" || expectedPrice === undefined) {
+      return res.status(400).json({
+        success: false,
+        error: "Invalid TT Token pet purchase"
+      });
+    }
 
-      await verifyPaymentUser(
-        paymentBeforeApproval,
-        accessToken,
-        uid
-      );
+    if (!Number.isFinite(requestedPrice) || requestedPrice !== expectedPrice) {
+      return res.status(400).json({
+        success: false,
+        error: "Pet price validation failed"
+      });
+    }
 
-      if (
-        paymentBeforeApproval.direction !==
-        "user_to_app"
-      ) {
-        return res.status(400).json({
-          success: false,
-          error:
-            "This payment is not a User-to-App payment"
-        });
-      }
+    if (Number(paymentBeforeApproval.amount) !== expectedPrice) {
+      return res.status(400).json({
+        success: false,
+        error: "Payment amount does not match the pet price"
+      });
+    }
 
-      if (
-        paymentBeforeApproval.network !==
-        "Pi Testnet"
-      ) {
-        return res.status(400).json({
-          success: false,
-          error:
-            "This TT Token test purchase must use Pi Testnet"
-        });
-      }
+    if (paymentBeforeApproval.status?.developer_completed) {
+      return res.json({
+        success: true,
+        alreadyCompleted: true,
+        payment: paymentBeforeApproval
+      });
+    }
 
-      const metadata =
-        paymentBeforeApproval.metadata || {};
-
-      const petName =
-        String(metadata.petName || "");
-
-      const expectedPrice =
-        PET_PRICES.get(petName);
-
-      const requestedPrice =
-        Number(metadata.price);
-
-      if (
-        metadata.productType !== "pet" ||
-        expectedPrice === undefined
-      ) {
-        return res.status(400).json({
-          success: false,
-          error:
-            "Invalid TT Token pet purchase"
-        });
-      }
-
-      if (
-        !Number.isFinite(requestedPrice) ||
-        requestedPrice !== expectedPrice
-      ) {
-        return res.status(400).json({
-          success: false,
-          error:
-            "Pet price validation failed"
-        });
-      }
-
-      if (
-        Number(paymentBeforeApproval.amount) !==
-        expectedPrice
-      ) {
-        return res.status(400).json({
-          success: false,
-          error:
-            "Payment amount does not match the pet price"
-        });
-      }
-
-      if (
-        paymentBeforeApproval.status
-          ?.developer_completed
-      ) {
-        return res.json({
-          success: true,
-          alreadyCompleted: true,
-          payment:
-            paymentBeforeApproval
-        });
-      }
-
-      if (
-        paymentBeforeApproval.status
-          ?.developer_approved
-      ) {
-
-        payments.set(
-          paymentId,
-          {
-            paymentId,
-            uid,
-            petName,
-            price: expectedPrice,
-            approved: true,
-            payment:
-              paymentBeforeApproval
-          }
-        );
-
-        return res.json({
-          success: true,
-          alreadyApproved: true,
-          payment:
-            paymentBeforeApproval
-        });
-      }
-
-      const payment =
-        await piRequest(
-          `/payments/${encodeURIComponent(
-            paymentId
-          )}/approve`,
-          {
-            method: "POST"
-          }
-        );
-
-      payments.set(
+    if (paymentBeforeApproval.status?.developer_approved) {
+      payments.set(paymentId, {
         paymentId,
-        {
-          paymentId,
-          uid,
-          petName,
-          price: expectedPrice,
-          approved: true,
-          payment
-        }
-      );
-
-      console.log(
-        `Pi payment approved: ${paymentId} | ${petName} | ${expectedPrice} Test-Pi`
-      );
+        uid,
+        petName,
+        price: expectedPrice,
+        approved: true,
+        payment: paymentBeforeApproval
+      });
 
       return res.json({
         success: true,
-        payment
-      });
-
-    } catch (error) {
-
-      console.error(
-        "Pi approval error:",
-        error.data ||
-        error.message
-      );
-
-      return res.status(
-        error.status || 500
-      ).json({
-        success: false,
-        error:
-          error.message ||
-          "Pi payment approval failed"
+        alreadyApproved: true,
+        payment: paymentBeforeApproval
       });
     }
+
+    const payment = await piRequest(
+      `/payments/${encodeURIComponent(paymentId)}/approve`,
+      { method: "POST" }
+    );
+
+    payments.set(paymentId, {
+      paymentId,
+      uid,
+      petName,
+      price: expectedPrice,
+      approved: true,
+      payment
+    });
+
+    console.log(
+      `Pi payment approved: ${paymentId} | ${petName} | ${expectedPrice} Test-Pi`
+    );
+
+    return res.json({ success: true, payment });
+  } catch (error) {
+    console.error("Pi approval error:", error.data || error.message);
+    return res.status(error.status || 500).json({
+      success: false,
+      error: error.message || "Pi payment approval failed"
+    });
   }
-);
+});
 
 /* =========================
    PI PAYMENT COMPLETION
 ========================= */
 
-app.post(
-  "/api/payments/complete",
-  async (req, res) => {
+app.post("/api/payments/complete", async (req, res) => {
+  const { paymentId, txid, uid, accessToken } = req.body;
 
-    const {
-      paymentId,
-      txid,
-      uid,
-      accessToken
-    } = req.body;
+  if (!paymentId || !txid || !uid || !accessToken) {
+    return res.status(400).json({
+      success: false,
+      error: "paymentId, txid, uid and accessToken are required"
+    });
+  }
 
-    if (
-      !paymentId ||
-      !txid ||
-      !uid ||
-      !accessToken
-    ) {
+  if (!requirePiKey(res)) return;
+
+  try {
+    const paymentBeforeCompletion = await piRequest(
+      `/payments/${encodeURIComponent(paymentId)}`
+    );
+
+    await verifyPaymentUser(paymentBeforeCompletion, accessToken, uid);
+
+    const saved = payments.get(paymentId);
+    const metadata = paymentBeforeCompletion.metadata || {};
+    const petName = String(metadata.petName || saved?.petName || "");
+    const expectedPrice = PET_PRICES.get(petName);
+
+    if (metadata.productType !== "pet" || expectedPrice === undefined) {
       return res.status(400).json({
         success: false,
-        error:
-          "paymentId, txid, uid and accessToken are required"
+        error: "Invalid TT Token pet purchase"
       });
     }
 
-    if (!requirePiKey(res)) {
-      return;
+    if (Number(paymentBeforeCompletion.amount) !== expectedPrice) {
+      return res.status(400).json({
+        success: false,
+        error: "Payment amount does not match the pet price"
+      });
     }
 
-    try {
+    if (!paymentBeforeCompletion.status?.developer_approved) {
+      return res.status(400).json({
+        success: false,
+        error: "Payment has not been approved yet"
+      });
+    }
 
-      const paymentBeforeCompletion =
-        await piRequest(
-          `/payments/${encodeURIComponent(
-            paymentId
-          )}`
-        );
-
-      await verifyPaymentUser(
-        paymentBeforeCompletion,
-        accessToken,
-        uid
-      );
-
-      const saved =
-        payments.get(paymentId);
-
-      const metadata =
-        paymentBeforeCompletion.metadata ||
-        {};
-
-      const petName =
-        String(
-          metadata.petName ||
-          saved?.petName ||
-          ""
-        );
-
-      const expectedPrice =
-        PET_PRICES.get(petName);
-
-      if (
-        metadata.productType !== "pet" ||
-        expectedPrice === undefined
-      ) {
-        return res.status(400).json({
-          success: false,
-          error:
-            "Invalid TT Token pet purchase"
-        });
-      }
-
-      if (
-        Number(
-          paymentBeforeCompletion.amount
-        ) !== expectedPrice
-      ) {
-        return res.status(400).json({
-          success: false,
-          error:
-            "Payment amount does not match the pet price"
-        });
-      }
-
-      if (
-        !paymentBeforeCompletion.status
-          ?.developer_approved
-      ) {
-        return res.status(400).json({
-          success: false,
-          error:
-            "Payment has not been approved yet"
-        });
-      }
-
-      if (
-        paymentBeforeCompletion.status
-          ?.developer_completed
-      ) {
-
-        const existingPurchase =
-          purchases.get(paymentId);
-
-        return res.json({
-          success: true,
-          alreadyCompleted: true,
-          paymentId,
-          txid:
-            paymentBeforeCompletion
-              .transaction
-              ?.txid || txid,
-
-          pet:
-            existingPurchase || {
-              name: petName,
-              price: expectedPrice,
-              uid
-            },
-
-          payment:
-            paymentBeforeCompletion
-        });
-      }
-
-      const payment =
-        await piRequest(
-          `/payments/${encodeURIComponent(
-            paymentId
-          )}/complete`,
-          {
-            method: "POST",
-            body: JSON.stringify({
-              txid
-            })
-          }
-        );
-
-      if (
-        !payment?.status
-          ?.developer_completed
-      ) {
-        return res.status(400).json({
-          success: false,
-          error:
-            "Pi payment was not confirmed as completed",
-          payment
-        });
-      }
-
-      const purchase = {
-        paymentId,
-        uid,
-        petName,
-        price: expectedPrice,
-        txid,
-        purchasedAt:
-          new Date().toISOString()
-      };
-
-      payments.set(
-        paymentId,
-        {
-          ...(saved || {}),
-          paymentId,
-          uid,
-          petName,
-          price: expectedPrice,
-          completed: true,
-          txid,
-          payment
-        }
-      );
-
-      purchases.set(
-        paymentId,
-        purchase
-      );
-
-      console.log(
-        `Pi payment completed: ${paymentId} | ${petName} | ${txid}`
-      );
-
+    if (paymentBeforeCompletion.status?.developer_completed) {
+      const existingPurchase = purchases.get(paymentId);
       return res.json({
         success: true,
+        alreadyCompleted: true,
         paymentId,
-        txid,
-        pet: purchase,
-        payment
-      });
-
-    } catch (error) {
-
-      console.error(
-        "Pi completion error:",
-        error.data ||
-        error.message
-      );
-
-      return res.status(
-        error.status || 500
-      ).json({
-        success: false,
-        error:
-          error.message ||
-          "Pi payment completion failed"
+        txid: paymentBeforeCompletion.transaction?.txid || txid,
+        pet: existingPurchase || { name: petName, price: expectedPrice, uid },
+        payment: paymentBeforeCompletion
       });
     }
+
+    const payment = await piRequest(
+      `/payments/${encodeURIComponent(paymentId)}/complete`,
+      {
+        method: "POST",
+        body: JSON.stringify({ txid })
+      }
+    );
+
+    if (!payment?.status?.developer_completed) {
+      return res.status(400).json({
+        success: false,
+        error: "Pi payment was not confirmed as completed",
+        payment
+      });
+    }
+
+    const purchase = {
+      paymentId,
+      uid,
+      petName,
+      price: expectedPrice,
+      txid,
+      purchasedAt: new Date().toISOString()
+    };
+
+    payments.set(paymentId, {
+      ...(saved || {}),
+      paymentId,
+      uid,
+      petName,
+      price: expectedPrice,
+      completed: true,
+      txid,
+      payment
+    });
+
+    purchases.set(paymentId, purchase);
+
+    console.log(`Pi payment completed: ${paymentId} | ${petName} | ${txid}`);
+
+    return res.json({
+      success: true,
+      paymentId,
+      txid,
+      pet: purchase,
+      payment
+    });
+  } catch (error) {
+    console.error("Pi completion error:", error.data || error.message);
+    return res.status(error.status || 500).json({
+      success: false,
+      error: error.message || "Pi payment completion failed"
+    });
   }
-);
+});
 
 /* =========================
    PI PAYMENT CANCEL
 ========================= */
 
-app.post(
-  "/api/payments/cancel",
-  async (req, res) => {
+app.post("/api/payments/cancel", async (req, res) => {
+  const { paymentId, uid, accessToken } = req.body;
 
-    const {
-      paymentId,
-      uid,
-      accessToken
-    } = req.body;
-
-    if (
-      !paymentId ||
-      !uid ||
-      !accessToken
-    ) {
-      return res.status(400).json({
-        success: false,
-        error:
-          "paymentId, uid and accessToken are required"
-      });
-    }
-
-    if (!requirePiKey(res)) {
-      return;
-    }
-
-    try {
-
-      const payment =
-        await piRequest(
-          `/payments/${encodeURIComponent(
-            paymentId
-          )}`
-        );
-
-      await verifyPaymentUser(
-        payment,
-        accessToken,
-        uid
-      );
-
-      const cancelled =
-        await piRequest(
-          `/payments/${encodeURIComponent(
-            paymentId
-          )}/cancel`,
-          {
-            method: "POST"
-          }
-        );
-
-      payments.set(
-        paymentId,
-        {
-          ...(payments.get(paymentId) || {}),
-          paymentId,
-          cancelled: true,
-          payment: cancelled
-        }
-      );
-
-      return res.json({
-        success: true,
-        payment: cancelled
-      });
-
-    } catch (error) {
-
-      console.error(
-        "Pi cancellation error:",
-        error.data ||
-        error.message
-      );
-
-      return res.status(
-        error.status || 500
-      ).json({
-        success: false,
-        error:
-          error.message ||
-          "Pi payment cancellation failed"
-      });
-    }
+  if (!paymentId || !uid || !accessToken) {
+    return res.status(400).json({
+      success: false,
+      error: "paymentId, uid and accessToken are required"
+    });
   }
-);
+
+  if (!requirePiKey(res)) return;
+
+  try {
+    const payment = await piRequest(
+      `/payments/${encodeURIComponent(paymentId)}`
+    );
+
+    await verifyPaymentUser(payment, accessToken, uid);
+
+    const cancelled = await piRequest(
+      `/payments/${encodeURIComponent(paymentId)}/cancel`,
+      { method: "POST" }
+    );
+
+    payments.set(paymentId, {
+      ...(payments.get(paymentId) || {}),
+      paymentId,
+      cancelled: true,
+      payment: cancelled
+    });
+
+    return res.json({
+      success: true,
+      payment: cancelled
+    });
+  } catch (error) {
+    console.error("Pi cancellation error:", error.data || error.message);
+    return res.status(error.status || 500).json({
+      success: false,
+      error: error.message || "Pi payment cancellation failed"
+    });
+  }
+});
 
 /* =========================
    START SERVER
 ========================= */
 
 app.listen(PORT, () => {
-
-  console.log(
-    "////////////////////////////////////////"
-  );
-
-  console.log(
-    "TT Token server is live"
-  );
-
-  console.log(
-    `Port: ${PORT}`
-  );
-
-  console.log(
-    `Pi API configured: ${Boolean(
-      PI_API_KEY
-    )}`
-  );
-
-  console.log(
-    "////////////////////////////////////////"
-  );
+  console.log("////////////////////////////////////////");
+  console.log("TT Token server is live");
+  console.log(`Port: ${PORT}`);
+  console.log(`Pi API configured: ${Boolean(PI_API_KEY)}`);
+  console.log("////////////////////////////////////////");
 });
